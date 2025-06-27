@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kett</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sono:wght@200..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text-color: #e0e0e0;
+            --prompt-color: #4CAF50;
+            --link-color: #64b5f6;
+            --bg-outer: rgba(0, 0, 0, 0.7);
+            --terminal-bg: rgba(30, 30, 30, 0.65);
+            --terminal-border: rgba(255, 255, 255, 0.15);
+            --terminal-shadow: rgba(0, 0, 0, 0.5);
+            --accent-1: #67ff6cd3;
+            --accent-2: #c7ff11;
+            --accent-3: #81c784;
+            --accent-4: #64b5f6;
+            --accent-5: #ba68c8;
+            --terminal-width: 90%;
+            --terminal-height: 85vh;
+            --grid-color: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sono', 'Sono', monospace;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--background-url) no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+            font-size: 16px;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-outer);
+            z-index: -1;
+        }
+
+        .terminal-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 600px;
+        }
+
+        .terminal {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            min-width: 400px;
+            min-height: 300px;
+            background: var(--terminal-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid var(--terminal-border);
+            box-shadow: 0 12px 40px 0 var(--terminal-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            resize: both;
+        }
+
+        .terminal.active {
+            border: 2px solid var(--accent-1);
+            z-index: 10;
+        }
+
+        .terminal-header {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 500;
+            color: var(--accent-2);
+            font-size: 0.9rem;
+            cursor: move;
+        }
+
+        .terminal-body {
+            flex: 1;
+            min-height: 0;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .output {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .prompt {
+            color: var(--prompt-color);
+            font-weight: bold;
+        }
+
+        .command-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-area {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+        }
+
+        .command-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            outline: none;
+            caret-color: var(--prompt-color);
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #ff5252;
+            transform: scale(1.1);
+        }
+
+        .color-picker-container, .config-edit-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+        }
+
+        .color-picker-modal, .config-edit-modal {
+            background: var(--terminal-bg);
+            padding: 25px;
+            border-radius: 12px;
+            width: 350px;
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .config-edit-modal {
+            width: 600px;
+            max-height: 80vh;
+            overflow: auto;
+        }
+
+        .color-picker-title, .config-edit-title {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--prompt-color);
+        }
+
+        .color-control, .config-control {
+            margin-bottom: 15px;
+        }
+
+        .color-control label, .config-control label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .color-control input, .config-control textarea {
+            width: 100%;
+        }
+
+        .config-control textarea {
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Sono', monospace;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-btn.primary {
+            background: var(--prompt-color);
+            color: #000;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            padding-left: 3px;
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .tree-view {
+            margin-top: 15px;
+            padding-left: 10px;
+            font-family: 'Sono', monospace;
+            white-space: pre;
+        }
+
+        .tree-directory {
+            color: var(--accent-4);
+            font-weight: bold;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .tree-item {
+            color: var(--link-color);
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tree-item:hover {
+            opacity: 0.8;
+            padding-left: 3px;
+        }
+
+        .command-history {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .history-line {
+            display: flex;
+            gap: 10px;
+        }
+
+        .error {
+            color: #ff5252;
+        }
+
+        .success {
+            color: var(--prompt-color);
+        }
+
+        .color-option {
+            padding: 8px 15px;
+            margin: 8px 0;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            border: 1px solid rgb(0, 0, 0);
+        }
+
+        .icon {
+            font-family: "Symbols Nerd Font";
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .themes-container {
+            margin-top: 15px;
+        }
+
+        .theme-item {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .theme-item.active {
+            border-left: 4px solid var(--prompt-color);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .grid-mode {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            width: 80%;
+            height: 80vh;
+        }
+
+        .grid-mode .terminal {
+            position: relative !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            top: auto !important;
+            left: auto !important;
+            resize: none;
+            overflow: hidden;
+        }
+
+        .grid-mode .terminal-body {
+            -ms-overflow-style: auto;
+        }
+
+        .grid-mode .terminal-body::-webkit-scrollbar {
+            display: block;
+            width: 8px;
+        }
+
+        .grid-mode .terminal-body::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            display: block;
+            border-radius: 4px;
+        }
+
+        .global-command-line {
+            border: 2px solid var(--accent-1);
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 8px;
+            padding: 10px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container" id="terminal-container">
+    
+
+    </div>
+
+    <div class="global-command-line">
+        <div class="input-area">
+            <span class="prompt">vkx@kett:~ »</span>
+            <input type="text" id="global-command-input" class="command-input" autofocus>
+        </div>
+    </div>
+    
+    <div class="color-picker-container" id="color-picker-modal">
+        <div class="color-picker-modal">
+            <div class="color-picker-title">Color Configuration</div>
+            <div class="color-control">
+                <label for="color-picker">Select Color:</label>
+                <input type="color" id="color-picker" value="#4CAF50">
+            </div>
+            <div class="color-control">
+                <label for="alpha-slider">Transparency:</label>
+                <input type="range" id="alpha-slider" min="0" max="100" value="100">
+                <span id="alpha-value">100%</span>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn" id="cancel-color">Cancel</button>
+                <button class="modal-btn primary" id="apply-color">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="config-edit-container" id="config-edit-modal">
+        <div class="config-edit-modal">
+            <div class="config-edit-title">Edit Configuration</div>
+            <div class="config-control">
+                <label for="config-textarea">Configuration JSON:</label>
+                <textarea id="config-textarea"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn" id="cancel-config">Cancel</button>
+                <button class="modal-btn" id="reset-config">Reset to Default</button>
+                <button class="modal-btn primary" id="save-config">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminalContainer = document.getElementById('terminal-container');
+            const globalCommandInput = document.getElementById('global-command-input');
+            const colorPickerModal = document.getElementById('color-picker-modal');
+            const configEditModal = document.getElementById('config-edit-modal');
+            const colorPicker = document.getElementById('color-picker');
+            const alphaSlider = document.getElementById('alpha-slider');
+            const alphaValue = document.getElementById('alpha-value');
+            const applyColorBtn = document.getElementById('apply-color');
+            const cancelColorBtn = document.getElementById('cancel-color');
+            const configTextarea = document.getElementById('config-textarea');
+            const saveConfigBtn = document.getElementById('save-config');
+            const cancelConfigBtn = document.getElementById('cancel-config');
+            const resetConfigBtn = document.getElementById('reset-config');
+            
+            // runtime state
+            const state = {
+                terminals: [],
+                nextTerminalId: 1,
+                activeTerminalId: null,
+                colorPreviews: {},
+                themeItems: {}
+            };
+            
+            // configuration
+            let config = {
+                bookmarks: [
+                    { name: "Google", url: "https://www.google.com", category: "Search" },
+                    { name: "GitHub", url: "https://github.com", category: "Development" },
+                    { name: "MDN Web Docs", url: "https://developer.mozilla.org", category: "Reference" }
+                ],
+                tools: [
+                    { name: "Example 1", file: "ex1.html" },
+                    { name: "Example 2", file: "ex2.html" },
+                    { name: "Example 3", file: "ex3.html" }
+                ],
+                themes: {
+                    'default': {
+                        'text': '#e0e0e0',
+                        'prompt': '#4CAF50',
+                        'link': '#64b5f6',
+                        'outer-bg': 'rgba(0, 0, 0, 0.7)',
+                        'terminal-bg': 'rgba(30, 30, 30, 0.65)',
+                        'accent-1': '#67ff6c',
+                        'accent-2': '#c7ff11',
+                        'accent-3': '#81c784',
+                        'accent-4': '#64b5f6',
+                        'accent-5': '#ba68c8'
+                    },
+                    'dark-blue': {
+                        'text': '#e0e0e0',
+                        'prompt': '#64b5f6',
+                        'link': '#81c784',
+                        'outer-bg': 'rgba(0, 0, 30, 0.7)',
+                        'terminal-bg': 'rgba(20, 20, 40, 0.75)',
+                        'accent-1': '#2196F3',
+                        'accent-2': '#64FFDA',
+                        'accent-3': '#81c784',
+                        'accent-4': '#64b5f6',
+                        'accent-5': '#ba68c8'
+                    },
+                    'matrix': {
+                        'text': '#00ff00',
+                        'prompt': '#00ff00',
+                        'link': '#00ff00',
+                        'outer-bg': 'rgba(0, 0, 0, 0.9)',
+                        'terminal-bg': 'rgba(0, 20, 0, 0.7)',
+                        'accent-1': '#00ff00',
+                        'accent-2': '#00ff00',
+                        'accent-3': '#00ff00',
+                        'accent-4': '#00ff00',
+                        'accent-5': '#00ff00'
+                    }
+                },
+                currentTheme: 'default',
+                background: 'https://c.tenor.com/8Vto1ubdERoAAAAd/tenor.gif',
+                gridMode: true
+            };
+            
+            // default config for reset
+            const defaultConfig = JSON.parse(JSON.stringify(config));
+            let currentColorOption = null;
+            
+            // set initial background
+            document.documentElement.style.setProperty('--background-url', `url('${config.background}')`);
+            
+            // init with saved config if available
+            const savedConfig = localStorage.getItem('terminalConfig');
+            if (savedConfig) {
+                try {
+                    config = JSON.parse(savedConfig);
+                    applyConfigColors();
+                    document.documentElement.style.setProperty('--background-url', `url('${config.background}')`);
+                } catch (e) {
+                    console.error("Error loading config:", e);
+                }
+            }
+            
+            // initial terminal creation
+            createTerminal();
+            
+            // handler for global command input
+            globalCommandInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const command = globalCommandInput.value.trim();
+                    if (command) {
+                        appendCommandToActiveTerminal(command);
+                        processCommand(command);
+                        globalCommandInput.value = '';
+                    }
+                }
+            });
+            
+            // transparency slider adjust
+            alphaSlider.addEventListener('input', () => {
+                alphaValue.textContent = `${alphaSlider.value}%`;
+            });
+            
+            // color selector buttons
+            applyColorBtn.addEventListener('click', () => {
+                applySelectedColor();
+                colorPickerModal.style.display = 'none';
+            });
+            
+            cancelColorBtn.addEventListener('click', () => {
+                colorPickerModal.style.display = 'none';
+            });
+            
+            // config edit buttons
+            saveConfigBtn.addEventListener('click', () => {
+                try {
+                    const newConfig = JSON.parse(configTextarea.value);
+                    config = newConfig;
+                    saveConfig();
+                    applyConfigColors();
+                    document.documentElement.style.setProperty('--background-url', `url('${config.background}')`);
+                    configEditModal.style.display = 'none';
+                    appendOutputToActiveTerminal('<span class="success">Configuration updated successfully!</span>');
+                } catch (e) {
+                    showError('Invalid JSON configuration: ' + e.message);
+                }
+            });
+            
+            cancelConfigBtn.addEventListener('click', () => {
+                configEditModal.style.display = 'none';
+            });
+            
+            resetConfigBtn.addEventListener('click', () => {
+                config = JSON.parse(JSON.stringify(defaultConfig));
+                configTextarea.value = JSON.stringify(config, null, 2);
+                applyConfigColors();
+                document.documentElement.style.setProperty('--background-url', `url('${config.background}')`);
+                appendOutputToActiveTerminal('<span class="success">Configuration reset to default!</span>');
+            });
+            
+            function createTerminal() {
+                const terminalId = state.nextTerminalId++;
+                const terminal = document.createElement('div');
+                terminal.className = 'terminal';
+                terminal.dataset.id = terminalId;
+
+                // time
+                const now = new Date();
+                const currentDateTime = now.toLocaleString();
+                
+                // only set initial position if not in grid mode
+                if (!config.gridMode) {
+                    const terminalCount = state.terminals.length;
+                    let top = 20, left = 20;
+                    
+                    if (terminalCount === 1) {
+                        top = 20;
+                        left = 'calc(50% + 10px)';
+                    } else if (terminalCount === 2) {
+                        top = 'calc(50% + 10px)';
+                        left = 20;
+                    } else if (terminalCount === 3) {
+                        top = 'calc(50% + 10px)';
+                        left = 'calc(50% + 10px)';
+                    }
+                    
+                    terminal.style.top = `${top}px`;
+                    terminal.style.left = `${left}px`;
+                }
+                
+                // create terminal structure
+                terminal.innerHTML = `
+                    <div class="terminal-header">
+                        <span class="icon">:)</span> vkx@kett [${terminalId}] <span id="datetime">[started @ ${currentDateTime}]</span>
+                        <span class="close-btn" data-terminal="${terminalId}">✕</span>
+                    </div>
+                    <div class="terminal-body" id="terminal-body-${terminalId}">
+                        <div class="output">
+                            <span class="prompt">vkx@kett:~ »</span> <span>Terminal ${terminalId} active</span>
+                        </div>
+                        <div class="output">
+                            <span class="prompt">vkx@kett:~ »</span> <span>Type 'help' for available commands</span>
+                        </div>
+                    </div>
+                `;
+                
+                terminalContainer.appendChild(terminal);
+                
+                state.terminals.push(terminalId);
+                
+                setActiveTerminal(terminalId);
+                
+                // add event listeners
+                terminal.querySelector('.close-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeTerminal(terminalId);
+                });
+                
+                terminal.addEventListener('click', () => {
+                    setActiveTerminal(terminalId);
+                });
+                
+                setupDrag(terminal.querySelector('.terminal-header'), terminal);
+                
+                if (config.gridMode) {
+                    applyGridMode();
+                }
+                
+                return terminalId;
+            }
+            
+            function setActiveTerminal(id) {
+                // remove active class from all terminals
+                document.querySelectorAll('.terminal').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // add active class to clicked terminal
+                const terminal = document.querySelector(`.terminal[data-id="${id}"]`);
+                if (terminal) {
+                    terminal.classList.add('active');
+                    state.activeTerminalId = id;
+                }
+            }
+            
+            function closeTerminal(id) {
+                const terminal = document.querySelector(`.terminal[data-id="${id}"]`);
+                if (!terminal) return;
+                
+                // remove from DOM
+                terminal.remove();
+                
+                // remove from state
+                state.terminals = state.terminals.filter(tid => tid !== id);
+                
+                // set new active terminal if needed
+                if (state.activeTerminalId === id) {
+                    if (state.terminals.length > 0) {
+                        setActiveTerminal(state.terminals[0]);
+                    } else {
+                        state.activeTerminalId = null;
+                    }
+                }
+                
+                // apply grid mode if enabled
+                if (config.gridMode) {
+                    applyGridMode();
+                }
+            }
+            
+            function setupDrag(header, element) {
+                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                
+                header.onmousedown = dragMouseDown;
+                
+                function dragMouseDown(e) {
+                    if (config.gridMode) return;
+                    
+                    e = e || window.event;
+                    e.preventDefault();
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    document.onmousemove = elementDrag;
+                }
+                
+                function elementDrag(e) {
+                    if (config.gridMode) return;
+                    
+                    e = e || window.event;
+                    e.preventDefault();
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    
+                    element.style.top = (element.offsetTop - pos2) + "px";
+                    element.style.left = (element.offsetLeft - pos1) + "px";
+                }
+                
+                function closeDragElement() {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+            }
+            
+            function applyConfigColors() {
+                const theme = config.themes[config.currentTheme];
+                for (const [option, value] of Object.entries(theme)) {
+                    const cssVar = getCssVarName(option);
+                    if (cssVar) {
+                        document.documentElement.style.setProperty(cssVar, value);
+                    }
+                }
+            }
+            
+            function getCssVarName(option) {
+                const mapping = {
+                    'text': '--text-color',
+                    'prompt': '--prompt-color',
+                    'link': '--link-color',
+                    'outer-bg': '--bg-outer',
+                    'terminal-bg': '--terminal-bg',
+                    'accent-1': '--accent-1',
+                    'accent-2': '--accent-2',
+                    'accent-3': '--accent-3',
+                    'accent-4': '--accent-4',
+                    'accent-5': '--accent-5'
+                };
+                return mapping[option];
+            }
+            
+            function appendCommandToActiveTerminal(command) {
+                if (!state.activeTerminalId) return;
+
+                const terminalBody = document.getElementById(`terminal-body-${state.activeTerminalId}`);
+                if (terminalBody) {
+                    const commandElement = document.createElement('div');
+                    commandElement.classList.add('output');
+                    commandElement.innerHTML = `<span class="prompt">vkx@kett:~ »</span> ${command}`;
+                    terminalBody.appendChild(commandElement);
+                    terminalBody.scrollTop = terminalBody.scrollHeight;
+                }
+            }
+            
+            function processCommand(command) {
+                const args = command.split(' ');
+                const cmd = args[0].toLowerCase();
+                
+                switch(cmd) {
+                    case 'help':
+                        showHelp();
+                        break;
+                    case 'color':
+                        handleColorCommand(args.slice(1));
+                        break;
+                    case 'search':
+                        handleSearchCommand(args.slice(1).join(' '));
+                        break;
+                    case 'bookmarks':
+                        showBookmarks();
+                        break;
+                    case 'tools':
+                        showTools();
+                        break;
+                    case 'clear':
+                        clearActiveTerminal();
+                        break;
+                    case 'config':
+                        handleConfigCommand(args.slice(1));
+                        break;
+                    case 'split':
+                        splitTerminal();
+                        break;
+                    case 'theme':
+                        handleThemeCommand(args.slice(1));
+                        break;
+                    case 'grid':
+                        handleGridCommand(args.slice(1));
+                        break;
+                    case 'close':
+                        if (state.activeTerminalId) {
+                            closeTerminal(state.activeTerminalId);
+                        }
+                        break;
+                    default:
+                        showError(`Command not found: ${cmd}. Type 'help' for available commands.`);
+                }
+            }
+            
+            function handleGridCommand(args) {
+                if (args.length === 0) {
+                    showError('Usage: grid [on|off|status]');
+                    return;
+                }
+                
+                const subcmd = args[0].toLowerCase();
+                
+                switch(subcmd) {
+                    case 'on':
+                        config.gridMode = true;
+                        applyGridMode();
+                        appendOutputToActiveTerminal('<span class="success">Grid mode enabled</span>');
+                        break;
+                    case 'off':
+                        config.gridMode = false;
+                        applyGridMode();
+                        appendOutputToActiveTerminal('<span class="success">Grid mode disabled - free movement enabled</span>');
+                        break;
+                    case 'status':
+                        appendOutputToActiveTerminal(`Grid mode is currently ${config.gridMode ? 'ON' : 'OFF'}`);
+                        break;
+                    default:
+                        showError(`Invalid grid command: ${subcmd}. Use 'on', 'off', or 'status'.`);
+                }
+            }
+            
+            function applyGridMode() {
+                if (config.gridMode) {
+                    terminalContainer.classList.add('grid-mode');
+                    arrangeTerminalsInGrid();
+                } else {
+                    terminalContainer.classList.remove('grid-mode');
+                    
+                    // position terminals off grid
+                    document.querySelectorAll('.terminal').forEach((terminal, index) => {
+                        terminal.style.position = 'absolute';
+                        terminal.style.width = '50%';
+                        terminal.style.height = '50%';
+                        
+                        if (index === 0) {
+                            terminal.style.top = '20px';
+                            terminal.style.left = '20px';
+                        } else if (index === 1) {
+                            terminal.style.top = '20px';
+                            terminal.style.left = 'calc(50% + 10px)';
+                        } else if (index === 2) {
+                            terminal.style.top = 'calc(50% + 10px)';
+                            terminal.style.left = '20px';
+                        } else if (index === 3) {
+                            terminal.style.top = 'calc(50% + 10px)';
+                            terminal.style.left = 'calc(50% + 10px)';
+                        }
+                    });
+                }
+            }
+            
+            function arrangeTerminalsInGrid() {
+                const terminals = Array.from(document.querySelectorAll('.terminal'));
+                
+                if (terminals.length === 1) {
+                    // 1 terminal (full size)
+                    terminals[0].style.gridRow = '1 / span 2';
+                    terminals[0].style.gridColumn = '1 / span 2';
+                } else if (terminals.length === 2) {
+                    // 2 terminals (side by side)
+                    terminals[0].style.gridRow = '1 / span 2';
+                    terminals[0].style.gridColumn = '1 / 2';
+                    terminals[1].style.gridRow = '1 / span 2';
+                    terminals[1].style.gridColumn = '2 / 3';
+                } else if (terminals.length === 3) {
+                    // 3 terminals (L-shape)
+                    terminals[0].style.gridRow = '1 / span 2';
+                    terminals[0].style.gridColumn = '1 / 2';
+                    terminals[1].style.gridRow = '1 / 2';
+                    terminals[1].style.gridColumn = '2 / 3';
+                    terminals[2].style.gridRow = '2 / 3';
+                    terminals[2].style.gridColumn = '2 / 3';
+                } else if (terminals.length >= 4) {
+                    // 4 terminals (grid)
+                    terminals[0].style.gridRow = '1 / 2';
+                    terminals[0].style.gridColumn = '1 / 2';
+                    terminals[1].style.gridRow = '1 / 2';
+                    terminals[1].style.gridColumn = '2 / 3';
+                    terminals[2].style.gridRow = '2 / 3';
+                    terminals[2].style.gridColumn = '1 / 2';
+                    terminals[3].style.gridRow = '2 / 3';
+                    terminals[3].style.gridColumn = '2 / 3';
+                }
+            }
+            
+            function splitTerminal() {
+                createTerminal();
+                
+                if (config.gridMode) {
+                    applyGridMode();
+                }
+            }
+            
+            function showHelp() {
+                let output = '<div class="help-title">Available Commands:</div>';
+                output += '<div class="command-help">';
+                
+                output += '<div class="help-category">';
+                output += '<div class="help-title">General</div>';
+                output += '<div class="help-item"><span class="prompt">help</span> - Show available commands</div>';
+                output += '<div class="help-item"><span class="prompt">clear</span> - Clear active terminal</div>';
+                output += '<div class="help-item"><span class="prompt">split</span> - Create new terminal</div>';
+                output += '<div class="help-item"><span class="prompt">close</span> - Close active terminal</div>';
+                output += '</div>';
+                
+                output += '<div class="help-category">';
+                output += '<div class="help-title">Window Management</div>';
+                output += '<div class="help-item"><span class="prompt">grid on</span> - Enable grid layout</div>';
+                output += '<div class="help-item"><span class="prompt">grid off</span> - Disable grid for free movement</div>';
+                output += '<div class="help-item"><span class="prompt">grid status</span> - Show current grid mode</div>';
+                output += '</div>';
+                
+                output += '<div class="help-category">';
+                output += '<div class="help-title">Customization</div>';
+                output += '<div class="help-item"><span class="prompt">color list</span> - Show available color options</div>';
+                output += '<div class="help-item"><span class="prompt">theme list</span> - Show available themes</div>';
+                output += '<div class="help-item"><span class="prompt">theme save [name]</span> - Save current theme</div>';
+                output += '<div class="help-item"><span class="prompt">theme set [name]</span> - Apply a theme</div>';
+                output += '<div class="help-item"><span class="prompt">config edit</span> - Edit configuration</div>';
+                output += '<div class="help-item"><span class="prompt">config export</span> - Export configuration</div>';
+                output += '<div class="help-item"><span class="prompt">config import</span> - Import configuration</div>';
+                output += '</div>';
+                
+                output += '<div class="help-category">';
+                output += '<div class="help-title">Utilities</div>';
+                output += '<div class="help-item"><span class="prompt">search [query]</span> - Search on Google</div>';
+                output += '<div class="help-item"><span class="prompt">bookmarks</span> - Show saved bookmarks</div>';
+                output += '<div class="help-item"><span class="prompt">tools</span> - Show available tools</div>';
+                output += '</div>';
+                
+                output += '</div>';
+                
+                appendOutputToActiveTerminal(output);
+            }
+            
+            function handleColorCommand(args) {
+                if (args.length === 0) {
+                    showError('Usage: color [option] or color list');
+                    return;
+                }
+                
+                const option = args[0].toLowerCase();
+                
+                if (option === 'list') {
+                    showColorList();
+                    return;
+                }
+                
+                if (getCssVarName(option)) {
+                    openColorPicker(option);
+                } else {
+                    showError(`Invalid color option: ${option}. Type 'color list' for available options.`);
+                }
+            }
+            
+            function showColorList() {
+                const theme = config.themes[config.currentTheme];
+                let output = '<div class="help-title">Available color options (click to edit):</div>';
+                
+                for (const [option, value] of Object.entries(theme)) {
+                    const cssVar = getCssVarName(option);
+                    const currentColor = cssVar ? getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() : value;
+                    
+                    output += `<div class="color-option" data-option="${option}"><div class="color-preview" style="background: ${currentColor}"></div>${option}</div>`;
+                }
+                
+                appendOutputToActiveTerminal(output);
+                
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        const optionName = option.dataset.option;
+                        openColorPicker(optionName);
+                    });
+                });
+            }
+            
+            function openColorPicker(option) {
+                currentColorOption = option;
+                const cssVar = getCssVarName(option);
+                if (!cssVar) return;
+                
+                const currentColor = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+                let hexColor = currentColor;
+                let alpha = 100;
+                
+                if (currentColor.startsWith('rgba')) {
+                    const match = currentColor.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+                    if (match) {
+                        const r = parseInt(match[1]);
+                        const g = parseInt(match[2]);
+                        const b = parseInt(match[3]);
+                        alpha = Math.round(parseFloat(match[4]) * 100);
+                        hexColor = rgbToHex(r, g, b);
+                    }
+                } else if (currentColor.startsWith('rgb')) {
+                    const match = currentColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                    if (match) {
+                        const r = parseInt(match[1]);
+                        const g = parseInt(match[2]);
+                        const b = parseInt(match[3]);
+                        hexColor = rgbToHex(r, g, b);
+                    }
+                }
+                
+                colorPicker.value = hexColor;
+                alphaSlider.value = alpha;
+                alphaValue.textContent = `${alpha}%`;
+                colorPickerModal.style.display = 'flex';
+            }
+            
+            function applySelectedColor() {
+                if (!currentColorOption) return;
+                
+                const hexColor = colorPicker.value;
+                const alpha = parseInt(alphaSlider.value) / 100;
+                const newColor = alpha < 1 ? 
+                    hexToRgba(hexColor, alpha) : hexColor;
+                
+                const cssVar = getCssVarName(currentColorOption);
+                if (cssVar) {
+                    document.documentElement.style.setProperty(cssVar, newColor);
+                    config.themes[config.currentTheme][currentColorOption] = newColor;
+                    saveConfig();
+                    
+                    // update preview in color list if visible
+                    document.querySelectorAll('.color-option').forEach(option => {
+                        if (option.dataset.option === currentColorOption) {
+                            const preview = option.querySelector('.color-preview');
+                            if (preview) {
+                                preview.style.background = newColor;
+                            }
+                        }
+                    });
+                }
+            }
+            
+            function handleSearchCommand(query) {
+                if (!query) {
+                    showError('Usage: search [query]');
+                    return;
+                }
+                
+                appendOutputToActiveTerminal(`Searching Google for: ${query}`);
+                setTimeout(() => {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                }, 500);
+            }
+            
+            function showBookmarks() {
+                const grouped = {};
+                config.bookmarks.forEach(bookmark => {
+                    if (!grouped[bookmark.category]) {
+                        grouped[bookmark.category] = [];
+                    }
+                    grouped[bookmark.category].push(bookmark);
+                });
+                
+                let output = '<div class="help-title">Your Bookmarks:</div>';
+                output += '<div class="tree-view">';
+                output += 'bookmarks/\n';
+                
+                const categories = Object.keys(grouped);
+                categories.forEach((category, index) => {
+                    const isLastCategory = index === categories.length - 1;
+                    const prefix = isLastCategory ? '└── ' : '├── ';
+                    
+                    output += `${prefix}${category}/\n`;
+                    
+                    const items = grouped[category];
+                    items.forEach((item, itemIndex) => {
+                        const isLastItem = itemIndex === items.length - 1;
+                        const itemPrefix = isLastCategory ? '    ' : '│   ';
+                        const itemSymbol = isLastItem ? '└── ' : '├── ';
+                        
+                        output += `${itemPrefix}${itemSymbol}<a href="${item.url}" target="_blank">${item.name}</a>\n`;
+                    });
+                });
+                
+                output += '</div>';
+                appendOutputToActiveTerminal(output);
+            }
+            
+            function showTools() {
+                let output = '<div class="help-title">Available Tools:</div>';
+                output += '<div class="tree-view">';
+                output += 'tools/\n';
+                
+                config.tools.forEach((tool, index) => {
+                    const isLast = index === config.tools.length - 1;
+                    const prefix = isLast ? '└── ' : '├── ';
+                    
+                    output += `${prefix}<span class="tree-item" onclick="window.open('${tool.file}', '_blank')">${tool.name}</span>\n`;
+                });
+                
+                output += '</div>';
+                appendOutputToActiveTerminal(output);
+            }
+            
+            function clearActiveTerminal() {
+                if (!state.activeTerminalId) return;
+                
+                const terminalBody = document.getElementById(`terminal-body-${state.activeTerminalId}`);
+                if (terminalBody) {
+                    terminalBody.innerHTML = '';
+                    
+                    const blankState = document.createElement('div');
+                    blankState.classList.add('output');
+                    blankState.innerHTML = `<span class="prompt">vkx@kett:~ »</span> <span>Terminal cleared</span>`;
+                    terminalBody.appendChild(blankState);
+                }
+            }
+            
+            function handleConfigCommand(args) {
+                if (args.length === 0) {
+                    showError('Usage: config export, config import, or config edit');
+                    return;
+                }
+                
+                const subcmd = args[0].toLowerCase();
+                
+                switch(subcmd) {
+                    case 'export':
+                        exportConfig();
+                        break;
+                    case 'import':
+                        importConfig();
+                        break;
+                    case 'edit':
+                        openConfigEditor();
+                        break;
+                    default:
+                        showError(`Invalid config command: ${subcmd}. Use 'export', 'import', or 'edit'.`);
+                }
+            }
+            
+            function openConfigEditor() {
+                configTextarea.value = JSON.stringify(config, null, 2);
+                configEditModal.style.display = 'flex';
+            }
+            
+            function exportConfig() {
+                const configStr = JSON.stringify(config, null, 2);
+                const blob = new Blob([configStr], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'terminal-config.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                appendOutputToActiveTerminal('<span class="success">Configuration exported successfully!</span>');
+            }
+            
+            function importConfig() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        try {
+                            const newConfig = JSON.parse(event.target.result);
+                            config = newConfig;
+                            applyConfigColors();
+                            document.documentElement.style.setProperty('--background-url', `url('${config.background}')`);
+                            saveConfig();
+                            appendOutputToActiveTerminal('<span class="success">Configuration imported successfully!</span>');
+                        } catch (error) {
+                            showError('Error parsing configuration file: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            }
+            
+            function handleThemeCommand(args) {
+                if (args.length === 0) {
+                    showError('Usage: theme list, theme save [name], or theme set [name]');
+                    return;
+                }
+                
+                const subcmd = args[0].toLowerCase();
+                
+                switch(subcmd) {
+                    case 'list':
+                        listThemes();
+                        break;
+                    case 'save':
+                        if (args.length < 2) {
+                            showError('Usage: theme save [name]');
+                            return;
+                        }
+                        saveTheme(args[1]);
+                        break;
+                    case 'set':
+                        if (args.length < 2) {
+                            showError('Usage: theme set [name]');
+                            return;
+                        }
+                        setTheme(args[1]);
+                        break;
+                    default:
+                        showError(`Invalid theme command: ${subcmd}. Use 'list', 'save', or 'set'.`);
+                }
+            }
+            
+            function listThemes() {
+                let output = '<div class="help-title">Available Themes:</div>';
+                output += '<div class="themes-container">';
+                
+                for (const [name, theme] of Object.entries(config.themes)) {
+                    const activeClass = name === config.currentTheme ? 'active' : '';
+                    output += `<div class="theme-item ${activeClass}" data-theme="${name}">
+                        ${name} ${name === config.currentTheme ? '(active)' : ''}
+                    </div>`;
+                }
+                
+                output += '</div>';
+                appendOutputToActiveTerminal(output);
+                
+                document.querySelectorAll('.theme-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const themeName = item.dataset.theme;
+                        setTheme(themeName);
+                    });
+                });
+            }
+            
+            function saveTheme(name) {
+                const currentTheme = {...config.themes[config.currentTheme]};
+                config.themes[name] = currentTheme;
+                saveConfig();
+                appendOutputToActiveTerminal(`<span class="success">Theme "${name}" saved successfully!</span>`);
+            }
+            
+            function setTheme(name) {
+                if (!config.themes[name]) {
+                    showError(`Theme "${name}" not found`);
+                    return;
+                }
+                
+                config.currentTheme = name;
+                applyConfigColors();
+                saveConfig();
+                appendOutputToActiveTerminal(`<span class="success">Theme "${name}" applied successfully!</span>`);
+                
+                // update theme list if visible
+                document.querySelectorAll('.theme-item').forEach(item => {
+                    const themeName = item.dataset.theme;
+                    if (themeName === name) {
+                        item.classList.add('active');
+                        item.textContent = themeName + ' (active)';
+                    } else {
+                        item.classList.remove('active');
+                        item.textContent = themeName;
+                    }
+                });
+            }
+            
+            function saveConfig() {
+                localStorage.setItem('terminalConfig', JSON.stringify(config));
+            }
+            
+            function showError(message) {
+                appendOutputToActiveTerminal(`<span class="error">${message}</span>`);
+            }
+            
+            function appendOutputToActiveTerminal(content) {
+                if (!state.activeTerminalId) return;
+                
+                const terminalBody = document.getElementById(`terminal-body-${state.activeTerminalId}`);
+                if (terminalBody) {
+                    const outputElement = document.createElement('div');
+                    outputElement.classList.add('output');
+                    outputElement.innerHTML = content;
+                    terminalBody.appendChild(outputElement);
+                    terminalBody.scrollTop = terminalBody.scrollHeight;
+                }
+            }
+            
+            // helper functions for color conversion
+            function rgbToHex(r, g, b) {
+                return '#' + [r, g, b].map(x => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                }).join('');
+            }
+            
+            function hexToRgba(hex, alpha) {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+        });
+    </script>
+</body>
+</html>
