@@ -11,7 +11,7 @@
     <style>
         :root {
             --text-color: #e0e0e0;
-            --other-text-color: #fefefecb;
+            --other-text-color: #4CAF50;
             --link-color: #64b5f6;
             --bg-outer: rgba(0, 0, 0, 0.7);
             --other-bg: rgba(30, 30, 30, 0.65);
@@ -23,7 +23,7 @@
             --accent-4: #64b5f6;
             --accent-5: #ba68c8;
             --grid-color: rgba(255, 255, 255, 0.05);
-            --background-url: url('https://giffiles.alphacoders.com/223/223160.gif');
+            --background-url: url('https://images.unsplash.com/photo-1581947454454-daf5f7200128?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         }
 
         * {
@@ -41,7 +41,7 @@
             position: relative;
             overflow-x: hidden;
             font-size: 16px;
-            padding: 20px;
+            padding: 0;
         }
 
         body::before {
@@ -55,91 +55,121 @@
             z-index: -1;
         }
 
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: var(--other-bg);
+        .linux-taskbar {
+            background: rgba(30, 30, 40, 0.95);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px;
-            border: 1px solid var(--other-border);
-            box-shadow: 0 12px 40px 0 var(--other-shadow);
-            margin-bottom: 25px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 100;
         }
-
-        .app-title {
-            font-size: 1.8rem;
-            color: var(--text-color);
+        
+        .app-launcher {
             display: flex;
             align-items: center;
             gap: 15px;
+            margin-right: 20px;
         }
-
-        .app-title i {
-            color: var(--other-text-color);
+        
+        .app-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(100, 181, 246, 0.8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
+        
+        .app-icon:hover {
+            background: rgba(100, 181, 246, 1);
+            transform: scale(1.05);
+        }
+        
+        .app-icon i {
+            font-size: 1.2rem;
+            color: white;
+        }
+        
         .search-container {
+            flex: 1;
             display: flex;
             gap: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
             padding: 8px 20px;
-            width: 300px;
+            max-width: 700px;
+            transition: all 0.3s ease;
         }
-
+        
+        .search-container:focus-within {
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+        }
+        
         .search-container i {
             color: var(--accent-3);
         }
-
+        
         .search-input {
             background: transparent;
             border: none;
             color: var(--text-color);
             width: 100%;
             outline: none;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
-
+        
         .app-controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
+            margin-left: 20px;
         }
-
-        .btn {
+        
+        .taskbar-btn {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--other-border);
+            border: none;
             color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 30px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
+            justify-content: center;
+            font-size: 1.1rem;
         }
-
-        .btn:hover {
+        
+        .taskbar-btn:hover {
             background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
             transform: translateY(-2px);
         }
+        
+        .system-tray {
+            display: flex;
+            gap: 10px;
+            margin-left: 20px;
+        }
 
-        .btn i {
-            font-size: 1rem;
+        .app-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            position: relative;
+            padding: 0 20px;
         }
 
         .main-content {
             display: flex;
             gap: 25px;
+            margin-top: 20px;
         }
 
         .sidebar {
@@ -157,7 +187,7 @@
         .sidebar-title {
             font-size: 1.2rem;
             margin-bottom: 20px;
-            color: var(--other-text-color);
+            color: var(--accent-4);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -165,6 +195,28 @@
 
         .filters-section {
             margin-bottom: 30px;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .clear-filters {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-color);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .clear-filters:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .filter-group {
@@ -182,34 +234,38 @@
 
         .filter-options {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             gap: 8px;
-            padding-left: 10px;
+            padding-left: 0;
         }
 
         .filter-option {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
+            gap: 6px;
         }
-
+        
         .filter-option:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .filter-option.active {
             background: rgba(76, 175, 80, 0.2);
             color: var(--accent-1);
+            border-color: rgba(76, 175, 80, 0.3);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
         }
 
         .filter-option .status-indicator {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
 
@@ -274,7 +330,7 @@
 
         .note-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), 0 0 20px rgba(76, 175, 80, 0.3);
         }
 
         .note-header {
@@ -288,7 +344,7 @@
         .note-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--other-text-color);
+            color: var(--accent-2);
             flex: 1;
             white-space: nowrap;
             overflow: hidden;
@@ -491,6 +547,7 @@
 
         .form-control:focus {
             border-color: var(--accent-1);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
         }
 
         textarea.form-control {
@@ -614,14 +671,50 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .app-header {
-                flex-direction: column;
-                gap: 20px;
+        @media (max-width: 900px) {
+            .linux-taskbar {
+                padding: 0 10px;
             }
             
+            .app-controls {
+                gap: 6px;
+                margin-left: 10px;
+            }
+            
+            .taskbar-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+            
+            .system-tray {
+                margin-left: 10px;
+            }
+            
+            .tray-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+            
+            .app-icon {
+                width: 32px;
+                height: 32px;
+            }
+        }
+        
+        @media (max-width: 768px) {
             .search-container {
-                width: 100%;
+                max-width: 200px;
+            }
+            
+            .app-launcher {
+                gap: 8px;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+                align-items: flex-start;
             }
             
             .form-row {
@@ -629,37 +722,68 @@
                 gap: 10px;
             }
         }
+        
+        @media (max-width: 600px) {
+            .linux-taskbar {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px;
+            }
+            
+            .app-launcher {
+                width: 100%;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+            
+            .search-container {
+                max-width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .app-controls {
+                margin-left: 0;
+                margin-right: auto;
+            }
+            
+            .system-tray {
+                margin-left: auto;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <div class="app-title">
-                <h1>Notes</h1>
-            </div>
-            
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" class="search-input" id="search-notes" placeholder="Search notes...">
-            </div>
-            
-            <div class="app-controls">
-                <button class="btn" id="new-note-btn">
-                    <i class="fas fa-plus"></i> New Note
-                </button>
-                <button class="btn" id="config-btn">
-                    <i class="fas fa-cog"></i> Config
-                </button>
-                <button class="btn" id="theme-btn">
-                    <i class="fas fa-palette"></i> Theme
-                </button>
-            </div>
-        </header>
+    <div class="linux-taskbar">
+        <div class="app-launcher">
+        </div>
         
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" class="search-input" id="search-notes" placeholder="Search notes...">
+        </div>
+        
+        <div class="app-controls">
+            <button class="taskbar-btn" id="new-note-btn" title="New Note">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="taskbar-btn" id="config-btn" title="Configuration">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="taskbar-btn" id="theme-btn" title="Themes">
+                <i class="fas fa-palette"></i>
+            </button>
+        </div>
+        
+    </div>
+    
+    <div class="app-container">
         <div class="main-content">
             <aside class="sidebar">
                 <div class="filters-section">
-                    <h2 class="sidebar-title"><i class="fas fa-filter"></i> Filters</h2>
+                    <div class="filter-header">
+                        <h2 class="sidebar-title"><i class="fas fa-filter"></i> Filters</h2>
+                        <button class="clear-filters" id="clear-filters">Clear All</button>
+                    </div>
                     
                     <div class="filter-group">
                         <div class="filter-title"><i class="fas fa-calendar"></i> By Date</div>
@@ -674,7 +798,7 @@
                     <div class="filter-group">
                         <div class="filter-title"><i class="fas fa-tasks"></i> By Status</div>
                         <div class="filter-options">
-                            <div class="filter-option active" data-filter="status-all">
+                            <div class="filter-option" data-filter="status-all">
                                 <div class="status-indicator"></div> All
                             </div>
                             <div class="filter-option" data-filter="status-not-started">
@@ -696,17 +820,14 @@
                 <div class="categories-section">
                     <h2 class="sidebar-title"><i class="fas fa-folder"></i> Categories</h2>
                     <div class="categories-list" id="categories-list">
-
                     </div>
                 </div>
             </aside>
             
             <main class="notes-container" id="notes-container">
-
             </main>
         </div>
         
-
         <div class="note-modal" id="note-modal">
             <div class="note-modal-content">
                 <button class="modal-close" id="modal-close">
@@ -732,7 +853,6 @@
                         <div class="form-group">
                             <label class="form-label">Category</label>
                             <select class="form-control" id="note-category">
-
                             </select>
                         </div>
                         
@@ -775,7 +895,6 @@
             </div>
         </div>
         
-
         <div class="config-edit-container" id="config-edit-modal">
             <div class="config-edit-modal">
                 <div class="config-edit-title">Edit Configuration</div>
@@ -791,13 +910,12 @@
             </div>
         </div>
         
-
         <div class="color-picker-container" id="color-picker-modal">
             <div class="color-picker-modal">
                 <div class="color-picker-title">Theme Configuration</div>
                 <div class="color-control">
                     <label for="color-picker">Select Color:</label>
-                    <input type="color" id="color-picker" value="">
+                    <input type="color" id="color-picker" value="#4CAF50">
                 </div>
                 <div class="color-control">
                     <label for="alpha-slider">Transparency:</label>
@@ -834,6 +952,8 @@
             const cancelColorBtn = document.getElementById('cancel-color');
             const categoriesList = document.getElementById('categories-list');
             const noteCategorySelect = document.getElementById('note-category');
+            const clearFiltersBtn = document.getElementById('clear-filters');
+            const timeDisplay = document.getElementById('time-display');
             
             let config = {
                 categories: [
@@ -846,7 +966,7 @@
                 themes: {
                     'default': {
                         'text': '#e0e0e0',
-                        'other-text': '#4CAF50',
+                        'prompt': '#4CAF50',
                         'link': '#64b5f6',
                         'outer-bg': 'rgba(0, 0, 0, 0.7)',
                         'other-bg': 'rgba(30, 30, 30, 0.65)',
@@ -858,7 +978,7 @@
                     },
                     'dark-blue': {
                         'text': '#e0e0e0',
-                        'other-text': '#64b5f6',
+                        'prompt': '#64b5f6',
                         'link': '#81c784',
                         'outer-bg': 'rgba(0, 0, 30, 0.7)',
                         'other-bg': 'rgba(20, 20, 40, 0.75)',
@@ -870,7 +990,7 @@
                     },
                     'matrix': {
                         'text': '#00ff00',
-                        'other-text': '#00ff00',
+                        'prompt': '#00ff00',
                         'link': '#00ff00',
                         'outer-bg': 'rgba(0, 0, 0, 0.9)',
                         'other-bg': 'rgba(0, 20, 0, 0.7)',
@@ -882,21 +1002,32 @@
                     }
                 },
                 currentTheme: 'default',
-                background: 'https://giffiles.alphacoders.com/223/223160.gif',
+                background: 'https://images.unsplash.com/photo-1581947454454-daf5f7200128?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 gridMode: true
             };
             
             const defaultConfig = JSON.parse(JSON.stringify(config));
             let currentColorOption = null;
             let currentNoteId = null;
-            let currentFilter = 'status-all';
-            let currentCategory = 'all';
+            let currentFilters = {
+                date: null,
+                status: null
+            };
             
             function initApp() {
                 loadConfig();
                 renderCategories();
                 renderNotes();
                 setupEventListeners();
+                updateTime();
+                setInterval(updateTime, 60000);
+            }
+            
+            function updateTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                timeDisplay.textContent = `${hours}:${minutes}`;
             }
             
             function loadConfig() {
@@ -912,14 +1043,18 @@
                 }
                 
                 if (config.notes.length === 0) {
+                    const today = new Date();
+                    const nextWeek = new Date();
+                    nextWeek.setDate(today.getDate() + 7);
+                    
                     config.notes = [
                         {
                             id: '1',
                             title: 'Test 1',
-                            content: 'Hello, hello!',
+                            content: 'Hi, testing',
                             category: 'work',
-                            startDate: '2023-06-01',
-                            deadline: '2023-06-15',
+                            startDate: today.toISOString().split('T')[0],
+                            deadline: nextWeek.toISOString().split('T')[0],
                             status: 'in-progress',
                             color: '#3498db',
                             createdAt: new Date().toISOString()
@@ -927,7 +1062,7 @@
                         {
                             id: '2',
                             title: 'Test 2',
-                            content: 'This is the second one!',
+                            content: 'Hi, testing',
                             category: 'personal',
                             startDate: '2023-01-01',
                             deadline: '2023-12-31',
@@ -937,13 +1072,24 @@
                         },
                         {
                             id: '3',
-                            title: '3',
-                            content: 'Third one.',
+                            title: 'Test 3',
+                            content: 'Hi, testing',
                             category: 'ideas',
                             startDate: '2023-07-01',
                             deadline: '2023-09-30',
                             status: 'scheduled',
                             color: '#e74c3c',
+                            createdAt: new Date().toISOString()
+                        },
+                        {
+                            id: '4',
+                            title: 'Test 4',
+                            content: 'Hi, testing',
+                            category: 'work',
+                            startDate: today.toISOString().split('T')[0],
+                            deadline: nextWeek.toISOString().split('T')[0],
+                            status: 'finished',
+                            color: '#2ecc71',
                             createdAt: new Date().toISOString()
                         }
                     ];
@@ -968,7 +1114,7 @@
             function getCssVarName(option) {
                 const mapping = {
                     'text': '--text-color',
-                    'other-text': '--other-text-color',
+                    'prompt': '--other-text-color',
                     'link': '--link-color',
                     'outer-bg': '--bg-outer',
                     'other-bg': '--other-bg',
@@ -1016,7 +1162,6 @@
                             el.classList.remove('active');
                         });
                         item.classList.add('active');
-                        currentCategory = item.dataset.category;
                         renderNotes();
                     });
                 });
@@ -1035,13 +1180,52 @@
                     );
                 }
                 
-                if (currentFilter !== 'status-all') {
-                    const status = currentFilter.replace('status-', '');
-                    filteredNotes = filteredNotes.filter(note => note.status === status);
+                if (currentFilters.status) {
+                    const status = currentFilters.status.replace('status-', '');
+                    if (status !== 'all') {
+                        filteredNotes = filteredNotes.filter(note => note.status === status);
+                    }
                 }
                 
-                if (currentCategory !== 'all') {
-                    filteredNotes = filteredNotes.filter(note => note.category === currentCategory);
+                if (currentFilters.date) {
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    
+                    switch(currentFilters.date) {
+                        case 'date-today':
+                            filteredNotes = filteredNotes.filter(note => {
+                                const noteDate = note.deadline ? new Date(note.deadline) : null;
+                                return noteDate && noteDate.getTime() === today.getTime();
+                            });
+                            break;
+                        case 'date-week':
+                            const nextWeek = new Date(today);
+                            nextWeek.setDate(today.getDate() + 7);
+                            filteredNotes = filteredNotes.filter(note => {
+                                const noteDate = note.deadline ? new Date(note.deadline) : null;
+                                return noteDate && noteDate >= today && noteDate <= nextWeek;
+                            });
+                            break;
+                        case 'date-month':
+                            const nextMonth = new Date(today);
+                            nextMonth.setMonth(today.getMonth() + 1);
+                            filteredNotes = filteredNotes.filter(note => {
+                                const noteDate = note.deadline ? new Date(note.deadline) : null;
+                                return noteDate && noteDate >= today && noteDate <= nextMonth;
+                            });
+                            break;
+                        case 'date-overdue':
+                            filteredNotes = filteredNotes.filter(note => {
+                                const noteDate = note.deadline ? new Date(note.deadline) : null;
+                                return noteDate && noteDate < today;
+                            });
+                            break;
+                    }
+                }
+                
+                const activeCategory = document.querySelector('.category-item.active');
+                if (activeCategory && activeCategory.dataset.category !== 'all') {
+                    filteredNotes = filteredNotes.filter(note => note.category === activeCategory.dataset.category);
                 }
                 
                 if (filteredNotes.length === 0) {
@@ -1227,6 +1411,17 @@
                 }
             }
             
+            function clearFilters() {
+                document.querySelectorAll('.filter-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                currentFilters = {
+                    date: null,
+                    status: null
+                };
+                renderNotes();
+            }
+            
             function setupEventListeners() {
                 newNoteBtn.addEventListener('click', openNewNote);
                 document.getElementById('modal-close').addEventListener('click', closeNoteModal);
@@ -1242,18 +1437,27 @@
                 
                 document.querySelectorAll('.filter-option').forEach(option => {
                     option.addEventListener('click', () => {
-                        if (option.dataset.filter.startsWith('status-')) {
-                            document.querySelectorAll('.filter-option').forEach(el => {
-                                if (el.dataset.filter.startsWith('status-')) {
+                        const filterType = option.dataset.filter.split('-')[0];
+                        const filterValue = option.dataset.filter;
+                        
+                        if (option.classList.contains('active')) {
+                            option.classList.remove('active');
+                            currentFilters[filterType] = null;
+                        } else {
+                            if (filterType === 'date' || filterType === 'status') {
+                                document.querySelectorAll(`.filter-option[data-filter^="${filterType}-"]`).forEach(el => {
                                     el.classList.remove('active');
-                                }
-                            });
+                                });
+                            }
+                            option.classList.add('active');
+                            currentFilters[filterType] = filterValue;
                         }
-                        option.classList.add('active');
-                        currentFilter = option.dataset.filter;
+                        
                         renderNotes();
                     });
                 });
+                
+                clearFiltersBtn.addEventListener('click', clearFilters);
                 
                 configBtn.addEventListener('click', () => {
                     configTextarea.value = JSON.stringify(config, null, 2);
