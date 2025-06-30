@@ -86,3 +86,35 @@ A Linux-inspired browser homepage with CLI-style interaction using a custom term
 ---
 
 I suggest always starting with 'help' to see available commands.
+
+---
+
+## Added extra tool - Notes tool
+
+### Notes tool - features
+
+Note cards:
+ - Category
+ - Title
+ - Content
+ - Start/Deadline dates
+ - Status (manual progress tracking)
+ - Color (for sorting)
+
+Filters:
+ - Date
+ - Status
+   
+### Notes tool - configuration
+
+Config:
+ - works the same as the one in homepage - allows the user to edit everything
+
+Categories:
+ - Can be added through config
+
+Visual customization:
+ - Background can be changed through config
+ - (Not yet functional) color picker just like in homepage
+
+---
