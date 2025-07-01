@@ -108,13 +108,13 @@ Filters:
 ### Notes tool - configuration
 
 Config:
- - works the same as the one in homepage - allows the user to edit everything
+ - Works the same as the one in homepage - allows the user to edit everything
 
 Categories:
  - Can be added through config
 
 Visual customization:
  - Background can be changed through config
- - (Not yet functional) color picker just like in homepage
+ - Color picker just like in homepage
 
 ---
