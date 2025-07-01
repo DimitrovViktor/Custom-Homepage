@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes Tool</title>
+    <title>Notes App</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sono:wght@200..800&display=swap" rel="stylesheet">
@@ -24,6 +24,10 @@
             --accent-5: #ba68c8;
             --grid-color: rgba(255, 255, 255, 0.05);
             --background-url: url('https://images.unsplash.com/photo-1581947454454-daf5f7200128?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            --note-bg: rgba(30, 30, 30, 0.65);
+            --taskbar-bg: rgba(30, 30, 40, 0.95);
+            --dock-bg: rgba(40, 40, 50, 0.9);
+            --glow-color: rgba(0, 255, 8, 0.655);
         }
 
         * {
@@ -56,7 +60,7 @@
         }
 
         .linux-taskbar {
-            background: rgba(30, 30, 40, 0.95);
+            background: var(--taskbar-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             height: 50px;
@@ -66,35 +70,6 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 100;
-        }
-        
-        .app-launcher {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-right: 20px;
-        }
-        
-        .app-icon {
-            width: 36px;
-            height: 36px;
-            background: rgba(100, 181, 246, 0.8);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .app-icon:hover {
-            background: rgba(100, 181, 246, 1);
-            transform: scale(1.05);
-        }
-        
-        .app-icon i {
-            font-size: 1.2rem;
-            color: white;
         }
         
         .search-container {
@@ -138,7 +113,7 @@
             color: var(--text-color);
             width: 40px;
             height: 40px;
-            border-radius: 8px;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -150,95 +125,44 @@
         .taskbar-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
-            transform: translateY(-2px);
-        }
-        
-        .system-tray {
-            display: flex;
-            gap: 10px;
-            margin-left: 20px;
+            text-shadow: 0 0 15px var(--glow-color);
         }
 
-        .app-container {
-            max-width: 1400px;
-            margin: 20px auto;
-            position: relative;
-            padding: 0 20px;
-        }
-
-        .main-content {
-            display: flex;
-            gap: 25px;
-            margin-top: 20px;
-        }
-
-        .sidebar {
-            width: 280px;
-            background: var(--other-bg);
+        .filter-dock {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--dock-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px;
-            border: 1px solid var(--other-border);
-            box-shadow: 0 12px 40px 0 var(--other-shadow);
-            padding: 20px;
-            height: fit-content;
-        }
-
-        .sidebar-title {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: var(--accent-4);
             display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filters-section {
-            margin-bottom: 30px;
+            padding: 15px 20px;
+            gap: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 99;
         }
         
-        .filter-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+        .dock-section {
+            flex: 1;
         }
         
-        .clear-filters {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: var(--text-color);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .clear-filters:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .filter-group {
-            margin-bottom: 15px;
-        }
-
-        .filter-title {
+        .dock-title {
             font-size: 0.9rem;
             color: var(--accent-3);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
+        
         .filter-options {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             padding-left: 0;
         }
-
+        
         .filter-option {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -255,67 +179,42 @@
         .filter-option:hover {
             background: rgba(255, 255, 255, 0.15);
         }
-
+        
         .filter-option.active {
             background: rgba(76, 175, 80, 0.2);
             color: var(--accent-1);
             border-color: rgba(76, 175, 80, 0.3);
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+            box-shadow: 0 0 10px var(--glow-color);
         }
-
+        
         .filter-option .status-indicator {
             width: 10px;
             height: 10px;
             border-radius: 50%;
         }
-
+        
         .status-not-started { background: #ff5252; }
         .status-in-progress { background: #ffb142; }
         .status-scheduled { background: #3498db; }
         .status-finished { background: #2ecc71; }
 
-        .categories-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .category-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.08);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .category-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-        }
-
-        .category-item.active {
-            border-left: 3px solid var(--accent-1);
-            background: rgba(76, 175, 80, 0.15);
-        }
-
-        .category-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
+        .app-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            position: relative;
+            padding: 0 20px;
+            padding-bottom: 90px;
         }
 
         .notes-container {
-            flex: 1;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
+            margin-top: 20px;
         }
 
         .note-card {
-            background: var(--other-bg);
+            background: var(--note-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: 16px;
@@ -330,7 +229,7 @@
 
         .note-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), 0 0 20px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), 0 0 20px var(--glow-color);
         }
 
         .note-header {
@@ -658,14 +557,6 @@
         }
 
         @media (max-width: 1100px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-            }
-            
             .notes-container {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
@@ -686,20 +577,15 @@
                 height: 36px;
                 font-size: 1rem;
             }
-            
-            .system-tray {
-                margin-left: 10px;
+
+            .taskbar-btn-inner {
+                color: var(--other-text-color);
             }
-            
-            .tray-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.8rem;
-            }
-            
-            .app-icon {
-                width: 32px;
-                height: 32px;
+
+            .taskbar-btn-inner:hover {
+                color: var(--primary-accent); 
+                transform: translateY(-8px) scale(1.2); 
+                text-shadow: 0 0 15px var(--glow-color);
             }
         }
         
@@ -708,13 +594,14 @@
                 max-width: 200px;
             }
             
-            .app-launcher {
-                gap: 8px;
+            .filter-dock {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
             }
             
-            .filter-options {
-                flex-direction: column;
-                align-items: flex-start;
+            .dock-section {
+                width: 100%;
             }
             
             .form-row {
@@ -730,12 +617,6 @@
                 padding: 10px;
             }
             
-            .app-launcher {
-                width: 100%;
-                justify-content: space-between;
-                margin-bottom: 10px;
-            }
-            
             .search-container {
                 max-width: 100%;
                 margin-bottom: 10px;
@@ -746,17 +627,19 @@
                 margin-right: auto;
             }
             
-            .system-tray {
-                margin-left: auto;
+            .filter-dock {
+                position: relative;
+                padding: 15px;
+            }
+            
+            .app-container {
+                padding-bottom: 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="linux-taskbar">
-        <div class="app-launcher">
-        </div>
-        
         <div class="search-container">
             <i class="fas fa-search"></i>
             <input type="text" class="search-input" id="search-notes" placeholder="Search notes...">
@@ -764,69 +647,63 @@
         
         <div class="app-controls">
             <button class="taskbar-btn" id="new-note-btn" title="New Note">
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-plus" style="color: var(--other-text-color);"></i>
             </button>
             <button class="taskbar-btn" id="config-btn" title="Configuration">
-                <i class="fas fa-cog"></i>
+                <i class="fas fa-cog" style="color: var(--other-text-color);"></i>
             </button>
             <button class="taskbar-btn" id="theme-btn" title="Themes">
-                <i class="fas fa-palette"></i>
+                <i class="fas fa-palette" style="color: var(--other-text-color);"></i>
             </button>
         </div>
+    </div>
+    
+    <div class="filter-dock">
+        <div class="dock-section">
+            <div class="dock-title"><i class="fas fa-calendar"></i> Date</div>
+            <div class="filter-options">
+                <div class="filter-option" data-filter="date-today">Today</div>
+                <div class="filter-option" data-filter="date-week">This Week</div>
+                <div class="filter-option" data-filter="date-month">This Month</div>
+                <div class="filter-option" data-filter="date-overdue">Overdue</div>
+            </div>
+        </div>
         
+        <div class="dock-section">
+            <div class="dock-title"><i class="fas fa-tasks"></i> Status</div>
+            <div class="filter-options">
+                <div class="filter-option" data-filter="status-all">
+                    <div class="status-indicator"></div> All
+                </div>
+                <div class="filter-option" data-filter="status-not-started">
+                    <div class="status-indicator status-not-started"></div> Not Started
+                </div>
+                <div class="filter-option" data-filter="status-in-progress">
+                    <div class="status-indicator status-in-progress"></div> In Progress
+                </div>
+                <div class="filter-option" data-filter="status-scheduled">
+                    <div class="status-indicator status-scheduled"></div> Scheduled
+                </div>
+                <div class="filter-option" data-filter="status-finished">
+                    <div class="status-indicator status-finished"></div> Finished
+                </div>
+            </div>
+        </div>
+        
+        <div class="dock-section">
+            <div class="dock-title"><i class="fas fa-folder"></i> Category</div>
+            <div class="filter-options" id="categories-list">
+            </div>
+        </div>
+        
+        <div class="dock-section">
+            <button class="clear-filters" id="clear-filters">Clear All</button>
+        </div>
     </div>
     
     <div class="app-container">
-        <div class="main-content">
-            <aside class="sidebar">
-                <div class="filters-section">
-                    <div class="filter-header">
-                        <h2 class="sidebar-title"><i class="fas fa-filter"></i> Filters</h2>
-                        <button class="clear-filters" id="clear-filters">Clear All</button>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <div class="filter-title"><i class="fas fa-calendar"></i> By Date</div>
-                        <div class="filter-options">
-                            <div class="filter-option" data-filter="date-today">Today</div>
-                            <div class="filter-option" data-filter="date-week">This Week</div>
-                            <div class="filter-option" data-filter="date-month">This Month</div>
-                            <div class="filter-option" data-filter="date-overdue">Overdue</div>
-                        </div>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <div class="filter-title"><i class="fas fa-tasks"></i> By Status</div>
-                        <div class="filter-options">
-                            <div class="filter-option" data-filter="status-all">
-                                <div class="status-indicator"></div> All
-                            </div>
-                            <div class="filter-option" data-filter="status-not-started">
-                                <div class="status-indicator status-not-started"></div> Not Started
-                            </div>
-                            <div class="filter-option" data-filter="status-in-progress">
-                                <div class="status-indicator status-in-progress"></div> In Progress
-                            </div>
-                            <div class="filter-option" data-filter="status-scheduled">
-                                <div class="status-indicator status-scheduled"></div> Scheduled
-                            </div>
-                            <div class="filter-option" data-filter="status-finished">
-                                <div class="status-indicator status-finished"></div> Finished
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="categories-section">
-                    <h2 class="sidebar-title"><i class="fas fa-folder"></i> Categories</h2>
-                    <div class="categories-list" id="categories-list">
-                    </div>
-                </div>
-            </aside>
-            
-            <main class="notes-container" id="notes-container">
-            </main>
-        </div>
+        <main class="notes-container" id="notes-container">
+        </main>
         
         <div class="note-modal" id="note-modal">
             <div class="note-modal-content">
@@ -914,13 +791,34 @@
             <div class="color-picker-modal">
                 <div class="color-picker-title">Theme Configuration</div>
                 <div class="color-control">
-                    <label for="color-picker">Select Color:</label>
-                    <input type="color" id="color-picker" value="#4CAF50">
+                    <label for="color-text-color">Text Color:</label>
+                    <input type="color" id="color-text-color" value="#e0e0e0">
+                    <input type="range" class="alpha-slider" min="0" max="100" value="100">
+                    <span class="alpha-value">100%</span>
                 </div>
                 <div class="color-control">
-                    <label for="alpha-slider">Transparency:</label>
-                    <input type="range" id="alpha-slider" min="0" max="100" value="100">
-                    <span id="alpha-value">100%</span>
+                    <label for="color-note-bg">Note Background:</label>
+                    <input type="color" id="color-note-bg" value="#1e1e1e">
+                    <input type="range" class="alpha-slider" min="0" max="100" value="65">
+                    <span class="alpha-value">65%</span>
+                </div>
+                <div class="color-control">
+                    <label for="color-taskbar-bg">Taskbar Background:</label>
+                    <input type="color" id="color-taskbar-bg" value="#1e1e28">
+                    <input type="range" class="alpha-slider" min="0" max="100" value="95">
+                    <span class="alpha-value">95%</span>
+                </div>
+                <div class="color-control">
+                    <label for="color-dock-bg">Dock Background:</label>
+                    <input type="color" id="color-dock-bg" value="#282832">
+                    <input type="range" class="alpha-slider" min="0" max="100" value="90">
+                    <span class="alpha-value">90%</span>
+                </div>
+                <div class="color-control">
+                    <label for="color-glow">Glow Color:</label>
+                    <input type="color" id="color-glow" value="#4CAF50">
+                    <input type="range" class="alpha-slider" min="0" max="100" value="50">
+                    <span class="alpha-value">50%</span>
                 </div>
                 <div class="modal-buttons">
                     <button class="modal-btn" id="cancel-color">Cancel</button>
@@ -945,11 +843,6 @@
             const saveConfigBtn = document.getElementById('save-config');
             const resetConfigBtn = document.getElementById('reset-config');
             const cancelConfigBtn = document.getElementById('cancel-config');
-            const colorPicker = document.getElementById('color-picker');
-            const alphaSlider = document.getElementById('alpha-slider');
-            const alphaValue = document.getElementById('alpha-value');
-            const applyColorBtn = document.getElementById('apply-color');
-            const cancelColorBtn = document.getElementById('cancel-color');
             const categoriesList = document.getElementById('categories-list');
             const noteCategorySelect = document.getElementById('note-category');
             const clearFiltersBtn = document.getElementById('clear-filters');
@@ -966,7 +859,7 @@
                 themes: {
                     'default': {
                         'text': '#e0e0e0',
-                        'prompt': '#4CAF50',
+                        'other-text': '#4CAF50',
                         'link': '#64b5f6',
                         'outer-bg': 'rgba(0, 0, 0, 0.7)',
                         'other-bg': 'rgba(30, 30, 30, 0.65)',
@@ -974,11 +867,15 @@
                         'accent-2': '#c7ff11',
                         'accent-3': '#81c784',
                         'accent-4': '#64b5f6',
-                        'accent-5': '#ba68c8'
+                        'accent-5': '#ba68c8',
+                        'note-bg': 'rgba(30, 30, 30, 0.65)',
+                        'taskbar-bg': 'rgba(30, 30, 40, 0.95)',
+                        'dock-bg': 'rgba(40, 40, 50, 0.9)',
+                        'glow-color': 'rgba(76, 175, 80, 0.5)'
                     },
                     'dark-blue': {
                         'text': '#e0e0e0',
-                        'prompt': '#64b5f6',
+                        'other-text': '#64b5f6',
                         'link': '#81c784',
                         'outer-bg': 'rgba(0, 0, 30, 0.7)',
                         'other-bg': 'rgba(20, 20, 40, 0.75)',
@@ -986,11 +883,15 @@
                         'accent-2': '#64FFDA',
                         'accent-3': '#81c784',
                         'accent-4': '#64b5f6',
-                        'accent-5': '#ba68c8'
+                        'accent-5': '#ba68c8',
+                        'note-bg': 'rgba(20, 30, 50, 0.7)',
+                        'taskbar-bg': 'rgba(15, 25, 45, 0.95)',
+                        'dock-bg': 'rgba(25, 35, 55, 0.9)',
+                        'glow-color': 'rgba(100, 181, 246, 0.6)'
                     },
                     'matrix': {
                         'text': '#00ff00',
-                        'prompt': '#00ff00',
+                        'other-text': '#00ff00',
                         'link': '#00ff00',
                         'outer-bg': 'rgba(0, 0, 0, 0.9)',
                         'other-bg': 'rgba(0, 20, 0, 0.7)',
@@ -998,7 +899,11 @@
                         'accent-2': '#00ff00',
                         'accent-3': '#00ff00',
                         'accent-4': '#00ff00',
-                        'accent-5': '#00ff00'
+                        'accent-5': '#00ff00',
+                        'note-bg': 'rgba(0, 30, 0, 0.7)',
+                        'taskbar-bg': 'rgba(0, 40, 0, 0.95)',
+                        'dock-bg': 'rgba(0, 50, 0, 0.9)',
+                        'glow-color': 'rgba(0, 255, 0, 0.7)'
                     }
                 },
                 currentTheme: 'default',
@@ -1007,11 +912,10 @@
             };
             
             const defaultConfig = JSON.parse(JSON.stringify(config));
-            let currentColorOption = null;
-            let currentNoteId = null;
             let currentFilters = {
                 date: null,
-                status: null
+                status: null,
+                category: 'all'
             };
             
             function initApp() {
@@ -1050,8 +954,8 @@
                     config.notes = [
                         {
                             id: '1',
-                            title: 'Test 1',
-                            content: 'Hi, testing',
+                            title: 'Note 1',
+                            content: 'Testing 1',
                             category: 'work',
                             startDate: today.toISOString().split('T')[0],
                             deadline: nextWeek.toISOString().split('T')[0],
@@ -1061,8 +965,8 @@
                         },
                         {
                             id: '2',
-                            title: 'Test 2',
-                            content: 'Hi, testing',
+                            title: 'Note 2',
+                            content: 'Testing 2',
                             category: 'personal',
                             startDate: '2023-01-01',
                             deadline: '2023-12-31',
@@ -1072,8 +976,8 @@
                         },
                         {
                             id: '3',
-                            title: 'Test 3',
-                            content: 'Hi, testing',
+                            title: 'Note 3',
+                            content: 'Testing 3',
                             category: 'ideas',
                             startDate: '2023-07-01',
                             deadline: '2023-09-30',
@@ -1083,8 +987,8 @@
                         },
                         {
                             id: '4',
-                            title: 'Test 4',
-                            content: 'Hi, testing',
+                            title: 'Note 4',
+                            content: 'Testing 4',
                             category: 'work',
                             startDate: today.toISOString().split('T')[0],
                             deadline: nextWeek.toISOString().split('T')[0],
@@ -1114,7 +1018,7 @@
             function getCssVarName(option) {
                 const mapping = {
                     'text': '--text-color',
-                    'prompt': '--other-text-color',
+                    'other-text': '--other-text-color',
                     'link': '--link-color',
                     'outer-bg': '--bg-outer',
                     'other-bg': '--other-bg',
@@ -1122,7 +1026,11 @@
                     'accent-2': '--accent-2',
                     'accent-3': '--accent-3',
                     'accent-4': '--accent-4',
-                    'accent-5': '--accent-5'
+                    'accent-5': '--accent-5',
+                    'note-bg': '--note-bg',
+                    'taskbar-bg': '--taskbar-bg',
+                    'dock-bg': '--dock-bg',
+                    'glow-color': '--glow-color'
                 };
                 return mapping[option];
             }
@@ -1132,22 +1040,17 @@
                 noteCategorySelect.innerHTML = '';
                 
                 const allCategory = document.createElement('div');
-                allCategory.className = 'category-item active';
+                allCategory.className = 'filter-option active';
                 allCategory.dataset.category = 'all';
-                allCategory.innerHTML = `
-                    <div class="category-color" style="background: #64b5f6;"></div>
-                    <span>All Categories</span>
-                `;
+                allCategory.innerHTML = 'All Categories';
                 categoriesList.appendChild(allCategory);
                 
                 config.categories.forEach(category => {
                     const categoryEl = document.createElement('div');
-                    categoryEl.className = 'category-item';
+                    categoryEl.className = 'filter-option';
                     categoryEl.dataset.category = category.id;
-                    categoryEl.innerHTML = `
-                        <div class="category-color" style="background: ${category.color};"></div>
-                        <span>${category.name}</span>
-                    `;
+                    categoryEl.innerHTML = category.name;
+                    categoryEl.style.borderLeft = `3px solid ${category.color}`;
                     categoriesList.appendChild(categoryEl);
                     
                     const option = document.createElement('option');
@@ -1156,12 +1059,13 @@
                     noteCategorySelect.appendChild(option);
                 });
                 
-                document.querySelectorAll('.category-item').forEach(item => {
+                document.querySelectorAll('.filter-option[data-category]').forEach(item => {
                     item.addEventListener('click', () => {
-                        document.querySelectorAll('.category-item').forEach(el => {
+                        document.querySelectorAll('.filter-option[data-category]').forEach(el => {
                             el.classList.remove('active');
                         });
                         item.classList.add('active');
+                        currentFilters.category = item.dataset.category;
                         renderNotes();
                     });
                 });
@@ -1223,9 +1127,8 @@
                     }
                 }
                 
-                const activeCategory = document.querySelector('.category-item.active');
-                if (activeCategory && activeCategory.dataset.category !== 'all') {
-                    filteredNotes = filteredNotes.filter(note => note.category === activeCategory.dataset.category);
+                if (currentFilters.category && currentFilters.category !== 'all') {
+                    filteredNotes = filteredNotes.filter(note => note.category === currentFilters.category);
                 }
                 
                 if (filteredNotes.length === 0) {
@@ -1417,8 +1320,10 @@
                 });
                 currentFilters = {
                     date: null,
-                    status: null
+                    status: null,
+                    category: 'all'
                 };
+                document.querySelector('[data-category="all"]').classList.add('active');
                 renderNotes();
             }
             
@@ -1435,7 +1340,7 @@
                 
                 searchInput.addEventListener('input', renderNotes);
                 
-                document.querySelectorAll('.filter-option').forEach(option => {
+                document.querySelectorAll('.filter-option[data-filter]').forEach(option => {
                     option.addEventListener('click', () => {
                         const filterType = option.dataset.filter.split('-')[0];
                         const filterValue = option.dataset.filter;
@@ -1465,6 +1370,13 @@
                 });
                 
                 themeBtn.addEventListener('click', () => {
+                    const theme = config.themes[config.currentTheme];
+                    document.getElementById('color-text-color').value = rgbToHex(theme['text']);
+                    document.getElementById('color-note-bg').value = rgbToHex(theme['note-bg']);
+                    document.getElementById('color-taskbar-bg').value = rgbToHex(theme['taskbar-bg']);
+                    document.getElementById('color-dock-bg').value = rgbToHex(theme['dock-bg']);
+                    document.getElementById('color-glow').value = rgbToHex(theme['glow-color']);
+                    
                     colorPickerModal.style.display = 'flex';
                 });
                 
@@ -1497,27 +1409,40 @@
                     configEditModal.style.display = 'none';
                 });
                 
-                alphaSlider.addEventListener('input', () => {
-                    alphaValue.textContent = `${alphaSlider.value}%`;
+                document.querySelectorAll('.alpha-slider').forEach(slider => {
+                    slider.addEventListener('input', function() {
+                        this.nextElementSibling.textContent = `${this.value}%`;
+                    });
                 });
                 
-                applyColorBtn.addEventListener('click', () => {
-                    const hexColor = colorPicker.value;
-                    const alpha = parseInt(alphaSlider.value) / 100;
-                    const newColor = alpha < 1 ? 
-                        hexToRgba(hexColor, alpha) : hexColor;
+                document.getElementById('apply-color').addEventListener('click', () => {
+                    const theme = config.themes[config.currentTheme];
                     
-                    const cssVar = getCssVarName(currentColorOption);
-                    if (cssVar) {
-                        document.documentElement.style.setProperty(cssVar, newColor);
-                        config.themes[config.currentTheme][currentColorOption] = newColor;
-                        saveConfig();
-                    }
+                    const textColor = document.getElementById('color-text-color').value;
+                    theme['text'] = textColor;
                     
+                    const noteColor = document.getElementById('color-note-bg').value;
+                    const noteAlpha = document.querySelectorAll('.alpha-slider')[1].value / 100;
+                    theme['note-bg'] = hexToRgba(noteColor, noteAlpha);
+                    
+                    const taskbarColor = document.getElementById('color-taskbar-bg').value;
+                    const taskbarAlpha = document.querySelectorAll('.alpha-slider')[2].value / 100;
+                    theme['taskbar-bg'] = hexToRgba(taskbarColor, taskbarAlpha);
+                    
+                    const dockColor = document.getElementById('color-dock-bg').value;
+                    const dockAlpha = document.querySelectorAll('.alpha-slider')[3].value / 100;
+                    theme['dock-bg'] = hexToRgba(dockColor, dockAlpha);
+                    
+                    const glowColor = document.getElementById('color-glow').value;
+                    const glowAlpha = document.querySelectorAll('.alpha-slider')[4].value / 100;
+                    theme['glow-color'] = hexToRgba(glowColor, glowAlpha);
+                    
+                    applyConfigColors();
                     colorPickerModal.style.display = 'none';
+                    saveConfig();
                 });
                 
-                cancelColorBtn.addEventListener('click', () => {
+                document.getElementById('cancel-color').addEventListener('click', () => {
                     colorPickerModal.style.display = 'none';
                 });
             }
@@ -1527,6 +1452,17 @@
                 const g = parseInt(hex.slice(3, 5), 16);
                 const b = parseInt(hex.slice(5, 7), 16);
                 return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+            
+            function rgbToHex(rgba) {
+                const match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+                if (!match) return '#000000';
+                
+                const r = parseInt(match[1]);
+                const g = parseInt(match[2]);
+                const b = parseInt(match[3]);
+                
+                return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
             }
             
             initApp();
