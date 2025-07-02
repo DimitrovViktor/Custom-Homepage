@@ -101,14 +101,14 @@ Note cards:
  - Status (manual progress tracking)
  - Color (for sorting)
 
-Filters:
+Filters Section (can be hidden):
  - Date
  - Status
    
 ### Notes tool - configuration
 
 Config:
- - Works the same as the one in homepage - allows the user to edit everything
+ - Works the same as the one in homepage
 
 Categories:
  - Can be added through config
