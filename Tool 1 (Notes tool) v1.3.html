@@ -64,7 +64,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: var(--page-height, 100%);
             background: var(--bg-outer);
             z-index: -1;
         }
@@ -1735,7 +1735,24 @@
                     }
                 });
             }
-            
+
+            function adjustBackgroundHeight() {
+                const bodyBefore = document.body;
+                const pageHeight = Math.max(
+                    document.body.scrollHeight,
+                    document.documentElement.scrollHeight,
+                    document.body.offsetHeight,
+                    document.documentElement.offsetHeight,
+                    document.body.clientHeight,
+                    document.documentElement.clientHeight
+                );
+                bodyBefore.style.setProperty('--page-height', `${pageHeight}px`);
+            }
+
+            adjustBackgroundHeight();
+            window.addEventListener('resize', adjustBackgroundHeight);
+            window.addEventListener('scroll', adjustBackgroundHeight);
+
             initApp();
         });
     </script>
