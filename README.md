@@ -90,7 +90,7 @@ I suggest always starting with 'help' to see available commands.
 ---
 
 ## Added extra tool - Notes tool
-
+![Notes Tool](https://github.com/user-attachments/assets/75b1ad68-0ecc-4ccf-b47f-1cb18dc4235d)
 ### Notes tool - features
 
 Note cards:
