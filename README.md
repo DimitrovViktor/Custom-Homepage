@@ -101,7 +101,10 @@ Note cards:
  - Status (manual progress tracking)
  - Color (for sorting)
 
+![Note Creation](https://github.com/user-attachments/assets/dba5026a-6cdc-4504-810a-6be25820a1d9)
+
 Filters Section (can be hidden):
+![Filters](https://github.com/user-attachments/assets/32f3a0f1-db54-4d46-8fc5-402d91c1d0d5)
  - Date
  - Status
    
