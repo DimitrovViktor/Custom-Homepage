@@ -45,6 +45,7 @@ A Linux-inspired browser homepage with CLI-style interaction using a custom term
 - Google search integration
 - Theme presets
 - Config import/export
+- Github commit checker
 
 ---
 
