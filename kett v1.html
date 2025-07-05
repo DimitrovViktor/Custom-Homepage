@@ -842,9 +842,82 @@
                             closeTerminal(state.activeTerminalId);
                         }
                         break;
+                    case 'github':
+                        handleGithubCommand(args.slice(1));
+                        break;
                     default:
                         showError(`Command not found: ${cmd}. Type 'help' for available commands.`);
                 }
+            }
+            
+            function handleGithubCommand(args) {
+                if (args.length === 0) {
+                    showError('Usage: github [username]');
+                    return;
+                }
+                
+                const username = args[0];
+                fetchGitHubCommits(username);
+            }
+            
+            function fetchGitHubCommits(username) {
+                appendOutputToActiveTerminal(`Fetching GitHub commits for ${username}...`);
+                
+                fetch(`https://api.github.com/users/${username}/events/public`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`GitHub API error: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(events => {
+                        // filter PushEvents 
+                        const pushEvents = events.filter(event => event.type === 'PushEvent');
+                        
+                        if (pushEvents.length === 0) {
+                            appendOutputToActiveTerminal(`No recent commits found for ${username}`);
+                            return;
+                        }
+                        
+                        let commits = [];
+                        pushEvents.forEach(event => {
+                            const repo = event.repo.name;
+                            const date = new Date(event.created_at).toLocaleString();
+                            
+                            event.payload.commits.forEach(commit => {
+                                commits.push({
+                                    repo: repo,
+                                    message: commit.message,
+                                    date: date,
+                                    sha: commit.sha.substring(0, 7),
+                                    url: `https://github.com/${repo}/commit/${commit.sha}`
+                                });
+                            });
+                        });
+                        
+                        // sort by date
+                        commits.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        
+                        // take last 10 commits
+                        const latestCommits = commits.slice(0, 10);
+                        
+                        let output = `<div class="help-title">Latest commits by ${username}:</div>`;
+                        output += '<div class="command-history">';
+                        
+                        latestCommits.forEach(commit => {
+                            output += `<div class="output">
+                                <span class="prompt">${commit.date}</span> 
+                                <a href="${commit.url}" target="_blank">${commit.sha}</a>
+                                in ${commit.repo}: ${commit.message}
+                            </div>`;
+                        });
+                        
+                        output += '</div>';
+                        appendOutputToActiveTerminal(output);
+                    })
+                    .catch(error => {
+                        showError(`Error: ${error.message}`);
+                    });
             }
             
             function handleGridCommand(args) {
@@ -981,6 +1054,7 @@
                 output += '<div class="help-item"><span class="prompt">search [query]</span> - Search on Google</div>';
                 output += '<div class="help-item"><span class="prompt">bookmarks</span> - Show saved bookmarks</div>';
                 output += '<div class="help-item"><span class="prompt">tools</span> - Show available tools</div>';
+                output += '<div class="help-item"><span class="prompt">github [username]</span> - Show latest GitHub commits</div>';
                 output += '</div>';
                 
                 output += '</div>';
