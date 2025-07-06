@@ -122,3 +122,4 @@ Visual customization:
  - Color picker just like in homepage
 
 ---
+### New tool - Color picker
