@@ -123,3 +123,5 @@ Visual customization:
 
 ---
 ### New tool - Color picker
+
+![Color Picker](https://github.com/user-attachments/assets/51836b0c-c607-491c-a5e6-4c212e7ef45b)
