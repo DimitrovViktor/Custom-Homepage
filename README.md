@@ -136,11 +136,17 @@ Add colors:
  - 5 Extra colors added
  - The user can add more colors if needed
 
+![Add Colors](https://github.com/user-attachments/assets/2730dbd5-6c82-4961-9bf1-cf9f58887764)
+
+![Color Change Menu](https://github.com/user-attachments/assets/77ae4cee-af9b-4b75-802e-e1bafa195acf)
+
 Color options:
  - Monochromatic
  - Analogous
  - Complementary
  - Triadic
+
+![Color Options Dropdown](https://github.com/user-attachments/assets/9093792b-013f-4c85-822c-5186858fac27)
 
 Theme options:
  - Light
@@ -150,3 +156,5 @@ Export(config) options:
  - Copy CSS
  - Copy JSON
  - Copy URL
+
+![Export options](https://github.com/user-attachments/assets/78be7b06-b906-47f2-93d0-2c3a51c021c7)
