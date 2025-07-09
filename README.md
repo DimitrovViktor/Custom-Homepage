@@ -122,6 +122,31 @@ Visual customization:
  - Color picker just like in homepage
 
 ---
-### New tool - Color picker
+## Added second extra tool - Color picker
 
 ![Color Picker](https://github.com/user-attachments/assets/51836b0c-c607-491c-a5e6-4c212e7ef45b)
+
+### Color Scheme tool - features
+
+Action buttons:
+ - Undo (previous theme)
+ - Redo
+
+Add colors:
+ - 5 Extra colors added
+ - The user can add more colors if needed
+
+Color options:
+ - Monochromatic
+ - Analogous
+ - Complementary
+ - Triadic
+
+Theme options:
+ - Light
+ - Dark
+
+Export(config) options:
+ - Copy CSS
+ - Copy JSON
+ - Copy URL
