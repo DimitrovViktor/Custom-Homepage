@@ -124,7 +124,7 @@ Visual customization:
 ---
 ## Added second extra tool - Color picker
 
-![Color Picker](https://github.com/user-attachments/assets/51836b0c-c607-491c-a5e6-4c212e7ef45b)
+![Color Picker](https://github.com/user-attachments/assets/6b7153a7-c6f1-4206-a1f1-da29abf2ddad)
 
 ### Color Scheme tool - features
 
