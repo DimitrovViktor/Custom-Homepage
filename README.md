@@ -126,6 +126,8 @@ Visual customization:
 
 ![Color Picker](https://github.com/user-attachments/assets/6b7153a7-c6f1-4206-a1f1-da29abf2ddad)
 
+This tool allows you to generate and adjust color schemes and it shows you a preview of them in real time.
+
 ### Color Scheme tool - features
 
 Action buttons:
