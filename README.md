@@ -160,3 +160,5 @@ Export(config) options:
  - Copy URL
 
 ![Export options](https://github.com/user-attachments/assets/78be7b06-b906-47f2-93d0-2c3a51c021c7)
+
+## Added extra tool - Schedule Tool
