@@ -161,4 +161,30 @@ Export(config) options:
 
 ![Export options](https://github.com/user-attachments/assets/78be7b06-b906-47f2-93d0-2c3a51c021c7)
 
-## Added extra tool - Schedule Tool
+## Third extra tool - Schedule Tool
+
+## Scheduler
+
+### Features
+
+### People:
+ - allows user to create multiple profiles
+ - each profile can be used for different schedules (e.g. school profile, gym profile, work profile)
+ - each profile has its own schedules and tasks
+
+### Templates:
+ - allows the user to create templates for tasks
+ - each template can be edited and deleted
+ - allows the user to set a time, name, description for repeated tasks and load those tasks in the app
+
+### Calendar:
+ - different views
+ - year view - shows all months, days, weeks in the current year, the user can switch between years
+ - month view - shows all months and days
+ - week view - shows this week and every scheduled event, allows the user to create and edit tasks
+ - day view - shows the tasks in the day, allows the user to create and edit tasks
+
+### Settings:
+ - Date format - different date formats such as DD-MM-YY, YY-MM-DD
+ - Hour format - 24h or 12h (AM, PM) format
+ - Notification - built in notifications to remind user about tasks
