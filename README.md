@@ -168,16 +168,19 @@ Export(config) options:
 ### Features
 
 ### People:
+![People Section](https://github.com/user-attachments/assets/8c61b66e-5822-4c59-a807-3c594ffa854f)
  - allows user to create multiple profiles
  - each profile can be used for different schedules (e.g. school profile, gym profile, work profile)
  - each profile has its own schedules and tasks
 
 ### Templates:
+![Templates Section](https://github.com/user-attachments/assets/37a172c8-8d6f-40f2-b45c-0aefbe855139)
  - allows the user to create templates for tasks
  - each template can be edited and deleted
  - allows the user to set a time, name, description for repeated tasks and load those tasks in the app
 
 ### Calendar:
+![Calendar Section](https://github.com/user-attachments/assets/293512fd-22f4-426d-b8b2-dcb98400ddf1)
  - different views
  - year view - shows all months, days, weeks in the current year, the user can switch between years
  - month view - shows all months and days
@@ -185,9 +188,14 @@ Export(config) options:
  - day view - shows the tasks in the day, allows the user to create and edit tasks
 
 ### Settings:
+![Settings section](https://github.com/user-attachments/assets/a35d7f4f-8ab5-4217-b72a-13e1852706b4)
  - Date format - different date formats such as DD-MM-YY, YY-MM-DD
  - Hour format - 24h or 12h (AM, PM) format
  - Notification - built in notifications to remind user about tasks
 
+### Color options: 
+![Color options section](https://github.com/user-attachments/assets/e6a9ab4d-cc30-4541-b162-2f5dc9be1f90)
+
 ### Config:
+![Configs option](https://github.com/user-attachments/assets/19abd328-e5a7-4eaa-862a-8f7745cac5d1)
  - Allows the user to save, edit, export and import configs
