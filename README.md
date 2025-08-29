@@ -188,3 +188,6 @@ Export(config) options:
  - Date format - different date formats such as DD-MM-YY, YY-MM-DD
  - Hour format - 24h or 12h (AM, PM) format
  - Notification - built in notifications to remind user about tasks
+
+### Config:
+ - Allows the user to save, edit, export and import configs
