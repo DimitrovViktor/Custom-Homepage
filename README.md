@@ -195,6 +195,7 @@ Export(config) options:
 
 ### Color options: 
 ![Color options section](https://github.com/user-attachments/assets/e6a9ab4d-cc30-4541-b162-2f5dc9be1f90)
+- Allows the user to change all colors used in the tool
 
 ### Config:
 ![Configs option](https://github.com/user-attachments/assets/19abd328-e5a7-4eaa-862a-8f7745cac5d1)
