@@ -1,7 +1,8 @@
 # Custom Homepage - Kett
 
 A Linux-inspired browser homepage with CLI-style interaction using a custom terminal interface.
-Newer versions of the homepage will not be CLI-styled (currently in development).
+Newer versions of the homepage will not be CLI-styled (currently has only basic features such as bookmarks and color+config customization).
+
 
 ![Main Interface](https://github.com/user-attachments/assets/fce048df-5185-48ef-961c-cd173f694688)
 
@@ -10,7 +11,7 @@ Newer versions of the homepage will not be CLI-styled (currently in development)
 ## Getting Started
 
 ### Basic Usage:
-1. Download the HTML file
+1. Download the HTML files
 2. Open it in your browser
 3. Interact through the terminal interface
 
