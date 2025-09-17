@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minimalist Home</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -67,19 +67,71 @@
             position: relative; 
         }
 
-        .top-right-menu {
-            position: absolute;
-            right: 20px;
-            top: 10px;
-            z-index: 50;
+        .icon-btn {
+            background: none;
+            border: var(--secondary-color) 2px solid;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+        }
+        .icon-btn:hover { color: var(--hover-color); background: var(--button-hover); }
+
+        .delete-category-btn,
+        .delete-bookmark-btn {
+            position: absolute;
+            top: 5px;
+        }
+        .delete-category-btn { position: static; }
+
+        .delete-bookmark-btn {
+            left: 5px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            background: var(--search-bg);
+            padding: 5px 10px 5px 20px;
+            border-radius: 50px;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 1000px; 
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: transparent;
+            color: var(--search-text);
+            font-size: 1.1rem;
+            box-shadow: none;
+            padding-left: 0;
+            flex: 1;
+        }
+
+        .search-input::placeholder {
+            color: var(--search-placeholder);
+        }
+
+        .menu-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
         .menu-btn {
             width: 44px;
             height: 44px;
-            border-radius: 50px;
+            border-radius: 50%;
             border: none;
             background: var(--card-bg);
             color: var(--button-text);
@@ -121,13 +173,6 @@
         }
 
 
-        .search-wrapper {
-            display: flex;
-            justify-content: center;
-            margin: 0 auto 40px;
-        }
-
-
         .add-category-section {
             display: flex;
             align-items: center;
@@ -147,31 +192,6 @@
             margin-bottom: 20px;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             color: var(--clock-color);
-        }
-
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 0 auto 40px;
-        }
-
-        .search-input {
-            width: 100%;
-            max-width: 1000px; 
-            padding: 15px 20px;
-            border: none;
-            border-radius: 50px;
-            background: var(--search-bg);
-            color: var(--search-text);
-            font-size: 1.1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: var(--search-placeholder);
         }
 
         .quick-actions {
@@ -247,10 +267,16 @@
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .icon-btn:hover {
             color: var(--hover-color);
+            background: var(--button-hover);
         }
 
         .delete-category-btn {
@@ -274,9 +300,22 @@
         }
 
         .bookmarks-grid {
-            display: grid;
+            display: none;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 15px;
+        }
+
+        .no-bookmarks {
+            display: none;
+        }
+
+        .section:hover .bookmarks-grid,
+        .section.active .bookmarks-grid {
+            display: grid;
+        }
+        .section:hover .no-bookmarks,
+        .section.active .no-bookmarks {
+            display: flex;
         }
 
         .no-bookmarks {
@@ -533,8 +572,8 @@
             cursor: pointer;
             font-size: 1rem;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 35px;
+            height: 35px;
             align-items: center;
             justify-content: center;
             display: flex;
@@ -552,8 +591,8 @@
             cursor: pointer;
             font-size: 1rem;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 35px;
+            height: 35px;
             align-items: center;
             justify-content: center;
             position: absolute;
@@ -586,16 +625,16 @@
         <header>
             <div class="clock" id="clock">00:00:00</div>
 
-            <div class="top-right-menu">
-                <button id="menuBtn" class="menu-btn" aria-label="Menu"><i class="fas fa-bars"></i></button>
-                <div class="menu-dropdown" id="menuDropdown" aria-hidden="true">
-                    <button id="configBtn" class="menu-item"><i class="fas fa-cog"></i> Configuration</button>
-                    <button id="colorPickerBtn" class="menu-item"><i class="fas fa-palette"></i> Colors</button>
-                </div>
-            </div>
-
             <div class="search-wrapper">
                 <input type="text" class="search-input" placeholder="Search Google..." id="searchInput">
+                <div class="menu-wrapper">
+                    <button id="menuBtn" class="menu-btn" aria-label="Menu"><i class="fas fa-bars"></i></button>
+                    <div class="menu-dropdown" id="menuDropdown" aria-hidden="true">
+                        <button id="settingsBtn" class="menu-item"><i class="fas fa-wrench"></i> Settings</button>
+                        <button id="configBtn" class="menu-item"><i class="fas fa-cog"></i> Configuration</button>
+                        <button id="colorPickerBtn" class="menu-item"><i class="fas fa-palette"></i> Colors</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -613,14 +652,14 @@
                 <button class="close-modal">&times;</button>
             </div>
             <div class="form-group">
-                <label for="categoryName">Category Name</label>
+                <label style="color:var(--text-color); padding: 10px;" for="categoryName">Category Name</label>
                 <input type="text" id="categoryName" placeholder="e.g. Social Media">
             </div>
             <div class="form-group">
-                <label for="categoryIcon">Category Icon (Font Awesome class)</label>
+                <label style="color:var(--text-color); padding: 10px;" for="categoryIcon">Category Icon (Font Awesome class)</label>
                 <input type="text" id="categoryIcon" placeholder="e.g. fas fa-folder">
             </div>
-            <div class="config-buttons">
+            <div class="config-buttons" style="color:var(--text-color); padding-top: 20px;">
                 <button id="saveCategoryBtn"><i class="fas fa-save"></i> Save Category</button>
             </div>
         </div>
@@ -792,11 +831,30 @@
         </div>
     </div>
 
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Settings</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label style="color:var(--text-color);">Time Format</label>
+                <div style="display:flex;gap:40px;align-items:center;padding:15px;">
+                    <label style="display:flex;gap:20px;align-items:center; color:var(--text-color);"><input type="radio" name="timeFormat" value="24"> 24 Hour</label>
+                    <label style="display:flex;gap:20px;align-items:center; color:var(--text-color);"><input type="radio" name="timeFormat" value="12"> AM/PM</label>
+                </div>
+            </div>
+            <div class="config-buttons">
+                <button id="saveSettingsBtn"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+        </div>
+    </div>
+
     <input type="file" id="importConfigFile" accept=".json" style="display: none;">
 
     <script>
-
         let config = {
+            timeFormat: '24',
             bookmarks: {
                 social: {
                     name: "Social Media",
@@ -882,6 +940,58 @@
         const configModal = document.getElementById('configModal');
         const configText = document.getElementById('configText');
         const importConfigFile = document.getElementById('importConfigFile');
+        let editingCategoryId = null;
+
+        function generateCategoryId(name) {
+            let base = (name || '').toLowerCase().trim()
+                .replace(/[^a-z0-9]+/g,'-')
+                .replace(/^-+|-+$/g,'') || 'category';
+            let id = base;
+            let i = 1;
+            while (config.bookmarks[id]) {
+                id = base + '-' + i++;
+            }
+            return id;
+        }
+
+        function showCategoryModal(categoryId = null) {
+            editingCategoryId = categoryId;
+            const modal = document.getElementById('addCategoryModal');
+            const nameInput = document.getElementById('categoryName');
+            const iconInput = document.getElementById('categoryIcon');
+            if (categoryId) {
+                const cat = config.bookmarks[categoryId];
+                nameInput.value = cat.name || '';
+                iconInput.value = cat.icon || '';
+            } else {
+                nameInput.value = '';
+                iconInput.value = '';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function handleSaveCategory() {
+            const name = document.getElementById('categoryName').value.trim();
+            const icon = document.getElementById('categoryIcon').value.trim();
+            if (!name) return;
+            if (!config.bookmarks) config.bookmarks = {};
+            if (editingCategoryId && config.bookmarks[editingCategoryId]) {
+                const cat = config.bookmarks[editingCategoryId];
+                cat.name = name;
+                cat.icon = icon || cat.icon || 'fas fa-folder';
+            } else {
+                const id = generateCategoryId(name);
+                config.bookmarks[id] = {
+                    name,
+                    icon: icon || 'fas fa-folder',
+                    bookmarks: []
+                };
+            }
+            saveConfigToStorage();
+            renderBookmarks();
+            document.getElementById('addCategoryModal').style.display = 'none';
+            editingCategoryId = null;
+        }
 
         function init() {
             updateClock();
@@ -893,8 +1003,14 @@
         }
 
         function updateClock() {
+            if (!config.timeFormat) config.timeFormat = '24';
             const now = new Date();
-            const timeString = now.toLocaleTimeString();
+            const timeString = now.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: config.timeFormat === '12'
+            });
             clockElement.textContent = timeString;
         }
 
@@ -937,6 +1053,15 @@
                 `;
 
                 bookmarksContainer.appendChild(section);
+                
+
+                const header = section.querySelector('.section-header');
+                if (header) {
+                    header.addEventListener('click', (e) => {
+                        if (e.target.closest('button') || e.target.closest('a')) return;
+                        section.classList.toggle('active');
+                    });
+                }
             });
 
             const addSection = document.createElement('div');
@@ -971,7 +1096,7 @@
             document.querySelectorAll('.edit-category').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const categoryId = e.currentTarget.dataset.category;
-                    editCategory(categoryId);
+                    editCategory(categoryId); 
                 });
             });
             document.querySelectorAll('.add-bookmark').forEach(btn => {
@@ -1013,7 +1138,7 @@
             const newAddBtn = document.getElementById('addCategoryBtn');
             if (newAddBtn) {
                 newAddBtn.addEventListener('click', () => {
-                    document.getElementById('addCategoryModal').style.display = 'flex';
+                    showCategoryModal(null);
                 });
             }
         }
@@ -1041,9 +1166,8 @@
 
             document.querySelectorAll('.close-modal').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.style.display = 'none';
-                    });
+                    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+                    editingCategoryId = null;
                 });
             });
 
@@ -1253,6 +1377,36 @@
                     alert('Colors reset to defaults.');
                 });
             }
+
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsModal = document.getElementById('settingsModal');
+            settingsBtn && settingsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const radios = document.querySelectorAll('input[name="timeFormat"]');
+                radios.forEach(r => r.checked = (r.value === (config.timeFormat || '24')));
+                if (menuDropdown && menuDropdown.classList.contains('show')) menuDropdown.classList.remove('show');
+                settingsModal.style.display = 'flex';
+            });
+
+            const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+            saveSettingsBtn && saveSettingsBtn.addEventListener('click', () => {
+                const selected = document.querySelector('input[name="timeFormat"]:checked');
+                if (selected) {
+                    config.timeFormat = selected.value;
+                    saveConfigToStorage();
+                    updateClock();
+                }
+                settingsModal.style.display = 'none';
+            });
+
+            const saveCategoryBtn = document.getElementById('saveCategoryBtn');
+            if (saveCategoryBtn) {
+                saveCategoryBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleSaveCategory();
+                });
+            }
+
         }
 
 
@@ -1309,12 +1463,7 @@
 
 
         function editCategory(categoryId) {
-            const newName = prompt('Enter new category name:', config.bookmarks[categoryId].name);
-            if (newName) {
-                config.bookmarks[categoryId].name = newName;
-                renderBookmarks();
-                saveConfigToStorage();
-            }
+            showCategoryModal(categoryId);
         }
 
         function editBookmark(categoryId, index) {
@@ -1399,6 +1548,7 @@
             if (savedConfig) {
                 try {
                     config = JSON.parse(savedConfig);
+                    if (!config.timeFormat) config.timeFormat = '24';
                     const defaults = {
                         "primary": "#222831",
                         "primaryOpacity": 1,
