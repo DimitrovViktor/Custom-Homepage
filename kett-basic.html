@@ -28,6 +28,7 @@
             --config-btn-color: rgba(255,255,255,0.48);       
             --color-picker-btn-color: rgba(255,255,255,0.34); 
             --overlay-color: rgba(0,0,0,0.59);           
+            --expand-duration: 300ms;
         }
 
         * {
@@ -231,6 +232,45 @@
             margin-bottom: 40px;
         }
 
+        .list-view-enabled .bookmarks-container {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 14px;
+        }
+        .list-view-enabled .section {
+            padding: 14px;
+        }
+        .list-view-enabled .section-header {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+        }
+        .list-view-enabled .section-title {
+            font-size: 1.1rem;
+            gap: 8px;
+        }
+        .list-view-enabled .bookmark {
+            padding: 10px 12px;
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+        .list-view-enabled .bookmark-icon {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .list-view-enabled .bookmark-name {
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .list-view-enabled .bookmarks-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        .list-view-enabled .delete-bookmark-btn,
+        .list-view-enabled .edit-bookmark {
+            position: static;
+            display: inline-flex;
+        }
+
         .section {
             background: var(--section-bg);
             border-radius: 15px;
@@ -300,22 +340,14 @@
         }
 
         .bookmarks-grid {
-            display: none;
+            display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 15px;
-        }
-
-        .no-bookmarks {
-            display: none;
-        }
-
-        .section:hover .bookmarks-grid,
-        .section.active .bookmarks-grid {
-            display: grid;
-        }
-        .section:hover .no-bookmarks,
-        .section.active .no-bookmarks {
-            display: flex;
+            max-height: 0;           
+            opacity: 0;             
+            overflow: hidden;       
+            pointer-events: none;  
+            transition: max-height var(--expand-duration) ease, opacity var(--expand-duration) ease;
         }
 
         .no-bookmarks {
@@ -326,6 +358,34 @@
             padding: 20px;
             color: var(--text-color);
             font-size: 0.95rem;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: max-height var(--expand-duration) ease, opacity var(--expand-duration) ease;
+        }
+
+
+        .section.active .bookmarks-grid {
+            max-height: 1000px; 
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .section.active .no-bookmarks {
+            max-height: 200px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hover-expand-enabled .section:hover .bookmarks-grid {
+            max-height: 1000px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .hover-expand-enabled .section:hover .no-bookmarks {
+            max-height: 200px;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .bookmark {
@@ -455,6 +515,7 @@
         }
 
         input[type="color"] {
+            appearance: none;
             -webkit-appearance: none;
             width: 48px;
             height: 32px;
@@ -844,6 +905,17 @@
                     <label style="display:flex;gap:20px;align-items:center; color:var(--text-color);"><input type="radio" name="timeFormat" value="12"> AM/PM</label>
                 </div>
             </div>
+            <div class="form-group">
+                <label style="color:var(--text-color);">Interactions</label>
+                <div style="display:flex;gap:20px;align-items:center;padding:15px;">
+                    <label style="display:flex;gap:12px;align-items:center;color:var(--text-color);">
+                        <input type="checkbox" id="disableAnimations"> Disable hover + animations (click-only, instant)
+                    </label>
+                    <label style="display:flex;gap:12px;align-items:center;color:var(--text-color);">
+                        <input type="checkbox" id="listViewToggle"> List view (compact)
+                    </label>
+                </div>
+            </div>
             <div class="config-buttons">
                 <button id="saveSettingsBtn"><i class="fas fa-save"></i> Save Settings</button>
             </div>
@@ -997,9 +1069,14 @@
             updateClock();
             setInterval(updateClock, 1000);
             loadConfig();
+            applyInteractionMode();
+            applyListViewMode();
             renderBookmarks();
             setupEventListeners();
             document.body.style.backgroundImage = `url('${config.backgroundImage}')`;
+            if (!config.disableAnimations) {
+                document.body.classList.add('hover-expand-enabled');
+            }
         }
 
         function updateClock() {
@@ -1051,6 +1128,10 @@
                         ${bookmarksHtml}
                     </div>
                 `;
+
+                if (config.disableAnimations) {
+                    section.classList.add('active');
+                }
 
                 bookmarksContainer.appendChild(section);
                 
@@ -1384,6 +1465,10 @@
                 e.stopPropagation();
                 const radios = document.querySelectorAll('input[name="timeFormat"]');
                 radios.forEach(r => r.checked = (r.value === (config.timeFormat || '24')));
+                const animChk = document.getElementById('disableAnimations');
+                if (animChk) animChk.checked = !!config.disableAnimations;
+                const listChk = document.getElementById('listViewToggle');
+                if (listChk) listChk.checked = !!config.listView;
                 if (menuDropdown && menuDropdown.classList.contains('show')) menuDropdown.classList.remove('show');
                 settingsModal.style.display = 'flex';
             });
@@ -1396,6 +1481,18 @@
                     saveConfigToStorage();
                     updateClock();
                 }
+                const animChk = document.getElementById('disableAnimations');
+                if (animChk) {
+                    config.disableAnimations = !!animChk.checked;
+                    applyInteractionMode();
+                    saveConfigToStorage();
+                }
+                const listChk = document.getElementById('listViewToggle');
+                if (listChk) {
+                    config.listView = !!listChk.checked;
+                    applyListViewMode();
+                    saveConfigToStorage();
+                }
                 settingsModal.style.display = 'none';
             });
 
@@ -1407,6 +1504,39 @@
                 });
             }
 
+            document.addEventListener('click', (e) => {
+                const ignore = e.target.closest('button, .icon-btn, .delete-bookmark-btn, .edit-bookmark');
+                if (ignore) return;
+                if (e.target.closest('a[href]')) return;
+                const card = e.target.closest('.bookmark');
+                if (!card) return;
+                const link = card.querySelector('a[href]');
+                if (link) {
+                    const target = link.getAttribute('target') || '_self';
+                    window.open(link.href, target);
+                }
+            });
+
+        }
+
+        function applyInteractionMode() {
+            const root = document.documentElement;
+            if (config.disableAnimations) {
+                root.style.setProperty('--expand-duration', '0ms');
+                document.body.classList.remove('hover-expand-enabled');
+                document.querySelectorAll('.section').forEach(sec => sec.classList.add('active'));
+            } else {
+                root.style.setProperty('--expand-duration', '300ms');
+                document.body.classList.add('hover-expand-enabled');
+            }
+        }
+
+        function applyListViewMode() {
+            if (config.listView) {
+                document.body.classList.add('list-view-enabled');
+            } else {
+                document.body.classList.remove('list-view-enabled');
+            }
         }
 
 
