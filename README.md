@@ -3,11 +3,14 @@
 A Linux-inspired browser homepage with CLI-style interaction using a custom terminal interface.
 Newer versions of the homepage will not be CLI-styled (currently has only basic features such as bookmarks and color+config customization).
 
-CLI App
+##CLI App
+
 ![Main Interface](https://github.com/user-attachments/assets/fce048df-5185-48ef-961c-cd173f694688)
 
-Basic App
+##Basic App
+
 ![Basic Interface](https://github.com/user-attachments/assets/0a826aa4-7972-43c5-8570-a9c59290c36f)
+
 
 ---
 
