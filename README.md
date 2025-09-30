@@ -13,6 +13,7 @@ A browser Homepage with two different styles and some extras:
 ## Basic App
 
 ![Basic Interface](https://github.com/user-attachments/assets/0a826aa4-7972-43c5-8570-a9c59290c36f)
+![List view](https://github.com/user-attachments/assets/40eff55b-ac5b-4dbd-af38-22ccf0ffbc3d)
 
 
 ---
