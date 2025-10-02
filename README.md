@@ -26,8 +26,15 @@ A browser Homepage with two different styles and some extras:
 3. Interact through the terminal interface
 
 ### Interface Components:
+
+1. CLI APP
 - Terminal Display (shows input/output)
 - Command Line (for command input)
+
+2. Basic App
+- Bookmark sections
+- Clock
+- Search bar for google
 
 ---
 
