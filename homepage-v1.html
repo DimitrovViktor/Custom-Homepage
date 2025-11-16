@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kett</title>
+    <title>Home</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sono:wght@200..800&display=swap" rel="stylesheet">
@@ -422,7 +422,7 @@
 
     <div class="global-command-line">
         <div class="input-area">
-            <span class="prompt">vkx@kett:~ »</span>
+            <span class="prompt">user@home:~ »</span>
             <input type="text" id="global-command-input" class="command-input" autofocus>
         </div>
     </div>
@@ -650,15 +650,15 @@
                 // create terminal structure
                 terminal.innerHTML = `
                     <div class="terminal-header">
-                        <span class="icon">:)</span> vkx@kett [${terminalId}] <span id="datetime">[started @ ${currentDateTime}]</span>
+                        <span class="icon">:)</span> user@home [${terminalId}] <span id="datetime">[started @ ${currentDateTime}]</span>
                         <span class="close-btn" data-terminal="${terminalId}">✕</span>
                     </div>
                     <div class="terminal-body" id="terminal-body-${terminalId}">
                         <div class="output">
-                            <span class="prompt">vkx@kett:~ »</span> <span>Terminal ${terminalId} active</span>
+                            <span class="prompt">user@home:~ »</span> <span>Terminal ${terminalId} active</span>
                         </div>
                         <div class="output">
-                            <span class="prompt">vkx@kett:~ »</span> <span>Type 'help' for available commands</span>
+                            <span class="prompt">user@home:~ »</span> <span>Type 'help' for available commands</span>
                         </div>
                     </div>
                 `;
@@ -796,7 +796,7 @@
                 if (terminalBody) {
                     const commandElement = document.createElement('div');
                     commandElement.classList.add('output');
-                    commandElement.innerHTML = `<span class="prompt">vkx@kett:~ »</span> ${command}`;
+                    commandElement.innerHTML = `<span class="prompt">user@home:~ »</span> ${command}`;
                     terminalBody.appendChild(commandElement);
                     terminalBody.scrollTop = terminalBody.scrollHeight;
                 }
@@ -1234,7 +1234,7 @@
                     
                     const blankState = document.createElement('div');
                     blankState.classList.add('output');
-                    blankState.innerHTML = `<span class="prompt">vkx@kett:~ »</span> <span>Terminal cleared</span>`;
+                    blankState.innerHTML = `<span class="prompt">user@home:~ »</span> <span>Terminal cleared</span>`;
                     terminalBody.appendChild(blankState);
                 }
             }
