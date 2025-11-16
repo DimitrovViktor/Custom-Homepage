@@ -1,4 +1,4 @@
-# Custom Homepage - Kett
+# Custom Homepage
 
 A browser Homepage with two different styles and some extras:
 
