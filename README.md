@@ -1,18 +1,20 @@
 # Custom Homepage
 
-A browser Homepage with two different styles and some extras:
+---
 
-1. Linux-inspired Homepage CLI-style interaction using a custom terminal interface
-2. Basic Homepage with a modern-looking interface
-3. Extras - notes tool, colorscheme generator, scheduler
+![App](https://github.com/user-attachments/assets/3d821cd1-5350-4dbc-9d5f-ef6b545ad846)
 
-## CLI App
+---
 
-![Main Interface](https://github.com/user-attachments/assets/fce048df-5185-48ef-961c-cd173f694688)
+## CLI Homepage
 
-## Basic App
+![Main Interface](https://github.com/user-attachments/assets/e0afe860-fdab-4540-9e5a-75a1a1f1699a)
+
+## Minimalist Homepage
 
 ![Basic Interface](https://github.com/user-attachments/assets/0a826aa4-7972-43c5-8570-a9c59290c36f)
+
+### Minimalist Homepage (list view)
 ![List view](https://github.com/user-attachments/assets/40eff55b-ac5b-4dbd-af38-22ccf0ffbc3d)
 
 
@@ -20,45 +22,37 @@ A browser Homepage with two different styles and some extras:
 
 ## Getting Started
 
-### Basic Usage:
+### Usage:
 1. Download the HTML files
-2. Open it in your browser
-3. Interact through the terminal interface
+2. Open any of the files in your browser
 
 ### Interface Components:
 
-1. CLI APP
+1. CLI Homepage
 - Terminal Display (shows input/output)
 - Command Line (for command input)
 
-2. Basic App
+2. Minimalist Homepage
 - Bookmark sections
 - Clock
 - Search bar for google
 
 ---
 
-## Key Features
+## CLI Homepage Key Features
 
 ### 1. Bookmark Manager
-![Bookmark Demo](https://github.com/user-attachments/assets/580b7e55-f030-4627-a369-6bb726c649d2)
 
 ### 2. UI Color Customization
-![Color Customization](https://github.com/user-attachments/assets/c53808a4-2567-426c-bde0-0ca7727ebed3)
 
 ### 3. Tool Selector
-![Tool Selector](https://github.com/user-attachments/assets/19ad6f46-c4b2-45ee-b128-50ced60a912d)
 
 ### 4. Configuration System
 ![Config System](https://github.com/user-attachments/assets/23c8ede2-24fd-4629-b709-27ab0bfd745f)
 
 ### 5. Layout Modes
-- **Grid View**  
-  ![Grid View](https://github.com/user-attachments/assets/d187e76d-ea13-461a-91c6-7ac848dfa724)
-  ![Grid View](https://github.com/user-attachments/assets/592fd29f-6dc7-43b0-9fe2-33ca2625306f)
-  
-- **Free Movement Mode**  
-  ![Free View](https://github.com/user-attachments/assets/af2f5f2e-6c94-4166-b75d-29ad152682ab)
+- **Grid View** - opens CLI windows in a grid
+- **Free Movement Mode** - allows CLI windows to be dragged around
 
 ### Additional Features:
 - Google search integration
@@ -106,6 +100,20 @@ A browser Homepage with two different styles and some extras:
 ---
 
 I suggest always starting with 'help' to see available commands.
+
+---
+
+## Minimalist Homepage Key Features
+
+### 1. Bookmark Manager
+
+### 2. Google search bar
+
+### 3. UI Color Customization
+
+### Additional Features:
+- Config import/export
+- Clock
 
 ---
 
