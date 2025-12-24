@@ -678,6 +678,144 @@
             height: 50px;
             font-size: 1.2rem;
         }
+
+        .search-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.25);
+            -webkit-backdrop-filter: blur(22px) saturate(140%);
+            backdrop-filter: blur(22px) saturate(140%);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 200ms ease, visibility 0s linear 200ms;
+        }
+        .search-overlay.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 200ms ease;
+        }
+        .search-overlay-panel {
+            width: min(900px, 92vw);
+            border-radius: 18px;
+            background: var(--section-bg);
+            -webkit-backdrop-filter: blur(18px) saturate(140%);
+            backdrop-filter: blur(18px) saturate(140%);
+            border: 1px solid var(--secondary-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+            padding: 16px;
+            transform: translateY(10px) scale(0.98);
+            opacity: 0;
+            transition: transform 220ms ease, opacity 220ms ease;
+            will-change: transform, opacity;
+        }
+
+        @supports (background: color-mix(in srgb, black 50%, transparent)) {
+            .search-overlay {
+                background: color-mix(in srgb, var(--overlay-color) 35%, transparent);
+            }
+            .search-overlay-panel {
+                background: color-mix(in srgb, var(--section-bg) 65%, transparent);
+                border-color: color-mix(in srgb, var(--secondary-color) 55%, transparent);
+            }
+            .search-overlay-box {
+                background: color-mix(in srgb, var(--search-bg) 70%, transparent);
+                border-color: color-mix(in srgb, var(--secondary-color) 55%, transparent);
+            }
+            .search-suggestions {
+                background: color-mix(in srgb, var(--card-bg) 70%, transparent);
+                border-color: color-mix(in srgb, var(--secondary-color) 55%, transparent);
+            }
+        }
+        .search-overlay.show .search-overlay-panel {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        .search-overlay-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--search-bg);
+            border-radius: 50px;
+            padding: 6px 16px;
+            border: 1px solid var(--secondary-color);
+        }
+        .search-overlay-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--search-text);
+            font-size: 1.1rem;
+            padding: 14px 6px;
+            outline: none;
+        }
+        .search-overlay-input::placeholder {
+            color: var(--search-placeholder);
+        }
+        .search-suggestions {
+            margin-top: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--secondary-color);
+            border-radius: 14px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-4px);
+            max-height: 0;
+            pointer-events: none;
+            transition: opacity 160ms ease, transform 160ms ease, max-height 220ms ease;
+            will-change: opacity, transform;
+        }
+        .search-suggestions.show {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 420px;
+            pointer-events: auto;
+        }
+        .search-suggestion {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            border-radius: 0;
+            transform: none;
+            transition: background 140ms ease;
+        }
+        .search-suggestion:hover {
+            background: var(--background-color);
+            transform: none;
+        }
+        .search-suggestion-main {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .search-suggestion-title {
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .search-suggestion-url {
+            opacity: 0.85;
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 40ch;
+        }
     </style>
 </head>
 <body>
@@ -698,6 +836,15 @@
                 </div>
             </div>
         </header>
+
+        <div class="search-overlay" id="searchOverlay" aria-hidden="true">
+            <div class="search-overlay-panel" role="dialog" aria-modal="true" aria-label="Search">
+                <div class="search-overlay-box">
+                    <input type="text" class="search-overlay-input" placeholder="Search Google or type a bookmark..." id="searchOverlayInput" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="search-suggestions" id="searchSuggestions" role="listbox"></div>
+            </div>
+        </div>
 
         <main>
             <div class="bookmarks-container" id="bookmarksContainer">
@@ -1235,13 +1382,131 @@
 
         function setupEventListeners() {
 
-            searchInput.addEventListener('keypress', (e) => {
+            const overlay = document.getElementById('searchOverlay');
+            const overlayInput = document.getElementById('searchOverlayInput');
+            const suggestionsEl = document.getElementById('searchSuggestions');
+
+            function performGoogleSearch(query) {
+                const q = (query || '').trim();
+                if (!q) return;
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, '_blank');
+            }
+
+            function getFlatBookmarks() {
+                const all = [];
+                const groups = config && config.bookmarks ? config.bookmarks : {};
+                Object.keys(groups).forEach(categoryId => {
+                    const category = groups[categoryId];
+                    const items = Array.isArray(category && category.bookmarks) ? category.bookmarks : [];
+                    items.forEach(b => {
+                        if (!b || !b.url) return;
+                        all.push({
+                            name: String(b.name || b.url),
+                            url: String(b.url),
+                            icon: String(b.icon || 'fa-globe')
+                        });
+                    });
+                });
+                return all;
+            }
+
+            function renderSuggestions(query) {
+                const q = (query || '').trim().toLowerCase();
+                if (!q) {
+                    suggestionsEl.classList.remove('show');
+                    suggestionsEl.innerHTML = '';
+                    return;
+                }
+
+                const results = getFlatBookmarks()
+                    .filter(b => (b.name && b.name.toLowerCase().includes(q)) || (b.url && b.url.toLowerCase().includes(q)))
+                    .slice(0, 8);
+
+                if (!results.length) {
+                    suggestionsEl.classList.remove('show');
+                    suggestionsEl.innerHTML = '';
+                    return;
+                }
+
+                suggestionsEl.innerHTML = results.map((b, idx) => {
+                    const safeName = b.name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    const safeUrl = b.url.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    return `
+                        <button class="search-suggestion" type="button" role="option" data-index="${idx}">
+                            <div class="search-suggestion-main">
+                                <i class="${b.icon}"></i>
+                                <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
+                                    <div class="search-suggestion-title">${safeName}</div>
+                                    <div class="search-suggestion-url">${safeUrl}</div>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                        </button>
+                    `;
+                }).join('');
+
+                suggestionsEl.classList.add('show');
+
+                const resultsCopy = results.slice();
+                suggestionsEl.querySelectorAll('.search-suggestion').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = Number(e.currentTarget.dataset.index);
+                        const picked = resultsCopy[index];
+                        if (!picked) return;
+                        window.open(picked.url, '_blank');
+                        closeSearchOverlay();
+                    });
+                });
+            }
+
+            function openSearchOverlay() {
+                if (!overlay || !overlayInput) return;
+                overlay.classList.add('show');
+                overlay.setAttribute('aria-hidden', 'false');
+                overlayInput.value = searchInput.value || '';
+                overlayInput.focus();
+                overlayInput.select();
+                renderSuggestions(overlayInput.value);
+            }
+
+            function closeSearchOverlay() {
+                if (!overlay) return;
+                overlay.classList.remove('show');
+                overlay.setAttribute('aria-hidden', 'true');
+                if (overlayInput) {
+                    searchInput.value = overlayInput.value;
+                }
+                suggestionsEl.classList.remove('show');
+                suggestionsEl.innerHTML = '';
+            }
+
+            searchInput.addEventListener('focus', openSearchOverlay);
+            searchInput.addEventListener('click', openSearchOverlay);
+
+            overlay && overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeSearchOverlay();
+            });
+            overlay && overlay.querySelector('.search-overlay-panel')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            overlayInput && overlayInput.addEventListener('input', () => {
+                searchInput.value = overlayInput.value;
+                renderSuggestions(overlayInput.value);
+            });
+
+            overlayInput && overlayInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeSearchOverlay();
+                    return;
+                }
                 if (e.key === 'Enter') {
-                    const query = searchInput.value.trim();
-                    if (query) {
-                        window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                        searchInput.value = '';
-                    }
+                    e.preventDefault();
+                    performGoogleSearch(overlayInput.value);
+                    overlayInput.value = '';
+                    searchInput.value = '';
+                    closeSearchOverlay();
                 }
             });
 
