@@ -95,7 +95,7 @@ Two custom homepages with extra tools.
 ### Utilities
 | Command       | Description                          |
 |---------------|--------------------------------------|
-| search        | Search Google (search [query])       |
+| search        | Search  (search [query])       |
 | bookmarks     | Show saved bookmarks                 |
 | tools         | Show available tools                 |
 
@@ -110,6 +110,7 @@ I suggest always starting with 'help' to see available commands.
 ### 1. Bookmark Manager
 
 ### 2. Google search bar
+- Search bar shows bookmark links matching search terms as clickable options
 
 ### 3. UI Color Customization
 
