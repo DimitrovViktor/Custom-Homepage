@@ -111,6 +111,7 @@ I suggest always starting with 'help' to see available commands.
 
 ### 2. Google search bar
 - Search bar shows bookmark links matching search terms as clickable options
+![Search Bar](https://github.com/user-attachments/assets/6bf90f23-5678-48c3-a30e-1dd40e9c4e0f)
 
 ### 3. UI Color Customization
 
