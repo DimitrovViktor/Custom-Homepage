@@ -106,10 +106,6 @@ Two custom homepages with extra tools.
 
 ---
 
-I suggest always starting with 'help' to see available commands.
-
----
-
 ## Minimalist Homepage Key Features
 
 ### 1. Bookmark Manager
@@ -158,6 +154,7 @@ Visual customization:
  - Color picker just like in homepage
 
 ---
+
 ## Added second extra tool - Color picker
 
 ![Color Picker](https://github.com/user-attachments/assets/6b7153a7-c6f1-4206-a1f1-da29abf2ddad)
