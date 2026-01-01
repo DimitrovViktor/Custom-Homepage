@@ -1,6 +1,6 @@
 # Custom Homepage
 
-Two custom homepages with extra tools.
+Two custom homepages with extra tools for daily tasks.
 
 ---
 
