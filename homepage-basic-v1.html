@@ -84,16 +84,11 @@
         }
         .icon-btn:hover { color: var(--hover-color); background: var(--button-hover); }
 
-        .delete-category-btn,
-        .delete-bookmark-btn {
+        .delete-category-btn {
             position: absolute;
             top: 5px;
         }
         .delete-category-btn { position: static; }
-
-        .delete-bookmark-btn {
-            left: 5px;
-        }
 
         .search-wrapper {
             display: flex;
@@ -265,9 +260,11 @@
             grid-template-columns: 1fr;
             gap: 8px;
         }
-        .list-view-enabled .delete-bookmark-btn,
-        .list-view-enabled .edit-bookmark {
-            position: static;
+        .list-view-enabled .bookmark-actions {
+            position: absolute;
+            display: none;
+        }
+        .list-view-enabled .bookmark:hover .bookmark-actions {
             display: inline-flex;
         }
 
@@ -282,9 +279,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 12px;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--secondary-color);
+            overflow: hidden;
         }
 
         .section-title {
@@ -293,11 +292,37 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .section-title-text {
+            display: block;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .section-actions {
             display: flex;
             gap: 10px;
+            flex: 0 0 auto;
+        }
+
+        .title-tooltip {
+            position: fixed;
+            z-index: 2000;
+            display: none;
+            max-width: min(520px, 92vw);
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--modal-bg);
+            color: var(--text-color);
+            border: 1px solid var(--secondary-color);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            pointer-events: none;
+            line-height: 1.25;
         }
 
         .icon-btn {
@@ -425,6 +450,26 @@
 
         .bookmark-name:hover {
             text-decoration: none;
+        }
+
+        .bookmark-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: none;
+            gap: 6px;
+            align-items: center;
+            justify-content: flex-end;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+
+        .bookmark-actions .edit-bookmark,
+        .bookmark-actions .delete-bookmark-btn {
+            position: static;
+            top: auto;
+            right: auto;
+            left: auto;
         }
 
         .modal {
@@ -580,14 +625,8 @@
         }
 
         .edit-bookmark {
-            display: none; 
-            position: absolute;
-            top: 5px;
-            right: 5px;
-        }
-
-        .bookmark:hover .edit-bookmark {
-            display: block;
+            display: inline-flex;
+            position: static;
         }
 
         @media (max-width: 768px) {
@@ -626,6 +665,10 @@
             display: inline-flex;
         }
 
+        .bookmark:hover .bookmark-actions {
+            display: inline-flex;
+        }
+
         .delete-category-btn {
             background: none;
             border: var(--secondary-color) 2px solid;
@@ -656,9 +699,6 @@
             height: 35px;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            top: 5px;
-            left: 5px;
             display: flex;
             transition: all 0.3s ease;
         }
@@ -1174,6 +1214,19 @@
             return id;
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeHtmlAttr(value) {
+            return escapeHtml(value).replace(/\n/g, ' ');
+        }
+
         function showCategoryModal(categoryId = null) {
             editingCategoryId = categoryId;
             const modal = document.getElementById('addCategoryModal');
@@ -1255,17 +1308,22 @@
                 const bookmarksHtml = items.length
                     ? items.map((bookmark, index) => `
                         <div class="bookmark" data-category="${categoryId}" data-index="${index}" style="position:relative;">
+                            <div class="bookmark-actions" aria-hidden="true">
+                                <button class="icon-btn edit-bookmark" data-category="${categoryId}" data-index="${index}" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="delete-bookmark-btn" data-category="${categoryId}" data-index="${index}" title="Delete"><i class="fas fa-trash"></i></button>
+                            </div>
                             <div class="bookmark-icon"><i class="${bookmark.icon || 'fa-globe'}"></i></div>
                             <a href="${bookmark.url}" target="_blank" class="bookmark-name">${bookmark.name}</a>
-                            <button class="icon-btn edit-bookmark" data-category="${categoryId}" data-index="${index}" title="Edit"><i class="fas fa-edit"></i></button>
-                            <button class="delete-bookmark-btn" data-category="${categoryId}" data-index="${index}" title="Delete"><i class="fas fa-trash"></i></button>
                         </div>
                     `).join('')
                     : `<div class="no-bookmarks">No bookmarks yet. <button class="icon-btn add-bookmark" data-category="${categoryId}" title="Add bookmark"><i class="fas fa-plus"></i></button></div>`;
 
+                const safeCategoryName = escapeHtml(category.name || '');
+                const safeCategoryNameAttr = escapeHtmlAttr(category.name || '');
+
                 section.innerHTML = `
                     <div class="section-header">
-                        <h2 class="section-title"><i class="${category.icon || 'fas fa-folder'}"></i> ${category.name}</h2>
+                        <h2 class="section-title"><i class="${category.icon || 'fas fa-folder'}"></i><span class="section-title-text" data-full-title="${safeCategoryNameAttr}">${safeCategoryName}</span></h2>
                         <div class="section-actions">
                             <button class="icon-btn edit-category" data-category="${categoryId}" title="Edit Category"><i class="fas fa-edit"></i></button>
                             <button class="icon-btn add-bookmark" data-category="${categoryId}" title="Add Bookmark"><i class="fas fa-plus"></i></button>
@@ -1782,6 +1840,75 @@
                     window.open(link.href, target);
                 }
             });
+
+            (function initCategoryTitleTooltip() {
+                if (!bookmarksContainer) return;
+                if (document.getElementById('categoryTitleTooltip')) return;
+
+                const tooltip = document.createElement('div');
+                tooltip.id = 'categoryTitleTooltip';
+                tooltip.className = 'title-tooltip';
+                tooltip.setAttribute('role', 'tooltip');
+                tooltip.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(tooltip);
+
+                const offset = 12;
+                let activeTarget = null;
+
+                function hideTooltip() {
+                    tooltip.style.display = 'none';
+                    tooltip.setAttribute('aria-hidden', 'true');
+                    activeTarget = null;
+                }
+
+                function placeTooltip(clientX, clientY) {
+                    const rect = tooltip.getBoundingClientRect();
+                    const vw = window.innerWidth;
+                    const vh = window.innerHeight;
+
+                    let left = clientX + offset;
+                    let top = clientY + offset;
+
+                    if (left + rect.width > vw - 8) left = Math.max(8, vw - rect.width - 8);
+                    if (top + rect.height > vh - 8) top = Math.max(8, vh - rect.height - 8);
+
+                    tooltip.style.left = `${left}px`;
+                    tooltip.style.top = `${top}px`;
+                }
+
+                function showTooltipFor(target, clientX, clientY) {
+                    const full = (target && target.dataset && target.dataset.fullTitle) ? target.dataset.fullTitle : (target ? target.textContent : '');
+                    if (!full) return;
+                    tooltip.textContent = full;
+                    tooltip.style.display = 'block';
+                    tooltip.setAttribute('aria-hidden', 'false');
+                    placeTooltip(clientX, clientY);
+                    activeTarget = target;
+                }
+
+                bookmarksContainer.addEventListener('pointerover', (e) => {
+                    const titleEl = e.target && e.target.closest ? e.target.closest('.section-title-text') : null;
+                    if (!titleEl) return;
+                    showTooltipFor(titleEl, e.clientX, e.clientY);
+                });
+
+                bookmarksContainer.addEventListener('pointermove', (e) => {
+                    if (!activeTarget) return;
+                    placeTooltip(e.clientX, e.clientY);
+                });
+
+                bookmarksContainer.addEventListener('pointerout', (e) => {
+                    const leaving = e.target && e.target.closest ? e.target.closest('.section-title-text') : null;
+                    if (!leaving) return;
+                    hideTooltip();
+                });
+
+                window.addEventListener('scroll', hideTooltip, true);
+                window.addEventListener('blur', hideTooltip);
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') hideTooltip();
+                });
+            })();
 
         }
 
