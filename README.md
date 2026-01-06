@@ -235,8 +235,3 @@ Export(config) options:
 ### Config:
 ![Configs option](https://github.com/user-attachments/assets/19abd328-e5a7-4eaa-862a-8f7745cac5d1)
  - Allows the user to save, edit, export and import configs
-
-
-## TO-DO:
-
-- fix minimalist homepage bugs
