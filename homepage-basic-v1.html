@@ -508,10 +508,33 @@
 
         .close-modal {
             background: none;
-            border: none;
+            border: var(--secondary-color) 2px solid;
             color: var(--text-color);
-            font-size: 1.5rem;
             cursor: pointer;
+
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 1.25rem;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--hover-color);
+            background: var(--button-hover);
+        }
+
+        .theme-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .form-grid {
@@ -951,14 +974,14 @@
                 <h2 class="modal-title">Customize Colors</h2>
                 <button class="close-modal">&times;</button>
             </div>
-            <div style="margin-bottom:20px;">
-                <label for="themePicker" style="font-weight:500;color:var(--secondary-color);margin-right:10px;">Theme:</label>
+            <div class="theme-controls" style="margin-bottom:20px;">
+                <label for="themePicker" style="font-weight:500;color:var(--text-color);margin-right:10px;">Theme:</label>
                 <select id="themePicker" style="padding:8px 12px;border-radius:6px;">
                     <option value="">-- Select Theme --</option>
                     <option value="night">Night</option>
                 </select>
-                <button id="applyThemeBtn" style="margin-left:10px;"><i class="fas fa-check"></i> Apply Theme</button>
-                <button id="resetThemeBtn" style="margin-left:5px;"><i class="fas fa-undo"></i> Reset Theme</button>
+                <button id="applyThemeBtn"><i class="fas fa-check"></i> Apply Theme</button>
+                <button id="resetThemeBtn"><i class="fas fa-undo"></i> Reset Theme</button>
             </div>
             <div class="color-picker">
                 <div class="color-option">
