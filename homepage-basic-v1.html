@@ -268,6 +268,68 @@
             display: inline-flex;
         }
 
+        .combined-list-view-enabled .bookmarks-container {
+            display: block;
+        }
+        .combined-list-view-enabled .section {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+            margin-bottom: 18px;
+        }
+        .combined-list-view-enabled .section-header {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--secondary-color);
+        }
+        .combined-list-view-enabled .section-title {
+            font-size: 1.15rem;
+        }
+        .combined-list-view-enabled .section-title i {
+            display: inline-block;
+        }
+        .combined-list-view-enabled .bookmarks-grid {
+            display: block;
+            max-height: none;
+            opacity: 1;
+            overflow: visible;
+            pointer-events: auto;
+            transition: none;
+        }
+        .combined-list-view-enabled .bookmark {
+            background: transparent;
+            box-shadow: none;
+            transform: none;
+            padding: 6px 0;
+            border-radius: 0;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+        }
+        .combined-list-view-enabled .bookmark:hover {
+            transform: none;
+            box-shadow: none;
+            background: transparent;
+        }
+        .combined-list-view-enabled .bookmark-icon {
+            display: inline-flex;
+            margin: 0;
+            font-size: 1.15rem;
+        }
+        .combined-list-view-enabled .bookmark-name {
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .combined-list-view-enabled .no-bookmarks {
+            max-height: none;
+            opacity: 1;
+            overflow: visible;
+            pointer-events: auto;
+            transition: none;
+        }
+
         .section {
             background: var(--section-bg);
             border-radius: 15px;
@@ -1123,7 +1185,16 @@
                         <input type="checkbox" id="disableAnimations"> Disable hover + animations (click-only, instant)
                     </label>
                     <label style="display:flex;gap:12px;align-items:center;color:var(--text-color);">
-                        <input type="checkbox" id="listViewToggle"> List view (compact)
+                        <input type="checkbox" id="listViewToggle"> List view (boxes)
+                    </label>
+                    <label style="display:flex;gap:12px;align-items:center;color:var(--text-color);">
+                        <input type="checkbox" id="combinedListViewToggle"> Combined list view (text only)
+                    </label>
+                    <label style="display:flex;gap:12px;align-items:center;color:var(--text-color);">
+                        <input type="checkbox" id="sortCategoriesAlphaToggle"> Sort categories A-Z
+                    </label>
+                    <label style="display:flex;gap:12px;align-items:center;color:var(--text-color);">
+                        <input type="checkbox" id="sortBookmarksAlphaToggle"> Sort bookmarks A-Z
                     </label>
                 </div>
             </div>
@@ -1138,6 +1209,9 @@
     <script>
         let config = {
             timeFormat: '24',
+            sortCategoriesAlpha: false,
+            sortBookmarksAlpha: false,
+            combinedListView: false,
             bookmarks: {
                 social: {
                     name: "Social Media",
@@ -1294,6 +1368,7 @@
             setInterval(updateClock, 1000);
             loadConfig();
             applyInteractionMode();
+            applyCombinedListViewMode();
             applyListViewMode();
             renderBookmarks();
             setupEventListeners();
@@ -1315,10 +1390,37 @@
             clockElement.textContent = timeString;
         }
 
+        function getSortedCategoryIds() {
+            const ids = Object.keys(config.bookmarks || {});
+            if (!config.sortCategoriesAlpha) return ids;
+
+            return ids.sort((a, b) => {
+                const an = (config.bookmarks[a] && config.bookmarks[a].name) ? String(config.bookmarks[a].name) : '';
+                const bn = (config.bookmarks[b] && config.bookmarks[b].name) ? String(config.bookmarks[b].name) : '';
+                const nameCmp = an.localeCompare(bn, undefined, { sensitivity: 'base' });
+                if (nameCmp !== 0) return nameCmp;
+                return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
+            });
+        }
+
+        function getSortedBookmarkEntries(bookmarks) {
+            const items = Array.isArray(bookmarks) ? bookmarks : [];
+            const entries = items.map((bookmark, originalIndex) => ({ bookmark, originalIndex }));
+            if (!config.sortBookmarksAlpha) return entries;
+
+            return entries.sort((a, b) => {
+                const an = a && a.bookmark ? String(a.bookmark.name || a.bookmark.url || '') : '';
+                const bn = b && b.bookmark ? String(b.bookmark.name || b.bookmark.url || '') : '';
+                const nameCmp = an.localeCompare(bn, undefined, { sensitivity: 'base' });
+                if (nameCmp !== 0) return nameCmp;
+                return a.originalIndex - b.originalIndex;
+            });
+        }
+
         function renderBookmarks() {
             bookmarksContainer.innerHTML = '';
 
-            const categoryIds = Object.keys(config.bookmarks || {});
+            const categoryIds = getSortedCategoryIds();
 
             categoryIds.forEach(categoryId => {
                 const category = config.bookmarks[categoryId];
@@ -1326,14 +1428,14 @@
                 section.className = 'section';
                 section.id = `category-${categoryId}`;
 
-                const items = Array.isArray(category.bookmarks) ? category.bookmarks : [];
+                const bookmarkEntries = getSortedBookmarkEntries(category && category.bookmarks);
 
-                const bookmarksHtml = items.length
-                    ? items.map((bookmark, index) => `
-                        <div class="bookmark" data-category="${categoryId}" data-index="${index}" style="position:relative;">
+                const bookmarksHtml = bookmarkEntries.length
+                    ? bookmarkEntries.map(({ bookmark, originalIndex }) => `
+                        <div class="bookmark" data-category="${categoryId}" data-index="${originalIndex}" style="position:relative;">
                             <div class="bookmark-actions" aria-hidden="true">
-                                <button class="icon-btn edit-bookmark" data-category="${categoryId}" data-index="${index}" title="Edit"><i class="fas fa-edit"></i></button>
-                                <button class="delete-bookmark-btn" data-category="${categoryId}" data-index="${index}" title="Delete"><i class="fas fa-trash"></i></button>
+                                <button class="icon-btn edit-bookmark" data-category="${categoryId}" data-index="${originalIndex}" title="Edit"><i class="fas fa-edit"></i></button>
+                                <button class="delete-bookmark-btn" data-category="${categoryId}" data-index="${originalIndex}" title="Delete"><i class="fas fa-trash"></i></button>
                             </div>
                             <div class="bookmark-icon"><i class="${bookmark.icon || 'fa-globe'}"></i></div>
                             <a href="${bookmark.url}" target="_blank" class="bookmark-name">${bookmark.name}</a>
@@ -1358,19 +1460,21 @@
                     </div>
                 `;
 
-                if (config.disableAnimations) {
+                if (config.disableAnimations || config.combinedListView) {
                     section.classList.add('active');
                 }
 
                 bookmarksContainer.appendChild(section);
                 
 
-                const header = section.querySelector('.section-header');
-                if (header) {
-                    header.addEventListener('click', (e) => {
-                        if (e.target.closest('button') || e.target.closest('a')) return;
-                        section.classList.toggle('active');
-                    });
+                if (!config.combinedListView) {
+                    const header = section.querySelector('.section-header');
+                    if (header) {
+                        header.addEventListener('click', (e) => {
+                            if (e.target.closest('button') || e.target.closest('a')) return;
+                            section.classList.toggle('active');
+                        });
+                    }
                 }
             });
 
@@ -1816,9 +1920,47 @@
                 if (animChk) animChk.checked = !!config.disableAnimations;
                 const listChk = document.getElementById('listViewToggle');
                 if (listChk) listChk.checked = !!config.listView;
+
+                const combinedChk = document.getElementById('combinedListViewToggle');
+                if (combinedChk) combinedChk.checked = !!config.combinedListView;
+
+                const sortCatChk = document.getElementById('sortCategoriesAlphaToggle');
+                if (sortCatChk) sortCatChk.checked = !!config.sortCategoriesAlpha;
+
+                const sortBmChk = document.getElementById('sortBookmarksAlphaToggle');
+                if (sortBmChk) sortBmChk.checked = !!config.sortBookmarksAlpha;
+
+                if (listChk && combinedChk) {
+                    listChk.disabled = !!combinedChk.checked;
+                }
+
                 if (menuDropdown && menuDropdown.classList.contains('show')) menuDropdown.classList.remove('show');
                 settingsModal.style.display = 'flex';
             });
+
+            (function wireUpViewToggleExclusivity() {
+                const listChk = document.getElementById('listViewToggle');
+                const combinedChk = document.getElementById('combinedListViewToggle');
+                if (!listChk || !combinedChk) return;
+                if (listChk.dataset.wired === '1') return;
+                listChk.dataset.wired = '1';
+
+                combinedChk.addEventListener('change', () => {
+                    if (combinedChk.checked) {
+                        listChk.checked = false;
+                        listChk.disabled = true;
+                    } else {
+                        listChk.disabled = false;
+                    }
+                });
+
+                listChk.addEventListener('change', () => {
+                    if (listChk.checked) {
+                        combinedChk.checked = false;
+                        listChk.disabled = false;
+                    }
+                });
+            })();
 
             const saveSettingsBtn = document.getElementById('saveSettingsBtn');
             saveSettingsBtn && saveSettingsBtn.addEventListener('click', () => {
@@ -1834,12 +1976,30 @@
                     applyInteractionMode();
                     saveConfigToStorage();
                 }
+
+                const combinedChk = document.getElementById('combinedListViewToggle');
+                if (combinedChk) {
+                    config.combinedListView = !!combinedChk.checked;
+                    if (config.combinedListView) {
+                        config.listView = false;
+                    }
+                    applyCombinedListViewMode();
+                }
+
                 const listChk = document.getElementById('listViewToggle');
                 if (listChk) {
                     config.listView = !!listChk.checked;
                     applyListViewMode();
-                    saveConfigToStorage();
                 }
+
+                const sortCatChk = document.getElementById('sortCategoriesAlphaToggle');
+                if (sortCatChk) config.sortCategoriesAlpha = !!sortCatChk.checked;
+
+                const sortBmChk = document.getElementById('sortBookmarksAlphaToggle');
+                if (sortBmChk) config.sortBookmarksAlpha = !!sortBmChk.checked;
+
+                renderBookmarks();
+                saveConfigToStorage();
                 settingsModal.style.display = 'none';
             });
 
@@ -1947,7 +2107,19 @@
             }
         }
 
+        function applyCombinedListViewMode() {
+            if (config.combinedListView) {
+                document.body.classList.add('combined-list-view-enabled');
+            } else {
+                document.body.classList.remove('combined-list-view-enabled');
+            }
+        }
+
         function applyListViewMode() {
+            if (config.combinedListView) {
+                document.body.classList.remove('list-view-enabled');
+                return;
+            }
             if (config.listView) {
                 document.body.classList.add('list-view-enabled');
             } else {
@@ -1959,8 +2131,9 @@
         function showAddBookmarkModal(categoryId) {
             const categorySelect = document.getElementById('bookmarkCategory');
             categorySelect.innerHTML = '';
-            
-            for (const id in config.bookmarks) {
+
+            const ids = getSortedCategoryIds();
+            for (const id of ids) {
                 const option = document.createElement('option');
                 option.value = id;
                 option.textContent = config.bookmarks[id].name;
@@ -2095,6 +2268,10 @@
                 try {
                     config = JSON.parse(savedConfig);
                     if (!config.timeFormat) config.timeFormat = '24';
+                    if (config.sortCategoriesAlpha === undefined) config.sortCategoriesAlpha = false;
+                    if (config.sortBookmarksAlpha === undefined) config.sortBookmarksAlpha = false;
+                    if (config.combinedListView === undefined) config.combinedListView = false;
+                    if (config.combinedListView) config.listView = false;
                     const defaults = {
                         "primary": "#222831",
                         "primaryOpacity": 1,
