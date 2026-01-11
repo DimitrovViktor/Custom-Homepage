@@ -116,8 +116,10 @@ Two custom homepages with extra tools for daily tasks. (tools: notes tool, sched
 - Search bar shows bookmark links matching search terms as clickable options
 ![Search Bar](https://github.com/user-attachments/assets/6bf90f23-5678-48c3-a30e-1dd40e9c4e0f)
 
-### 3. UI Color Customization
+### 3. UI Customization
 - Adjustable colors and color transparency
+- Adjustable clock
+- Adjustable category and bookmark view
 
 ### Additional Features:
 - Config import/export
