@@ -120,6 +120,7 @@ Two custom homepages with extra tools for daily tasks. (tools: notes tool, sched
 - Adjustable colors and color transparency
 - Adjustable clock
 - Adjustable category and bookmark view
+- Adjustable category and bookmark sorting (A-Z)
 
 ### Additional Features:
 - Config import/export
