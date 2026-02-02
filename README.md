@@ -1,6 +1,6 @@
 # Custom Homepage
 
-Two custom homepages with extra tools for daily tasks. (tools: notes tool, schedule tool, colorscheme generator)
+Two custom homepages with tools for daily tasks. (tools: notes tool, schedule tool, colorscheme generator)
 
 ---
 
