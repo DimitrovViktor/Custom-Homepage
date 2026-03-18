@@ -23,13 +23,14 @@ My custom homepage
 
 ### Usage:
 1. Download the HTML file
-2. Open any of the files in your browser
+2. Open the file in your browser
 
 ### Interface Components:
 
 - Bookmark sections
 - Clock
 - Google search bar
+- Settings
 
 ---
 
