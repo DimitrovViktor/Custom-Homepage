@@ -1,6 +1,15 @@
-# Custom Homepage
+# <div align="center"> Custom Homepage </div>
 
-My custom homepage
+<div align="center">
+
+[![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](#)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000)](#)
+[![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)](#)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
+Custom Minimalist HTML + JS + CSS page with a bookmark manager, google search bar, and a clock.
+
+</div>
 
 ---
 
