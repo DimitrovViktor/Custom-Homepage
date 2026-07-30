@@ -160,6 +160,9 @@
         .bookmark-name { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; text-decoration: none; color: var(--text-color); }
         .bookmark-actions { position: absolute; top: 5px; right: 5px; display: none; gap: 6px; align-items: center; }
         .bookmark:hover .bookmark-actions { display: inline-flex; }
+        .bookmark.dragging { opacity: 0.4; cursor: grabbing; }
+        .bookmark.dragging .bookmark-actions { display: none; }
+        .bookmarks-grid.drag-active .bookmark { cursor: grab; }
 
         .add-category-section { display: flex; align-items: center; justify-content: center; }
         .action-btn {
@@ -484,6 +487,7 @@
             const cols=(window.getComputedStyle(container).gridTemplateColumns||'').split(' ').length||1,rem=catIds.length%cols;
             addSec.style.gridColumn=`span ${rem===0?cols:cols-rem}`;container.appendChild(addSec);
             bindBookmarkEvents();
+            setupDragAndDrop();
         }
 
         function bindBookmarkEvents(){
@@ -493,6 +497,21 @@
             $$('.edit-bookmark').forEach(b=>b.addEventListener('click',e=>editBookmark(e.currentTarget.dataset.category,e.currentTarget.dataset.index)));
             $$('.delete-bookmark-btn').forEach(b=>b.addEventListener('click',e=>{if(confirm('Delete this bookmark?')){config.bookmarks[e.currentTarget.dataset.category].bookmarks.splice(e.currentTarget.dataset.index,1);renderBookmarks();saveConfig();}}));
             const a=$('#addCategoryBtn');if(a)a.addEventListener('click',()=>showCategoryModal(null));
+        }
+
+        let dragItem=null,dragGrid=null,suppressClick=false;
+        function commitBookmarkOrder(grid,catId){const order=[...grid.querySelectorAll('.bookmark')].map(el=>Number(el.dataset.index));if(order.some(Number.isNaN))return;const arr=config.bookmarks[catId].bookmarks;config.bookmarks[catId].bookmarks=order.map(i=>arr[i]);saveConfig();renderBookmarks();}
+        function setupDragAndDrop(){
+            if(config.combinedListView||config.sortBookmarksAlpha)return;
+            $$('.bookmarks-grid').forEach(grid=>{
+                if(!grid.querySelector('.bookmark'))return;
+                grid.classList.add('drag-active');
+                grid.querySelectorAll('.bookmark').forEach(item=>{item.setAttribute('draggable','true');item.querySelector('.bookmark-name')?.setAttribute('draggable','false');});
+                grid.addEventListener('dragstart',e=>{const item=e.target.closest('.bookmark');if(!item)return;dragItem=item;dragGrid=grid;item.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',item.dataset.index);});
+                grid.addEventListener('dragover',e=>{if(!dragItem||grid!==dragGrid)return;e.preventDefault();e.dataTransfer.dropEffect='move';const over=e.target.closest('.bookmark');if(!over||over===dragItem)return;const r=over.getBoundingClientRect(),isList=document.body.classList.contains('list-view-enabled'),before=isList?e.clientY<r.top+r.height/2:e.clientX<r.left+r.width/2;grid.insertBefore(dragItem,before?over:over.nextElementSibling);});
+                grid.addEventListener('drop',e=>{if(!dragItem||grid!==dragGrid)return;e.preventDefault();commitBookmarkOrder(grid,dragItem.dataset.category);});
+                grid.addEventListener('dragend',()=>{dragItem?.classList.remove('dragging');dragItem=null;dragGrid=null;suppressClick=true;setTimeout(()=>suppressClick=false,60);});
+            });
         }
 
         function showCategoryModal(id){editingCategoryId=id;const c=id?config.bookmarks[id]:null;$('#categoryName').value=c?.name||'';$('#categoryIcon').value=c?.icon||'';$('#addCategoryModal').style.display='flex';}
@@ -598,7 +617,7 @@
             $('#resetColorsBtn').addEventListener('click',()=>{config.colors={...DEFAULT_COLORS};config.radius={...DEFAULT_RADIUS};config.backgroundImage=DEFAULT_BG;applyColors();syncColorInputsFromConfig();syncRadiusInputs();saveConfig();alert('Reset to defaults.');});
 
             $('#saveCategoryBtn').addEventListener('click',e=>{e.preventDefault();handleSaveCategory();});
-            document.addEventListener('click',e=>{if(e.target.closest('button, .icon-btn, a[href]'))return;const card=e.target.closest('.bookmark');if(!card)return;const link=card.querySelector('a[href]');if(link)window.open(link.href,link.getAttribute('target')||'_self');});
+            document.addEventListener('click',e=>{if(suppressClick)return;if(e.target.closest('button, .icon-btn, a[href]'))return;const card=e.target.closest('.bookmark');if(!card)return;const link=card.querySelector('a[href]');if(link)window.open(link.href,link.getAttribute('target')||'_self');});
 
             setupSearchOverlay();setupTooltip();setupRadiusSliders();
         }
