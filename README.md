@@ -62,3 +62,4 @@ Custom Minimalist HTML + JS + CSS page with a bookmark manager, google search ba
 ### Additional Features:
 - Configuration import/export
 - Clock
+- Bookmark drag and drop
