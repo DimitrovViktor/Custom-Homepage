@@ -477,7 +477,7 @@
                         <div class="bookmark-icon"><i class="${b.icon||'fa-globe'}"></i></div>
                         <a href="${b.url}" target="_blank" class="bookmark-name">${escapeHtml(b.name)}</a>
                     </div>`).join(''):`<div class="no-bookmarks">No bookmarks yet. <button class="icon-btn add-bookmark" data-category="${catId}" data-tip="Add a bookmark here"><i class="fas fa-plus"></i></button></div>`;
-                section.innerHTML=`<div class="section-header"><h2 class="section-title"><i class="${cat.icon||'fas fa-folder'}"></i><span class="section-title-text" data-full-title="${safeName}">${safeName}</span></h2><div class="section-actions"><button class="icon-btn edit-category" data-category="${catId}" data-tip="Edit category"><i class="fas fa-edit"></i></button><button class="icon-btn add-bookmark" data-category="${catId}" data-tip="Add bookmark"><i class="fas fa-plus"></i></button><button class="icon-btn delete-category-btn" data-category="${catId}" data-tip="Delete category"><i class="fas fa-trash"></i></button></div></div><div class="bookmarks-grid">${bHtml}</div>`;
+                section.innerHTML=`<div class="section-header"><h2 class="section-title"><i class="${cat.icon||'fas fa-folder'}"></i><span class="section-title-text" data-full-title="${safeName}">${safeName}</span></h2><div class="section-actions"><button class="icon-btn edit-category" data-category="${catId}" data-tip="Edit category"><i class="fas fa-edit"></i></button><button class="icon-btn add-bookmark" data-category="${catId}" data-tip="Add bookmark"><i class="fas fa-plus"></i></button><button class="icon-btn delete-category-btn" data-category="${catId}" data-tip="Delete category"><i class="fas fa-trash"></i></button></div></div><div class="bookmarks-grid" data-category="${catId}">${bHtml}</div>`;
                 if(config.disableAnimations||config.combinedListView)section.classList.add('active');
                 container.appendChild(section);
                 if(!config.combinedListView)section.querySelector('.section-header')?.addEventListener('click',e=>{if(e.target.closest('button')||e.target.closest('a'))return;section.classList.toggle('active');});
@@ -499,18 +499,21 @@
             const a=$('#addCategoryBtn');if(a)a.addEventListener('click',()=>showCategoryModal(null));
         }
 
-        let dragItem=null,dragGrid=null,suppressClick=false;
-        function commitBookmarkOrder(grid,catId){const order=[...grid.querySelectorAll('.bookmark')].map(el=>Number(el.dataset.index));if(order.some(Number.isNaN))return;const arr=config.bookmarks[catId].bookmarks;config.bookmarks[catId].bookmarks=order.map(i=>arr[i]);saveConfig();renderBookmarks();}
+        let dragItem=null,suppressClick=false;
+        function commitBookmarkOrder(){
+            const snap={};Object.keys(config.bookmarks).forEach(id=>snap[id]=config.bookmarks[id].bookmarks.slice());
+            $$('.bookmarks-grid').forEach(grid=>{const catId=grid.dataset.category;if(!catId||!config.bookmarks[catId])return;config.bookmarks[catId].bookmarks=[...grid.querySelectorAll('.bookmark')].map(el=>snap[el.dataset.category]?.[Number(el.dataset.index)]).filter(Boolean);});
+            saveConfig();renderBookmarks();
+        }
         function setupDragAndDrop(){
             if(config.combinedListView||config.sortBookmarksAlpha)return;
             $$('.bookmarks-grid').forEach(grid=>{
-                if(!grid.querySelector('.bookmark'))return;
                 grid.classList.add('drag-active');
                 grid.querySelectorAll('.bookmark').forEach(item=>{item.setAttribute('draggable','true');item.querySelector('.bookmark-name')?.setAttribute('draggable','false');});
-                grid.addEventListener('dragstart',e=>{const item=e.target.closest('.bookmark');if(!item)return;dragItem=item;dragGrid=grid;item.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',item.dataset.index);});
-                grid.addEventListener('dragover',e=>{if(!dragItem||grid!==dragGrid)return;e.preventDefault();e.dataTransfer.dropEffect='move';const over=e.target.closest('.bookmark');if(!over||over===dragItem)return;const r=over.getBoundingClientRect(),isList=document.body.classList.contains('list-view-enabled'),before=isList?e.clientY<r.top+r.height/2:e.clientX<r.left+r.width/2;grid.insertBefore(dragItem,before?over:over.nextElementSibling);});
-                grid.addEventListener('drop',e=>{if(!dragItem||grid!==dragGrid)return;e.preventDefault();commitBookmarkOrder(grid,dragItem.dataset.category);});
-                grid.addEventListener('dragend',()=>{dragItem?.classList.remove('dragging');dragItem=null;dragGrid=null;suppressClick=true;setTimeout(()=>suppressClick=false,60);});
+                grid.addEventListener('dragstart',e=>{const item=e.target.closest('.bookmark');if(!item)return;dragItem=item;item.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',item.dataset.index);});
+                grid.addEventListener('dragover',e=>{if(!dragItem)return;e.preventDefault();e.dataTransfer.dropEffect='move';const over=e.target.closest('.bookmark');if(over&&over!==dragItem){const r=over.getBoundingClientRect(),isList=document.body.classList.contains('list-view-enabled'),before=isList?e.clientY<r.top+r.height/2:e.clientX<r.left+r.width/2;grid.insertBefore(dragItem,before?over:over.nextElementSibling);}else if(!over&&dragItem.parentElement!==grid){grid.appendChild(dragItem);}});
+                grid.addEventListener('drop',e=>{if(!dragItem)return;e.preventDefault();commitBookmarkOrder();});
+                grid.addEventListener('dragend',()=>{dragItem?.classList.remove('dragging');dragItem=null;suppressClick=true;setTimeout(()=>suppressClick=false,60);});
             });
         }
 
