@@ -7,7 +7,7 @@
 [![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)](#)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-Custom Minimalist HTML + JS + CSS page with a bookmark manager, google search bar, and a clock.
+HTML + JS + CSS homepage with a bookmark manager, google search bar, and a clock.
 
 </div>
 
