@@ -63,3 +63,7 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 - Configuration import/export
 - Clock
 - Bookmark drag and drop (section change and order change)
+
+
+### TO-DO:
+- weather widget
