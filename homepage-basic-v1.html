@@ -299,8 +299,72 @@
             .search-suggestions { background: color-mix(in srgb, var(--card-bg) 70%, transparent); border-color: color-mix(in srgb, var(--secondary-color) 55%, transparent); }
         }
 
+        .weather { display: none; }
+        .weather.show {
+            display: flex; flex-direction: column; gap: 12px; width: fit-content; max-width: 100%;
+            margin: 0 auto 25px; padding: 14px 20px; background: var(--card-bg);
+            border: 1px solid var(--secondary-color); border-radius: var(--radius);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .weather-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+        .weather-icon { font-size: 2.4rem; width: 2.6rem; text-align: center; flex-shrink: 0; opacity: 0.95; }
+        .weather-temp { font-family: 'Fira Code', monospace; font-size: 2.1rem; font-weight: 500; line-height: 1; }
+        .weather-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; text-align: left; }
+        .weather-cond { font-size: 0.95rem; }
+        .weather-loc { font-size: 0.8rem; opacity: 0.65; display: flex; align-items: center; gap: 6px; }
+        .weather-loc i { font-size: 0.75rem; }
+        .weather-details {
+            display: flex; gap: 16px; flex-wrap: wrap; padding-left: 16px;
+            border-left: 1px solid var(--secondary-color); font-size: 0.85rem; opacity: 0.8;
+        }
+        .weather-details span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .weather-details i { opacity: 0.7; font-size: 0.8rem; }
+        .weather-refresh {
+            padding: 0; width: 30px; height: 30px; border-radius: var(--radius-xs); background: transparent;
+            color: var(--text-color); opacity: 0.45; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; flex-shrink: 0;
+        }
+        .weather-refresh:hover { background: rgba(255,255,255,0.1); opacity: 1; transform: none; }
+        .weather-refresh.spinning i { animation: weather-spin 0.8s linear infinite; }
+        @keyframes weather-spin { to { transform: rotate(360deg); } }
+        .weather-forecast {
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+            border-top: 1px solid var(--secondary-color); padding-top: 12px;
+        }
+        .weather-day {
+            display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 66px;
+            padding: 8px 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); font-size: 0.8rem;
+        }
+        .weather-day i { font-size: 1.1rem; opacity: 0.9; }
+        .weather-day-name { opacity: 0.7; }
+        .weather-day-temps { font-family: 'Fira Code', monospace; font-size: 0.75rem; }
+        .weather-day-temps em { font-style: normal; opacity: 0.5; }
+        .weather-status { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.85; justify-content: center; flex-wrap: wrap; }
+        .weather-status i { opacity: 0.7; }
+        .weather-status button { padding: 7px 12px; font-size: 0.8rem; }
+        .weather-status .spin { animation: weather-spin 1s linear infinite; }
+
+        .weather-settings-label { font-size: 0.8rem; opacity: 0.6; margin: 16px 0 8px; }
+        .weather-search-row { display: flex; gap: 8px; }
+        .weather-search-row input {
+            flex: 1; min-width: 0; padding: 11px 13px; border: 1px solid var(--secondary-color);
+            background: var(--card-bg); color: var(--text-color); border-radius: var(--radius-sm);
+            outline: none; font-size: 0.9rem; transition: border-color 0.2s;
+        }
+        .weather-search-row input:focus { border-color: var(--hover-color); }
+        .weather-search-row button { flex-shrink: 0; }
+        .weather-results { margin-top: 8px; display: none; flex-direction: column; border: 1px solid var(--secondary-color); border-radius: var(--radius-sm); overflow: hidden; }
+        .weather-results.show { display: flex; }
+        .weather-result { width: 100%; justify-content: flex-start; background: var(--card-bg); border-radius: 0; padding: 11px 13px; font-size: 0.85rem; font-weight: 400; }
+        .weather-result:hover { background: var(--hover-color); transform: none; }
+        .weather-result-empty { padding: 11px 13px; font-size: 0.85rem; opacity: 0.7; background: var(--card-bg); }
+        .weather-current-loc { margin-top: 12px; font-size: 0.85rem; opacity: 0.75; display: flex; align-items: center; gap: 8px; }
+        .weather-current-loc i { opacity: 0.6; }
+
         @media (max-width: 768px) {
             .clock { font-size: 100px; }
+            .weather.show { width: 100%; }
+            .weather-details { padding-left: 0; border-left: none; border-top: 1px solid var(--secondary-color); padding-top: 10px; width: 100%; justify-content: center; }
             .bookmarks-container { grid-template-columns: 1fr; }
             .form-grid, .color-picker, .radius-controls-grid { grid-template-columns: 1fr; }
         }
@@ -311,6 +375,7 @@
     <div class="container">
         <header>
             <div class="clock" id="clock">00:00:00</div>
+            <div class="weather" id="weatherWidget" aria-live="polite"></div>
             <div class="search-wrapper">
                 <input type="text" class="search-input" placeholder="Search Google..." id="searchInput">
                 <div class="menu-wrapper">
@@ -421,6 +486,30 @@
         <div class="settings-section-title">Sorting</div>
         <div class="toggle-row"><span class="toggle-label">Sort categories A–Z</span><label class="toggle-switch"><input type="checkbox" id="sortCategoriesAlphaToggle"><span class="toggle-track"></span></label></div>
         <div class="toggle-row"><span class="toggle-label">Sort bookmarks A–Z</span><label class="toggle-switch"><input type="checkbox" id="sortBookmarksAlphaToggle"><span class="toggle-track"></span></label></div>
+        <div class="settings-section-title">Weather</div>
+        <div class="toggle-row"><span class="toggle-label">Show weather widget</span><label class="toggle-switch"><input type="checkbox" id="weatherEnabled"><span class="toggle-track"></span></label></div>
+        <div id="weatherOptions">
+            <div class="weather-settings-label">Units</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="weatherUnits" value="metric"><span>°C · km/h</span></label>
+                <label class="radio-option"><input type="radio" name="weatherUnits" value="imperial"><span>°F · mph</span></label>
+            </div>
+            <div class="weather-settings-label">Location</div>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="weatherMode" value="auto"><span>Auto (device)</span></label>
+                <label class="radio-option"><input type="radio" name="weatherMode" value="manual"><span>Search city</span></label>
+            </div>
+            <div id="weatherSearchWrap" style="margin-top:10px;">
+                <div class="weather-search-row">
+                    <input type="text" id="weatherCityInput" placeholder="Search a city, e.g. London" autocomplete="off" spellcheck="false">
+                    <button id="weatherSearchBtn" type="button" data-tip="Search for a city"><i class="fas fa-magnifying-glass"></i> Search</button>
+                </div>
+                <div class="weather-results" id="weatherCityResults"></div>
+            </div>
+            <div class="weather-current-loc" id="weatherCurrentLoc"></div>
+            <div class="toggle-row" style="margin-top:6px;"><span class="toggle-label">Show details (feels like, humidity, wind)</span><label class="toggle-switch"><input type="checkbox" id="weatherShowDetails"><span class="toggle-track"></span></label></div>
+            <div class="toggle-row"><span class="toggle-label">Show 3-day forecast</span><label class="toggle-switch"><input type="checkbox" id="weatherShowForecast"><span class="toggle-track"></span></label></div>
+        </div>
         <div class="config-buttons"><button id="saveSettingsBtn" data-tip="Save and apply settings"><i class="fas fa-save"></i> Save Settings</button></div>
     </div></div>
 
@@ -431,6 +520,7 @@
         const DEFAULT_RADIUS = { main:15, sm:10, xs:6, full:50 };
         const DEFAULT_BG = 'https://images.unsplash.com/photo-1707555692988-f306eb0f7bd8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
         const THEMES = { night: { colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, backgroundImage:DEFAULT_BG } };
+        const DEFAULT_WEATHER = { enabled:true, mode:'auto', units:'metric', showDetails:true, showForecast:true, lat:null, lon:null, locationName:'' };
 
         let config = { timeFormat:'24', sortCategoriesAlpha:false, sortBookmarksAlpha:false, combinedListView:false,
             disableAnimations:true,
@@ -439,7 +529,7 @@
                 social:{name:"Social Media",icon:"fas fa-users",bookmarks:[{name:'Twitter',url:'https://twitter.com',icon:'fab fa-twitter'},{name:'Facebook',url:'https://facebook.com',icon:'fab fa-facebook'}]},
                 coding:{name:"Coding",icon:"fas fa-code",bookmarks:[{name:'GitHub',url:'https://github.com',icon:'fab fa-github'},{name:'Stack Overflow',url:'https://stackoverflow.com',icon:'fab fa-stack-overflow'}]},
                 other:{name:"Other",icon:"fas fa-star",bookmarks:[{name:'Google',url:'https://google.com',icon:'fab fa-google'},{name:'YouTube',url:'https://youtube.com',icon:'fab fa-youtube'}]}
-            }, colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, backgroundImage:DEFAULT_BG };
+            }, colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, backgroundImage:DEFAULT_BG, weather:{...DEFAULT_WEATHER} };
 
         const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
         let editingCategoryId = null;
@@ -457,7 +547,7 @@
         }
 
         function saveConfig(){localStorage.setItem('homepageConfig',JSON.stringify(config));}
-        function loadConfig(){const s=localStorage.getItem('homepageConfig');if(!s)return;try{config=JSON.parse(s);config.timeFormat=config.timeFormat||'24';config.sortCategoriesAlpha=config.sortCategoriesAlpha||false;config.sortBookmarksAlpha=config.sortBookmarksAlpha||false;config.combinedListView=config.combinedListView||false;if(config.combinedListView)config.listView=false;config.colors={...DEFAULT_COLORS,...(config.colors||{})};config.radius={...DEFAULT_RADIUS,...(config.radius||{})};applyColors();}catch(e){console.error(e);}}
+        function loadConfig(){const s=localStorage.getItem('homepageConfig');if(!s)return;try{config=JSON.parse(s);config.timeFormat=config.timeFormat||'24';config.sortCategoriesAlpha=config.sortCategoriesAlpha||false;config.sortBookmarksAlpha=config.sortBookmarksAlpha||false;config.combinedListView=config.combinedListView||false;if(config.combinedListView)config.listView=false;config.colors={...DEFAULT_COLORS,...(config.colors||{})};config.radius={...DEFAULT_RADIUS,...(config.radius||{})};config.weather={...DEFAULT_WEATHER,...(config.weather||{})};applyColors();}catch(e){console.error(e);}}
         function updateClock(){$('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:config.timeFormat==='12'});}
 
         function getSortedCategoryIds(){const ids=Object.keys(config.bookmarks||{});if(!config.sortCategoriesAlpha)return ids;return ids.sort((a,b)=>String(config.bookmarks[a]?.name||'').localeCompare(String(config.bookmarks[b]?.name||''),undefined,{sensitivity:'base'})||a.localeCompare(b));}
@@ -539,6 +629,207 @@
         function readRadiusInputs(){config.radius=config.radius||{};RADIUS_MAP.forEach(([id,key])=>{const s=document.getElementById(id);if(s)config.radius[key]=Number(s.value);});}
         function setupRadiusSliders(){RADIUS_MAP.forEach(([id])=>{const s=document.getElementById(id),v=document.getElementById(id+'Val'),p=document.getElementById(id+'Preview');if(!s)return;s.addEventListener('input',()=>{if(v)v.textContent=s.value+'px';if(p)p.style.borderRadius=s.value+'px';});});}
 
+        const WEATHER_CACHE_KEY='homepageWeatherCache', GEO_CACHE_KEY='homepageWeatherGeo';
+        const WEATHER_TTL=15*60*1000, GEO_TTL=6*60*60*1000;
+        let weatherTimer=null, weatherDraftLoc=null, weatherBusy=false;
+
+        const WMO_CODES={
+            0:['Clear sky','fa-sun','fa-moon'],1:['Mainly clear','fa-cloud-sun','fa-cloud-moon'],
+            2:['Partly cloudy','fa-cloud-sun','fa-cloud-moon'],3:['Overcast','fa-cloud','fa-cloud'],
+            45:['Fog','fa-smog','fa-smog'],48:['Rime fog','fa-smog','fa-smog'],
+            51:['Light drizzle','fa-cloud-rain','fa-cloud-rain'],53:['Drizzle','fa-cloud-rain','fa-cloud-rain'],55:['Heavy drizzle','fa-cloud-rain','fa-cloud-rain'],
+            56:['Freezing drizzle','fa-icicles','fa-icicles'],57:['Freezing drizzle','fa-icicles','fa-icicles'],
+            61:['Light rain','fa-cloud-rain','fa-cloud-rain'],63:['Rain','fa-cloud-showers-heavy','fa-cloud-showers-heavy'],65:['Heavy rain','fa-cloud-showers-heavy','fa-cloud-showers-heavy'],
+            66:['Freezing rain','fa-icicles','fa-icicles'],67:['Freezing rain','fa-icicles','fa-icicles'],
+            71:['Light snow','fa-snowflake','fa-snowflake'],73:['Snow','fa-snowflake','fa-snowflake'],75:['Heavy snow','fa-snowflake','fa-snowflake'],77:['Snow grains','fa-snowflake','fa-snowflake'],
+            80:['Light showers','fa-cloud-sun-rain','fa-cloud-moon-rain'],81:['Showers','fa-cloud-showers-heavy','fa-cloud-showers-heavy'],82:['Heavy showers','fa-cloud-showers-heavy','fa-cloud-showers-heavy'],
+            85:['Snow showers','fa-snowflake','fa-snowflake'],86:['Snow showers','fa-snowflake','fa-snowflake'],
+            95:['Thunderstorm','fa-cloud-bolt','fa-cloud-bolt'],96:['Storm with hail','fa-cloud-bolt','fa-cloud-bolt'],99:['Storm with hail','fa-cloud-bolt','fa-cloud-bolt']
+        };
+        function wmo(code,isDay){const e=WMO_CODES[code]||['Unknown','fa-cloud','fa-cloud'];return {text:e[0],icon:isDay===0?e[2]:e[1]};}
+        function weatherCfg(){config.weather={...DEFAULT_WEATHER,...(config.weather||{})};return config.weather;}
+        function weatherUnits(){const imp=weatherCfg().units==='imperial';return imp
+            ?{temperature_unit:'fahrenheit',wind_speed_unit:'mph',t:'°',w:'mph'}
+            :{temperature_unit:'celsius',wind_speed_unit:'kmh',t:'°',w:'km/h'};}
+
+        function readJson(key,ttl){try{const raw=localStorage.getItem(key);if(!raw)return null;const o=JSON.parse(raw);if(!o||(ttl&&Date.now()-o.ts>ttl))return null;return o;}catch(e){return null;}}
+
+        function reverseGeocode(lat,lon){
+            return fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`)
+                .then(r=>r.ok?r.json():null)
+                .then(d=>{if(!d)return null;const n=d.city||d.locality||d.principalSubdivision;return n?[n,d.countryCode].filter(Boolean).join(', '):null;})
+                .catch(()=>null);
+        }
+
+        function getDeviceLocation(){
+            return new Promise((resolve,reject)=>{
+                const cached=readJson(GEO_CACHE_KEY,GEO_TTL);
+                if(cached?.loc)return resolve(cached.loc);
+                if(!navigator.geolocation)return reject(new Error('This browser can\u2019t share a location. Pick a city in Settings \u2192 Weather.'));
+                navigator.geolocation.getCurrentPosition(async pos=>{
+                    const loc={lat:pos.coords.latitude,lon:pos.coords.longitude,name:'Current location'};
+                    const name=await reverseGeocode(loc.lat,loc.lon);
+                    if(name)loc.name=name;
+                    try{localStorage.setItem(GEO_CACHE_KEY,JSON.stringify({ts:Date.now(),loc}));}catch(e){}
+                    resolve(loc);
+                },()=>reject(new Error('Location access unavailable. Pick a city in Settings \u2192 Weather.')),{timeout:10000,maximumAge:600000});
+            });
+        }
+
+        async function resolveWeatherLocation(){
+            const w=weatherCfg();
+            if(w.mode==='manual'){
+                if(typeof w.lat==='number'&&typeof w.lon==='number')return {lat:w.lat,lon:w.lon,name:w.locationName||'Selected location'};
+                throw new Error('No city chosen yet. Pick one in Settings \u2192 Weather.');
+            }
+            return getDeviceLocation();
+        }
+
+        async function fetchWeather(lat,lon,force){
+            const u=weatherUnits(),key=`${lat.toFixed(3)},${lon.toFixed(3)},${u.temperature_unit},${u.wind_speed_unit}`;
+            if(!force){const c=readJson(WEATHER_CACHE_KEY,WEATHER_TTL);if(c&&c.key===key)return c.data;}
+            const url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
+                +'&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m'
+                +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+                +'&forecast_days=4&timezone=auto&temperature_unit='+u.temperature_unit+'&wind_speed_unit='+u.wind_speed_unit;
+            const res=await fetch(url);
+            if(!res.ok)throw new Error('Weather service returned '+res.status+'.');
+            const data=await res.json();
+            if(!data?.current)throw new Error('Weather service sent an unexpected response.');
+            try{localStorage.setItem(WEATHER_CACHE_KEY,JSON.stringify({key,ts:Date.now(),data}));}catch(e){}
+            return data;
+        }
+
+        function renderWeatherStatus(html){const el=$('#weatherWidget');if(el)el.innerHTML=`<div class="weather-status">${html}</div>`;}
+        function renderWeatherError(msg){
+            renderWeatherStatus(`<i class="fas fa-triangle-exclamation"></i><span>${escapeHtml(msg)}</span>
+                <button type="button" id="weatherFixBtn"><i class="fas fa-sliders"></i> Weather settings</button>
+                <button type="button" id="weatherRetryBtn"><i class="fas fa-rotate"></i> Retry</button>`);
+            $('#weatherFixBtn')?.addEventListener('click',openSettingsModal);
+            $('#weatherRetryBtn')?.addEventListener('click',()=>refreshWeather(true));
+        }
+
+        function renderWeather(data,loc){
+            const w=weatherCfg(),u=weatherUnits(),c=data.current,info=wmo(c.weather_code,c.is_day);
+            const details=w.showDetails?`<div class="weather-details">
+                    <span><i class="fas fa-temperature-half"></i> Feels ${Math.round(c.apparent_temperature)}${u.t}</span>
+                    <span><i class="fas fa-droplet"></i> ${Math.round(c.relative_humidity_2m)}%</span>
+                    <span><i class="fas fa-wind"></i> ${Math.round(c.wind_speed_10m)} ${u.w}</span>
+                    ${data.daily?.precipitation_probability_max?.[0]!=null?`<span><i class="fas fa-umbrella"></i> ${Math.round(data.daily.precipitation_probability_max[0])}%</span>`:''}
+                </div>`:'';
+            let forecast='';
+            if(w.showForecast&&data.daily?.time){
+                const days=[];
+                for(let i=1;i<Math.min(4,data.daily.time.length);i++){
+                    const d=new Date(data.daily.time[i]+'T12:00:00'),di=wmo(data.daily.weather_code[i],1);
+                    days.push(`<div class="weather-day">
+                        <span class="weather-day-name">${d.toLocaleDateString([],{weekday:'short'})}</span>
+                        <i class="fas ${di.icon}" title="${escapeHtml(di.text)}"></i>
+                        <span class="weather-day-temps">${Math.round(data.daily.temperature_2m_max[i])}${u.t} <em>${Math.round(data.daily.temperature_2m_min[i])}${u.t}</em></span>
+                    </div>`);
+                }
+                if(days.length)forecast=`<div class="weather-forecast">${days.join('')}</div>`;
+            }
+            $('#weatherWidget').innerHTML=`
+                <div class="weather-row">
+                    <i class="weather-icon fas ${info.icon}"></i>
+                    <div class="weather-temp">${Math.round(c.temperature_2m)}${u.t}</div>
+                    <div class="weather-info">
+                        <div class="weather-cond">${escapeHtml(info.text)}</div>
+                        <div class="weather-loc"><i class="fas fa-location-dot"></i>${escapeHtml(loc.name||'')}</div>
+                    </div>
+                    ${details}
+                    <button type="button" class="weather-refresh" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button>
+                </div>${forecast}`;
+            $('#weatherRefreshBtn')?.addEventListener('click',()=>refreshWeather(true));
+        }
+
+        async function refreshWeather(force){
+            const el=$('#weatherWidget'),w=weatherCfg();
+            if(!el)return;
+            if(!w.enabled){el.classList.remove('show');el.innerHTML='';if(weatherTimer){clearInterval(weatherTimer);weatherTimer=null;}return;}
+            el.classList.add('show');
+            if(weatherBusy)return;
+            weatherBusy=true;
+            const spin=$('#weatherRefreshBtn');
+            if(spin)spin.classList.add('spinning');
+            else if(!el.querySelector('.weather-row'))renderWeatherStatus('<i class="fas fa-rotate spin"></i><span>Loading weather\u2026</span>');
+            try{
+                const loc=await resolveWeatherLocation();
+                const data=await fetchWeather(loc.lat,loc.lon,force);
+                renderWeather(data,loc);
+            }catch(err){
+                renderWeatherError(err?.message||'Could not load the weather right now.');
+            }finally{
+                weatherBusy=false;
+                if(!weatherTimer)weatherTimer=setInterval(()=>refreshWeather(true),WEATHER_TTL);
+            }
+        }
+
+        function weatherLocationLabel(){
+            const w=weatherCfg(),mode=document.querySelector('input[name="weatherMode"]:checked')?.value||w.mode;
+            if(mode==='auto')return '<i class="fas fa-crosshairs"></i><span>Using your device location</span>';
+            if(weatherDraftLoc)return `<i class="fas fa-location-dot"></i><span>Selected: ${escapeHtml(weatherDraftLoc.name)} (saves when you hit Save Settings)</span>`;
+            if(w.locationName)return `<i class="fas fa-location-dot"></i><span>Current city: ${escapeHtml(w.locationName)}</span>`;
+            return '<i class="fas fa-circle-info"></i><span>No city selected yet \u2014 search for one above.</span>';
+        }
+        function updateWeatherSettingsUI(){
+            const on=$('#weatherEnabled').checked;
+            $('#weatherOptions').style.display=on?'block':'none';
+            const mode=document.querySelector('input[name="weatherMode"]:checked')?.value||'auto';
+            $('#weatherSearchWrap').style.display=mode==='manual'?'block':'none';
+            $('#weatherCurrentLoc').innerHTML=weatherLocationLabel();
+        }
+        function syncWeatherSettings(){
+            const w=weatherCfg();
+            $('#weatherEnabled').checked=!!w.enabled;
+            $$('input[name="weatherUnits"]').forEach(r=>r.checked=r.value===w.units);
+            $$('input[name="weatherMode"]').forEach(r=>r.checked=r.value===w.mode);
+            $('#weatherShowDetails').checked=!!w.showDetails;
+            $('#weatherShowForecast').checked=!!w.showForecast;
+            weatherDraftLoc=null;
+            $('#weatherCityInput').value='';
+            const box=$('#weatherCityResults');box.innerHTML='';box.classList.remove('show');
+            updateWeatherSettingsUI();
+        }
+        function readWeatherSettings(){
+            const w=weatherCfg();
+            w.enabled=$('#weatherEnabled').checked;
+            w.units=document.querySelector('input[name="weatherUnits"]:checked')?.value||'metric';
+            w.mode=document.querySelector('input[name="weatherMode"]:checked')?.value||'auto';
+            w.showDetails=$('#weatherShowDetails').checked;
+            w.showForecast=$('#weatherShowForecast').checked;
+            if(weatherDraftLoc){w.lat=weatherDraftLoc.lat;w.lon=weatherDraftLoc.lon;w.locationName=weatherDraftLoc.name;}
+            weatherDraftLoc=null;
+        }
+
+        async function searchWeatherCity(){
+            const q=$('#weatherCityInput').value.trim(),box=$('#weatherCityResults');
+            if(!q){box.innerHTML='';box.classList.remove('show');return;}
+            box.innerHTML='<div class="weather-result-empty">Searching\u2026</div>';box.classList.add('show');
+            try{
+                const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=en&format=json`);
+                if(!r.ok)throw new Error('search failed');
+                const results=(await r.json()).results||[];
+                if(!results.length){box.innerHTML='<div class="weather-result-empty">No matching places found.</div>';return;}
+                box.innerHTML=results.map((c,i)=>`<button type="button" class="weather-result" data-i="${i}"><i class="fas fa-location-dot"></i> ${escapeHtml([c.name,c.admin1,c.country].filter(Boolean).join(', '))}</button>`).join('');
+                box.querySelectorAll('.weather-result').forEach(btn=>btn.addEventListener('click',()=>{
+                    const c=results[Number(btn.dataset.i)];
+                    weatherDraftLoc={lat:c.latitude,lon:c.longitude,name:[c.name,c.country_code||c.country].filter(Boolean).join(', ')};
+                    box.innerHTML='';box.classList.remove('show');$('#weatherCityInput').value='';
+                    updateWeatherSettingsUI();
+                }));
+            }catch(e){box.innerHTML='<div class="weather-result-empty">Search failed \u2014 check your connection.</div>';}
+        }
+
+        function setupWeatherSettings(){
+            $('#weatherEnabled').addEventListener('change',updateWeatherSettingsUI);
+            $$('input[name="weatherMode"]').forEach(r=>r.addEventListener('change',updateWeatherSettingsUI));
+            $('#weatherSearchBtn').addEventListener('click',searchWeatherCity);
+            $('#weatherCityInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchWeatherCity();}});
+            document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshWeather(false);});
+        }
+
         function openModal(id){document.getElementById(id).style.display='flex';}
         function closeAllModals(){$$('.modal').forEach(m=>m.style.display='none');editingCategoryId=null;}
 
@@ -597,23 +888,35 @@
             addEventListener('scroll',hideBtnTip,true);
         }
 
+        function openSettingsModal(){
+            $$('input[name="timeFormat"]').forEach(r=>r.checked=r.value===(config.timeFormat||'24'));
+            $('#disableAnimations').checked=!!config.disableAnimations;
+            $('#listViewToggle').checked=!!config.listView;
+            $('#combinedListViewToggle').checked=!!config.combinedListView;
+            $('#sortCategoriesAlphaToggle').checked=!!config.sortCategoriesAlpha;
+            $('#sortBookmarksAlphaToggle').checked=!!config.sortBookmarksAlpha;
+            $('#listViewToggle').disabled=!!config.combinedListView;
+            syncWeatherSettings();
+            openModal('settingsModal');
+        }
+
         function setupEventListeners(){
             $$('.close-modal').forEach(b=>b.addEventListener('click',closeAllModals));
             const mb=$('#menuBtn'),md=$('#menuDropdown');
             mb.addEventListener('click',e=>{e.stopPropagation();md.classList.toggle('show');});
             document.addEventListener('click',e=>{if(!md.contains(e.target)&&e.target!==mb)md.classList.remove('show');});
 
-            $('#settingsBtn').addEventListener('click',e=>{e.stopPropagation();$$('input[name="timeFormat"]').forEach(r=>r.checked=r.value===(config.timeFormat||'24'));$('#disableAnimations').checked=!!config.disableAnimations;$('#listViewToggle').checked=!!config.listView;$('#combinedListViewToggle').checked=!!config.combinedListView;$('#sortCategoriesAlphaToggle').checked=!!config.sortCategoriesAlpha;$('#sortBookmarksAlphaToggle').checked=!!config.sortBookmarksAlpha;$('#listViewToggle').disabled=!!config.combinedListView;md.classList.remove('show');openModal('settingsModal');});
+            $('#settingsBtn').addEventListener('click',e=>{e.stopPropagation();md.classList.remove('show');openSettingsModal();});
             $('#combinedListViewToggle').addEventListener('change',function(){const l=$('#listViewToggle');if(this.checked){l.checked=false;l.disabled=true;}else l.disabled=false;});
             $('#listViewToggle').addEventListener('change',function(){if(this.checked)$('#combinedListViewToggle').checked=false;});
-            $('#saveSettingsBtn').addEventListener('click',()=>{const sel=document.querySelector('input[name="timeFormat"]:checked');if(sel)config.timeFormat=sel.value;config.disableAnimations=$('#disableAnimations').checked;config.combinedListView=$('#combinedListViewToggle').checked;config.listView=config.combinedListView?false:$('#listViewToggle').checked;config.sortCategoriesAlpha=$('#sortCategoriesAlphaToggle').checked;config.sortBookmarksAlpha=$('#sortBookmarksAlphaToggle').checked;applyInteractionMode();applyViewModes();renderBookmarks();saveConfig();updateClock();$('#settingsModal').style.display='none';});
+            $('#saveSettingsBtn').addEventListener('click',()=>{const sel=document.querySelector('input[name="timeFormat"]:checked');if(sel)config.timeFormat=sel.value;config.disableAnimations=$('#disableAnimations').checked;config.combinedListView=$('#combinedListViewToggle').checked;config.listView=config.combinedListView?false:$('#listViewToggle').checked;config.sortCategoriesAlpha=$('#sortCategoriesAlphaToggle').checked;config.sortBookmarksAlpha=$('#sortBookmarksAlphaToggle').checked;readWeatherSettings();applyInteractionMode();applyViewModes();renderBookmarks();saveConfig();updateClock();refreshWeather(true);$('#settingsModal').style.display='none';});
 
             $('#configBtn').addEventListener('click',e=>{e.stopPropagation();$('#configText').value=JSON.stringify(config,null,2);md.classList.remove('show');openModal('configModal');});
-            $('#saveConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();alert('Configuration saved.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
-            $('#applyConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();alert('Configuration applied.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
+            $('#saveConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();refreshWeather(true);alert('Configuration saved.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
+            $('#applyConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();refreshWeather(true);alert('Configuration applied.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
             $('#exportConfigBtn').addEventListener('click',()=>{const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(config,null,2));a.download='homepage-config.json';a.click();});
             const imp=$('#importConfigFile');$('#importConfigBtn').addEventListener('click',()=>imp.click());
-            imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
+            imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();refreshWeather(true);alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
 
             $('#customizeBtn').addEventListener('click',e=>{e.stopPropagation();syncColorInputsFromConfig();syncRadiusInputs();md.classList.remove('show');openModal('customizeModal');});
             $('#applyColorsBtn').addEventListener('click',()=>{readColorInputsToConfig();readRadiusInputs();applyColors();saveConfig();alert('Customization applied.');});
@@ -622,10 +925,10 @@
             $('#saveCategoryBtn').addEventListener('click',e=>{e.preventDefault();handleSaveCategory();});
             document.addEventListener('click',e=>{if(suppressClick)return;if(e.target.closest('button, .icon-btn, a[href]'))return;const card=e.target.closest('.bookmark');if(!card)return;const link=card.querySelector('a[href]');if(link)window.open(link.href,link.getAttribute('target')||'_self');});
 
-            setupSearchOverlay();setupTooltip();setupRadiusSliders();
+            setupSearchOverlay();setupTooltip();setupRadiusSliders();setupWeatherSettings();
         }
 
-        function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');}
+        function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');refreshWeather(false);}
         init();
     </script>
 </body>
