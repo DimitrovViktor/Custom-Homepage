@@ -66,5 +66,4 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 
 
 ### TO-DO:
-- weather widget
 - notes/reminders
