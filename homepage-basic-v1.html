@@ -299,52 +299,92 @@
             .search-suggestions { background: color-mix(in srgb, var(--card-bg) 70%, transparent); border-color: color-mix(in srgb, var(--secondary-color) 55%, transparent); }
         }
 
-        .weather { display: none; }
-        .weather.show {
-            display: flex; flex-direction: column; gap: 12px; width: fit-content; max-width: 100%;
-            margin: 0 auto 25px; padding: 14px 20px; background: var(--card-bg);
-            border: 1px solid var(--secondary-color); border-radius: var(--radius);
-            box-shadow: 0 4px 24px rgba(0,0,0,0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        .weather { display: none; position: fixed; z-index: 60; flex-direction: column; gap: 8px; width: max-content; max-width: min(320px, calc(100vw - 32px)); }
+        .weather.show { display: flex; }
+        .weather.pos-top-left { top: 20px; left: 20px; }
+        .weather.pos-top-right { top: 20px; right: 20px; }
+        .weather.pos-bottom-left { bottom: 20px; left: 20px; flex-direction: column-reverse; }
+        .weather.pos-bottom-right { bottom: 20px; right: 20px; flex-direction: column-reverse; }
+
+        .weather-pill {
+            display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 14px;
+            background: var(--card-bg); border: 1px solid var(--secondary-color); border-radius: var(--radius-full);
+            color: var(--text-color); font-size: 0.85rem; font-weight: 400; cursor: pointer; text-align: left;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.28); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            transition: background 0.2s, transform 0.2s;
         }
-        .weather-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
-        .weather-icon { font-size: 2.4rem; width: 2.6rem; text-align: center; flex-shrink: 0; opacity: 0.95; }
-        .weather-temp { font-family: 'Fira Code', monospace; font-size: 2.1rem; font-weight: 500; line-height: 1; }
-        .weather-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; text-align: left; }
-        .weather-cond { font-size: 0.95rem; }
-        .weather-loc { font-size: 0.8rem; opacity: 0.65; display: flex; align-items: center; gap: 6px; }
-        .weather-loc i { font-size: 0.75rem; }
+        .weather-pill:hover { background: var(--hover-color); transform: translateY(-1px); }
+        .weather-pill-icon { font-size: 1.05rem; opacity: 0.95; flex-shrink: 0; width: 1.15rem; text-align: center; }
+        .weather-pill-temp { font-family: 'Fira Code', monospace; font-size: 0.95rem; font-weight: 500; flex-shrink: 0; }
+        .weather-pill-city { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.75; min-width: 0; }
+        .weather-chevron { font-size: 0.6rem; opacity: 0.45; margin-left: auto; flex-shrink: 0; transition: transform 0.25s ease; }
+        .weather.expanded .weather-chevron { transform: rotate(180deg); }
+        .weather-pill .spin { animation: weather-spin 1s linear infinite; }
+
+        .weather-panel {
+            display: none; padding: 16px; background: var(--card-bg); border: 1px solid var(--secondary-color);
+            border-radius: var(--radius); box-shadow: 0 12px 34px rgba(0,0,0,0.34);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        }
+        .weather.expanded .weather-panel { display: block; animation: weather-open-down 0.22s ease; }
+        .weather.pos-bottom-left.expanded .weather-panel, .weather.pos-bottom-right.expanded .weather-panel { animation-name: weather-open-up; }
+        @keyframes weather-open-down { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+        @keyframes weather-open-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        @keyframes weather-spin { to { transform: rotate(360deg); } }
+
+        .weather-panel-head { display: flex; align-items: center; gap: 14px; }
+        .weather-icon { font-size: 2rem; width: 2.2rem; text-align: center; flex-shrink: 0; opacity: 0.95; }
+        .weather-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .weather-temp { font-family: 'Fira Code', monospace; font-size: 1.7rem; font-weight: 500; line-height: 1; }
+        .weather-cond { font-size: 0.9rem; }
+        .weather-loc { font-size: 0.78rem; opacity: 0.6; display: flex; align-items: center; gap: 6px; }
+        .weather-loc i { font-size: 0.7rem; }
         .weather-details {
-            display: flex; gap: 16px; flex-wrap: wrap; padding-left: 16px;
-            border-left: 1px solid var(--secondary-color); font-size: 0.85rem; opacity: 0.8;
+            display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 14px; padding-top: 12px;
+            border-top: 1px solid var(--secondary-color); font-size: 0.8rem; opacity: 0.8;
         }
         .weather-details span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .weather-details i { opacity: 0.7; font-size: 0.8rem; }
+        .weather-details i { opacity: 0.65; font-size: 0.78rem; }
+        .weather-forecast {
+            display: flex; gap: 8px; margin-top: 14px; padding-top: 12px;
+            border-top: 1px solid var(--secondary-color);
+        }
+        .weather-day {
+            flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 5px;
+            padding: 8px 4px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); font-size: 0.75rem;
+        }
+        .weather-day i { font-size: 1rem; opacity: 0.9; }
+        .weather-day-name { opacity: 0.7; }
+        .weather-day-temps { font-family: 'Fira Code', monospace; font-size: 0.7rem; }
+        .weather-day-temps em { font-style: normal; opacity: 0.5; }
+        .weather-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 0.7rem; opacity: 0.55; }
         .weather-refresh {
-            padding: 0; width: 30px; height: 30px; border-radius: var(--radius-xs); background: transparent;
-            color: var(--text-color); opacity: 0.45; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.85rem; flex-shrink: 0;
+            padding: 0; width: 28px; height: 28px; border-radius: var(--radius-xs); background: transparent;
+            color: var(--text-color); opacity: 0.6; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; flex-shrink: 0;
         }
         .weather-refresh:hover { background: rgba(255,255,255,0.1); opacity: 1; transform: none; }
         .weather-refresh.spinning i { animation: weather-spin 0.8s linear infinite; }
-        @keyframes weather-spin { to { transform: rotate(360deg); } }
-        .weather-forecast {
-            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-            border-top: 1px solid var(--secondary-color); padding-top: 12px;
-        }
-        .weather-day {
-            display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 66px;
-            padding: 8px 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); font-size: 0.8rem;
-        }
-        .weather-day i { font-size: 1.1rem; opacity: 0.9; }
-        .weather-day-name { opacity: 0.7; }
-        .weather-day-temps { font-family: 'Fira Code', monospace; font-size: 0.75rem; }
-        .weather-day-temps em { font-style: normal; opacity: 0.5; }
-        .weather-status { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.85; justify-content: center; flex-wrap: wrap; }
-        .weather-status i { opacity: 0.7; }
-        .weather-status button { padding: 7px 12px; font-size: 0.8rem; }
-        .weather-status .spin { animation: weather-spin 1s linear infinite; }
+        .weather-status { display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; }
+        .weather-status-msg { display: flex; gap: 10px; align-items: flex-start; line-height: 1.4; opacity: 0.85; }
+        .weather-status-msg i { margin-top: 2px; opacity: 0.7; }
+        .weather-status-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .weather-status-actions button { padding: 7px 12px; font-size: 0.78rem; }
 
         .weather-settings-label { font-size: 0.8rem; opacity: 0.6; margin: 16px 0 8px; }
+        .weather-pos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .weather-pos-btn {
+            justify-content: flex-start; gap: 10px; background: var(--card-bg); font-size: 0.85rem;
+            font-weight: 400; padding: 11px 13px; border: 1px solid transparent;
+        }
+        .weather-pos-btn:hover { background: var(--hover-color); transform: none; }
+        .weather-pos-btn.selected { background: rgba(100,180,255,0.3); border-color: var(--hover-color); }
+        .pos-box { width: 22px; height: 15px; border: 1px solid var(--text-color); border-radius: 3px; position: relative; opacity: 0.6; flex-shrink: 0; }
+        .pos-box::after { content: ''; position: absolute; width: 7px; height: 4px; background: var(--text-color); border-radius: 1px; }
+        .weather-pos-btn[data-pos="top-left"] .pos-box::after { top: 2px; left: 2px; }
+        .weather-pos-btn[data-pos="top-right"] .pos-box::after { top: 2px; right: 2px; }
+        .weather-pos-btn[data-pos="bottom-left"] .pos-box::after { bottom: 2px; left: 2px; }
+        .weather-pos-btn[data-pos="bottom-right"] .pos-box::after { bottom: 2px; right: 2px; }
         .weather-search-row { display: flex; gap: 8px; }
         .weather-search-row input {
             flex: 1; min-width: 0; padding: 11px 13px; border: 1px solid var(--secondary-color);
@@ -363,8 +403,12 @@
 
         @media (max-width: 768px) {
             .clock { font-size: 100px; }
-            .weather.show { width: 100%; }
-            .weather-details { padding-left: 0; border-left: none; border-top: 1px solid var(--secondary-color); padding-top: 10px; width: 100%; justify-content: center; }
+            .weather { max-width: calc(100vw - 24px); }
+            .weather.pos-top-left, .weather.pos-top-right { top: 12px; }
+            .weather.pos-bottom-left, .weather.pos-bottom-right { bottom: 12px; }
+            .weather.pos-top-left, .weather.pos-bottom-left { left: 12px; }
+            .weather.pos-top-right, .weather.pos-bottom-right { right: 12px; }
+            .weather-pos-grid { grid-template-columns: 1fr; }
             .bookmarks-container { grid-template-columns: 1fr; }
             .form-grid, .color-picker, .radius-controls-grid { grid-template-columns: 1fr; }
         }
@@ -375,7 +419,6 @@
     <div class="container">
         <header>
             <div class="clock" id="clock">00:00:00</div>
-            <div class="weather" id="weatherWidget" aria-live="polite"></div>
             <div class="search-wrapper">
                 <input type="text" class="search-input" placeholder="Search Google..." id="searchInput">
                 <div class="menu-wrapper">
@@ -399,6 +442,8 @@
         </div>
         <main><div class="bookmarks-container" id="bookmarksContainer"></div></main>
     </div>
+
+    <div class="weather" id="weatherWidget" aria-live="polite"></div>
 
     <div class="modal" id="addCategoryModal"><div class="modal-content">
         <div class="modal-header"><h2 class="modal-title">Add New Category</h2><button class="icon-btn close-modal" data-tip="Close">&times;</button></div>
@@ -494,6 +539,13 @@
                 <label class="radio-option"><input type="radio" name="weatherUnits" value="metric"><span>°C · km/h</span></label>
                 <label class="radio-option"><input type="radio" name="weatherUnits" value="imperial"><span>°F · mph</span></label>
             </div>
+            <div class="weather-settings-label">Corner</div>
+            <div class="weather-pos-grid" id="weatherPosGrid">
+                <button type="button" class="weather-pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
+                <button type="button" class="weather-pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
+                <button type="button" class="weather-pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
+                <button type="button" class="weather-pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
+            </div>
             <div class="weather-settings-label">Location</div>
             <div class="radio-group">
                 <label class="radio-option"><input type="radio" name="weatherMode" value="auto"><span>Auto (device)</span></label>
@@ -507,8 +559,8 @@
                 <div class="weather-results" id="weatherCityResults"></div>
             </div>
             <div class="weather-current-loc" id="weatherCurrentLoc"></div>
-            <div class="toggle-row" style="margin-top:6px;"><span class="toggle-label">Show details (feels like, humidity, wind)</span><label class="toggle-switch"><input type="checkbox" id="weatherShowDetails"><span class="toggle-track"></span></label></div>
-            <div class="toggle-row"><span class="toggle-label">Show 3-day forecast</span><label class="toggle-switch"><input type="checkbox" id="weatherShowForecast"><span class="toggle-track"></span></label></div>
+            <div class="toggle-row" style="margin-top:6px;"><span class="toggle-label">Show details when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowDetails"><span class="toggle-track"></span></label></div>
+            <div class="toggle-row"><span class="toggle-label">Show 3-day forecast when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowForecast"><span class="toggle-track"></span></label></div>
         </div>
         <div class="config-buttons"><button id="saveSettingsBtn" data-tip="Save and apply settings"><i class="fas fa-save"></i> Save Settings</button></div>
     </div></div>
@@ -520,7 +572,8 @@
         const DEFAULT_RADIUS = { main:15, sm:10, xs:6, full:50 };
         const DEFAULT_BG = 'https://images.unsplash.com/photo-1707555692988-f306eb0f7bd8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
         const THEMES = { night: { colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, backgroundImage:DEFAULT_BG } };
-        const DEFAULT_WEATHER = { enabled:true, mode:'auto', units:'metric', showDetails:true, showForecast:true, lat:null, lon:null, locationName:'' };
+        const DEFAULT_WEATHER = { enabled:true, mode:'auto', units:'metric', position:'top-right', showDetails:true, showForecast:true, lat:null, lon:null, locationName:'' };
+        const WEATHER_POSITIONS = ['top-left','top-right','bottom-left','bottom-right'];
 
         let config = { timeFormat:'24', sortCategoriesAlpha:false, sortBookmarksAlpha:false, combinedListView:false,
             disableAnimations:true,
@@ -631,7 +684,7 @@
 
         const WEATHER_CACHE_KEY='homepageWeatherCache', GEO_CACHE_KEY='homepageWeatherGeo';
         const WEATHER_TTL=15*60*1000, GEO_TTL=6*60*60*1000;
-        let weatherTimer=null, weatherDraftLoc=null, weatherBusy=false;
+        let weatherTimer=null, weatherDraftLoc=null, weatherBusy=false, weatherExpanded=false, weatherFetchedAt=0;
 
         const WMO_CODES={
             0:['Clear sky','fa-sun','fa-moon'],1:['Mainly clear','fa-cloud-sun','fa-cloud-moon'],
@@ -687,7 +740,7 @@
 
         async function fetchWeather(lat,lon,force){
             const u=weatherUnits(),key=`${lat.toFixed(3)},${lon.toFixed(3)},${u.temperature_unit},${u.wind_speed_unit}`;
-            if(!force){const c=readJson(WEATHER_CACHE_KEY,WEATHER_TTL);if(c&&c.key===key)return c.data;}
+            if(!force){const c=readJson(WEATHER_CACHE_KEY,WEATHER_TTL);if(c&&c.key===key){weatherFetchedAt=c.ts;return c.data;}}
             const url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon
                 +'&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m'
                 +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
@@ -696,21 +749,52 @@
             if(!res.ok)throw new Error('Weather service returned '+res.status+'.');
             const data=await res.json();
             if(!data?.current)throw new Error('Weather service sent an unexpected response.');
-            try{localStorage.setItem(WEATHER_CACHE_KEY,JSON.stringify({key,ts:Date.now(),data}));}catch(e){}
+            weatherFetchedAt=Date.now();
+            try{localStorage.setItem(WEATHER_CACHE_KEY,JSON.stringify({key,ts:weatherFetchedAt,data}));}catch(e){}
             return data;
         }
 
-        function renderWeatherStatus(html){const el=$('#weatherWidget');if(el)el.innerHTML=`<div class="weather-status">${html}</div>`;}
+        function weatherShell(pillHtml,panelHtml){
+            const el=$('#weatherWidget');if(!el)return;
+            el.innerHTML=`<button type="button" class="weather-pill" id="weatherPill" aria-expanded="${weatherExpanded}">${pillHtml}</button><div class="weather-panel">${panelHtml}</div>`;
+            el.classList.toggle('expanded',weatherExpanded);
+            $('#weatherPill').addEventListener('click',e=>{e.stopPropagation();setWeatherExpanded(!weatherExpanded);});
+            $('#weatherFixBtn')?.addEventListener('click',e=>{e.stopPropagation();setWeatherExpanded(false);openSettingsModal();});
+            $('#weatherRetryBtn')?.addEventListener('click',e=>{e.stopPropagation();refreshWeather(true);});
+            $('#weatherRefreshBtn')?.addEventListener('click',e=>{e.stopPropagation();refreshWeather(true);});
+        }
+        function setWeatherExpanded(open){
+            weatherExpanded=!!open;
+            const el=$('#weatherWidget');if(!el)return;
+            el.classList.toggle('expanded',weatherExpanded);
+            $('#weatherPill')?.setAttribute('aria-expanded',String(weatherExpanded));
+        }
+        function applyWeatherPosition(){
+            const el=$('#weatherWidget');if(!el)return;
+            WEATHER_POSITIONS.forEach(p=>el.classList.remove('pos-'+p));
+            const pos=weatherCfg().position;
+            el.classList.add('pos-'+(WEATHER_POSITIONS.includes(pos)?pos:'top-right'));
+        }
+        function renderWeatherLoading(){
+            weatherShell('<i class="fas fa-rotate weather-pill-icon spin"></i><span class="weather-pill-city">Loading weather\u2026</span>',
+                '<div class="weather-status"><div class="weather-status-msg"><i class="fas fa-rotate spin"></i><span>Fetching the latest conditions\u2026</span></div></div>');
+        }
         function renderWeatherError(msg){
-            renderWeatherStatus(`<i class="fas fa-triangle-exclamation"></i><span>${escapeHtml(msg)}</span>
-                <button type="button" id="weatherFixBtn"><i class="fas fa-sliders"></i> Weather settings</button>
-                <button type="button" id="weatherRetryBtn"><i class="fas fa-rotate"></i> Retry</button>`);
-            $('#weatherFixBtn')?.addEventListener('click',openSettingsModal);
-            $('#weatherRetryBtn')?.addEventListener('click',()=>refreshWeather(true));
+            weatherShell('<i class="fas fa-triangle-exclamation weather-pill-icon"></i><span class="weather-pill-city">Weather unavailable</span><i class="fas fa-chevron-down weather-chevron"></i>',
+                `<div class="weather-status"><div class="weather-status-msg"><i class="fas fa-triangle-exclamation"></i><span>${escapeHtml(msg)}</span></div>
+                <div class="weather-status-actions">
+                    <button type="button" id="weatherFixBtn"><i class="fas fa-sliders"></i> Weather settings</button>
+                    <button type="button" id="weatherRetryBtn"><i class="fas fa-rotate"></i> Retry</button>
+                </div></div>`);
         }
 
         function renderWeather(data,loc){
             const w=weatherCfg(),u=weatherUnits(),c=data.current,info=wmo(c.weather_code,c.is_day);
+            const city=String(loc.name||'').split(',')[0].trim()||'Current location';
+            const pill=`<i class="fas ${info.icon} weather-pill-icon"></i>
+                <span class="weather-pill-temp">${Math.round(c.temperature_2m)}${u.t}</span>
+                <span class="weather-pill-city">${escapeHtml(city)}</span>
+                <i class="fas fa-chevron-down weather-chevron"></i>`;
             const details=w.showDetails?`<div class="weather-details">
                     <span><i class="fas fa-temperature-half"></i> Feels ${Math.round(c.apparent_temperature)}${u.t}</span>
                     <span><i class="fas fa-droplet"></i> ${Math.round(c.relative_humidity_2m)}%</span>
@@ -730,30 +814,31 @@
                 }
                 if(days.length)forecast=`<div class="weather-forecast">${days.join('')}</div>`;
             }
-            $('#weatherWidget').innerHTML=`
-                <div class="weather-row">
+            const stamp=new Date(weatherFetchedAt||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:config.timeFormat==='12'});
+            const panel=`<div class="weather-panel-head">
                     <i class="weather-icon fas ${info.icon}"></i>
-                    <div class="weather-temp">${Math.round(c.temperature_2m)}${u.t}</div>
                     <div class="weather-info">
+                        <div class="weather-temp">${Math.round(c.temperature_2m)}${u.t}</div>
                         <div class="weather-cond">${escapeHtml(info.text)}</div>
                         <div class="weather-loc"><i class="fas fa-location-dot"></i>${escapeHtml(loc.name||'')}</div>
                     </div>
-                    ${details}
-                    <button type="button" class="weather-refresh" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button>
-                </div>${forecast}`;
-            $('#weatherRefreshBtn')?.addEventListener('click',()=>refreshWeather(true));
+                </div>${details}${forecast}
+                <div class="weather-footer"><span>Updated ${stamp}</span>
+                <button type="button" class="weather-refresh" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button></div>`;
+            weatherShell(pill,panel);
         }
 
         async function refreshWeather(force){
             const el=$('#weatherWidget'),w=weatherCfg();
             if(!el)return;
-            if(!w.enabled){el.classList.remove('show');el.innerHTML='';if(weatherTimer){clearInterval(weatherTimer);weatherTimer=null;}return;}
+            if(!w.enabled){el.classList.remove('show','expanded');el.innerHTML='';weatherExpanded=false;if(weatherTimer){clearInterval(weatherTimer);weatherTimer=null;}return;}
             el.classList.add('show');
+            applyWeatherPosition();
             if(weatherBusy)return;
             weatherBusy=true;
             const spin=$('#weatherRefreshBtn');
             if(spin)spin.classList.add('spinning');
-            else if(!el.querySelector('.weather-row'))renderWeatherStatus('<i class="fas fa-rotate spin"></i><span>Loading weather\u2026</span>');
+            else if(!el.querySelector('.weather-pill'))renderWeatherLoading();
             try{
                 const loc=await resolveWeatherLocation();
                 const data=await fetchWeather(loc.lat,loc.lon,force);
@@ -787,6 +872,7 @@
             $$('input[name="weatherMode"]').forEach(r=>r.checked=r.value===w.mode);
             $('#weatherShowDetails').checked=!!w.showDetails;
             $('#weatherShowForecast').checked=!!w.showForecast;
+            $$('.weather-pos-btn').forEach(b=>b.classList.toggle('selected',b.dataset.pos===(WEATHER_POSITIONS.includes(w.position)?w.position:'top-right')));
             weatherDraftLoc=null;
             $('#weatherCityInput').value='';
             const box=$('#weatherCityResults');box.innerHTML='';box.classList.remove('show');
@@ -799,6 +885,8 @@
             w.mode=document.querySelector('input[name="weatherMode"]:checked')?.value||'auto';
             w.showDetails=$('#weatherShowDetails').checked;
             w.showForecast=$('#weatherShowForecast').checked;
+            const pos=document.querySelector('.weather-pos-btn.selected')?.dataset.pos;
+            if(WEATHER_POSITIONS.includes(pos))w.position=pos;
             if(weatherDraftLoc){w.lat=weatherDraftLoc.lat;w.lon=weatherDraftLoc.lon;w.locationName=weatherDraftLoc.name;}
             weatherDraftLoc=null;
         }
@@ -825,8 +913,11 @@
         function setupWeatherSettings(){
             $('#weatherEnabled').addEventListener('change',updateWeatherSettingsUI);
             $$('input[name="weatherMode"]').forEach(r=>r.addEventListener('change',updateWeatherSettingsUI));
+            $$('.weather-pos-btn').forEach(b=>b.addEventListener('click',()=>{$$('.weather-pos-btn').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');}));
             $('#weatherSearchBtn').addEventListener('click',searchWeatherCity);
             $('#weatherCityInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchWeatherCity();}});
+            document.addEventListener('click',e=>{if(weatherExpanded&&!e.target.closest('#weatherWidget'))setWeatherExpanded(false);});
+            document.addEventListener('keydown',e=>{if(e.key==='Escape'&&weatherExpanded)setWeatherExpanded(false);});
             document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshWeather(false);});
         }
 
