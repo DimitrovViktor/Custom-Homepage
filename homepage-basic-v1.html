@@ -358,6 +358,7 @@
         .weather-day-temps { font-family: 'Fira Code', monospace; font-size: 0.7rem; }
         .weather-day-temps em { font-style: normal; opacity: 0.5; }
         .weather-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 0.7rem; opacity: 0.55; }
+        .weather-footer-actions { display: inline-flex; align-items: center; gap: 4px; }
         .weather-refresh {
             padding: 0; width: 28px; height: 28px; border-radius: var(--radius-xs); background: transparent;
             color: var(--text-color); opacity: 0.6; display: inline-flex; align-items: center; justify-content: center;
@@ -425,6 +426,7 @@
                     <button id="menuBtn" class="menu-btn" data-tip="Menu" aria-label="Menu"><i class="fas fa-bars"></i></button>
                     <div class="menu-dropdown" id="menuDropdown" aria-hidden="true">
                         <button id="settingsBtn" class="menu-item"><i class="fas fa-sliders"></i> Settings</button>
+                        <button id="weatherToggleBtn" class="menu-item"><i class="fas fa-cloud-sun"></i> <span id="weatherToggleLabel">Hide weather</span></button>
                         <div class="menu-divider"></div>
                         <button id="customizeBtn" class="menu-item"><i class="fas fa-palette"></i> Customization</button>
                         <button id="configBtn" class="menu-item"><i class="fas fa-code"></i> Configuration</button>
@@ -762,6 +764,18 @@
             $('#weatherFixBtn')?.addEventListener('click',e=>{e.stopPropagation();setWeatherExpanded(false);openSettingsModal();});
             $('#weatherRetryBtn')?.addEventListener('click',e=>{e.stopPropagation();refreshWeather(true);});
             $('#weatherRefreshBtn')?.addEventListener('click',e=>{e.stopPropagation();refreshWeather(true);});
+            $('#weatherHideBtn')?.addEventListener('click',e=>{e.stopPropagation();setWeatherEnabled(false);});
+        }
+        function setWeatherEnabled(on){
+            weatherCfg().enabled=!!on;
+            if(!on)weatherExpanded=false;
+            saveConfig();
+            updateWeatherMenuLabel();
+            refreshWeather(!!on);
+        }
+        function updateWeatherMenuLabel(){
+            const l=$('#weatherToggleLabel');
+            if(l)l.textContent=weatherCfg().enabled?'Hide weather':'Show weather';
         }
         function setWeatherExpanded(open){
             weatherExpanded=!!open;
@@ -824,7 +838,10 @@
                     </div>
                 </div>${details}${forecast}
                 <div class="weather-footer"><span>Updated ${stamp}</span>
-                <button type="button" class="weather-refresh" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button></div>`;
+                <span class="weather-footer-actions">
+                    <button type="button" class="weather-refresh" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button>
+                    <button type="button" class="weather-refresh" id="weatherHideBtn" data-tip="Hide the weather widget"><i class="fas fa-eye-slash"></i></button>
+                </span></div>`;
             weatherShell(pill,panel);
         }
 
@@ -914,6 +931,7 @@
             $('#weatherEnabled').addEventListener('change',updateWeatherSettingsUI);
             $$('input[name="weatherMode"]').forEach(r=>r.addEventListener('change',updateWeatherSettingsUI));
             $$('.weather-pos-btn').forEach(b=>b.addEventListener('click',()=>{$$('.weather-pos-btn').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');}));
+            $('#weatherToggleBtn').addEventListener('click',e=>{e.stopPropagation();$('#menuDropdown').classList.remove('show');setWeatherEnabled(!weatherCfg().enabled);});
             $('#weatherSearchBtn').addEventListener('click',searchWeatherCity);
             $('#weatherCityInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchWeatherCity();}});
             document.addEventListener('click',e=>{if(weatherExpanded&&!e.target.closest('#weatherWidget'))setWeatherExpanded(false);});
@@ -1000,14 +1018,14 @@
             $('#settingsBtn').addEventListener('click',e=>{e.stopPropagation();md.classList.remove('show');openSettingsModal();});
             $('#combinedListViewToggle').addEventListener('change',function(){const l=$('#listViewToggle');if(this.checked){l.checked=false;l.disabled=true;}else l.disabled=false;});
             $('#listViewToggle').addEventListener('change',function(){if(this.checked)$('#combinedListViewToggle').checked=false;});
-            $('#saveSettingsBtn').addEventListener('click',()=>{const sel=document.querySelector('input[name="timeFormat"]:checked');if(sel)config.timeFormat=sel.value;config.disableAnimations=$('#disableAnimations').checked;config.combinedListView=$('#combinedListViewToggle').checked;config.listView=config.combinedListView?false:$('#listViewToggle').checked;config.sortCategoriesAlpha=$('#sortCategoriesAlphaToggle').checked;config.sortBookmarksAlpha=$('#sortBookmarksAlphaToggle').checked;readWeatherSettings();applyInteractionMode();applyViewModes();renderBookmarks();saveConfig();updateClock();refreshWeather(true);$('#settingsModal').style.display='none';});
+            $('#saveSettingsBtn').addEventListener('click',()=>{const sel=document.querySelector('input[name="timeFormat"]:checked');if(sel)config.timeFormat=sel.value;config.disableAnimations=$('#disableAnimations').checked;config.combinedListView=$('#combinedListViewToggle').checked;config.listView=config.combinedListView?false:$('#listViewToggle').checked;config.sortCategoriesAlpha=$('#sortCategoriesAlphaToggle').checked;config.sortBookmarksAlpha=$('#sortBookmarksAlphaToggle').checked;readWeatherSettings();updateWeatherMenuLabel();applyInteractionMode();applyViewModes();renderBookmarks();saveConfig();updateClock();refreshWeather(true);$('#settingsModal').style.display='none';});
 
             $('#configBtn').addEventListener('click',e=>{e.stopPropagation();$('#configText').value=JSON.stringify(config,null,2);md.classList.remove('show');openModal('configModal');});
-            $('#saveConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();refreshWeather(true);alert('Configuration saved.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
-            $('#applyConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();refreshWeather(true);alert('Configuration applied.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
+            $('#saveConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();updateWeatherMenuLabel();refreshWeather(true);alert('Configuration saved.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
+            $('#applyConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();updateWeatherMenuLabel();refreshWeather(true);alert('Configuration applied.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
             $('#exportConfigBtn').addEventListener('click',()=>{const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(config,null,2));a.download='homepage-config.json';a.click();});
             const imp=$('#importConfigFile');$('#importConfigBtn').addEventListener('click',()=>imp.click());
-            imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();refreshWeather(true);alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
+            imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();updateWeatherMenuLabel();refreshWeather(true);alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
 
             $('#customizeBtn').addEventListener('click',e=>{e.stopPropagation();syncColorInputsFromConfig();syncRadiusInputs();md.classList.remove('show');openModal('customizeModal');});
             $('#applyColorsBtn').addEventListener('click',()=>{readColorInputsToConfig();readRadiusInputs();applyColors();saveConfig();alert('Customization applied.');});
@@ -1019,7 +1037,7 @@
             setupSearchOverlay();setupTooltip();setupRadiusSliders();setupWeatherSettings();
         }
 
-        function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');refreshWeather(false);}
+        function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');updateWeatherMenuLabel();refreshWeather(false);}
         init();
     </script>
 </body>
