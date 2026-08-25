@@ -56,7 +56,7 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 ### 3. UI Customization
 - Adjustable colors and color transparency
 - Adjustable clock
-- Weather Widget
+- Weather Widget (can be moved between corners)
 - Adjustable category and bookmark view
 - Adjustable category and bookmark sorting (A-Z)
 
