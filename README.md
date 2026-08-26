@@ -51,7 +51,6 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 
 ### 2. Google search bar
 - Search bar shows bookmark links matching search terms as clickable options
-![Search Bar](https://github.com/user-attachments/assets/6bf90f23-5678-48c3-a30e-1dd40e9c4e0f)
 
 ### 3. UI Customization
 - Adjustable colors and color transparency
