@@ -27,6 +27,14 @@
             --config-btn-color: rgba(255,255,255,0.48);
             --color-picker-btn-color: rgba(255,255,255,0.34);
             --overlay-color: rgba(0,0,0,0.59);
+            --acrylic-section: none;
+            --acrylic-card: none;
+            --acrylic-search: none;
+            --acrylic-menu: blur(16px) saturate(140%);
+            --acrylic-modal: blur(8px) saturate(140%);
+            --acrylic-overlay: blur(22px) saturate(140%);
+            --acrylic-weather: blur(12px) saturate(140%);
+            --acrylic-schedule: blur(12px) saturate(140%);
             --expand-duration: 600ms;
             --radius: 15px;
             --radius-sm: 10px;
@@ -89,6 +97,7 @@
             display: flex; align-items: center; gap: 10px; max-width: 1000px; margin: 0 auto 40px;
             background: var(--search-bg); padding: 5px 10px 5px 20px; border-radius: var(--radius-full);
             box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+            backdrop-filter: var(--acrylic-search); -webkit-backdrop-filter: var(--acrylic-search);
         }
         .search-input { width: 100%; padding: 15px 0; border: none; background: transparent; color: var(--search-text); font-size: 1.1rem; outline: none; flex: 1; }
         .search-input::placeholder { color: var(--search-placeholder); }
@@ -104,7 +113,7 @@
             display: none; position: absolute; right: 0; top: 56px; background: var(--modal-bg);
             border-radius: var(--radius); box-shadow: 0 16px 48px rgba(0,0,0,0.35);
             border: 1px solid var(--secondary-color); padding: 10px; min-width: 220px; z-index: 50;
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: var(--acrylic-menu); -webkit-backdrop-filter: var(--acrylic-menu);
         }
         .menu-dropdown.show { display: flex; flex-direction: column; gap: 6px; }
         .menu-dropdown .menu-item {
@@ -117,7 +126,7 @@
         .menu-dropdown .menu-divider { height: 1px; background: var(--secondary-color); margin: 2px 8px; }
 
         .bookmarks-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .section { background: var(--section-bg); border-radius: var(--radius); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: visible; }
+        .section { background: var(--section-bg); border-radius: var(--radius); padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); overflow: visible; backdrop-filter: var(--acrylic-section); -webkit-backdrop-filter: var(--acrylic-section); }
         .section-header {
             display: flex; justify-content: space-between; align-items: center; gap: 12px;
             margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--secondary-color); overflow: visible; cursor: pointer;
@@ -154,6 +163,7 @@
             background: var(--card-bg); border-radius: var(--radius-sm); padding: 15px; text-align: center;
             transition: transform 0.2s, box-shadow 0.2s, background 0.2s; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+            backdrop-filter: var(--acrylic-card); -webkit-backdrop-filter: var(--acrylic-card);
         }
         .bookmark:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); background: var(--hover-color); position: relative; z-index: 20; }
         .bookmark-icon { font-size: 1.8rem; margin-bottom: 10px; }
@@ -197,8 +207,8 @@
         .combined-list-view-enabled .bookmark-icon { display: inline-flex; margin: 0; font-size: 1.15rem; width: 1.15rem; height: 1.15rem; align-items: center; justify-content: center; flex-shrink: 0; }
         .combined-list-view-enabled .bookmark-name { text-align: left; font-size: 0.95rem; }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; justify-content: center; align-items: center; }
-        .modal-content { background: var(--modal-bg); padding: 28px; border-radius: var(--radius); width: 90%; max-width: 640px; max-height: 80vh; overflow-y: auto; border: 1px solid var(--secondary-color); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: var(--acrylic-modal); -webkit-backdrop-filter: var(--acrylic-modal); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { backdrop-filter: var(--acrylic-modal); -webkit-backdrop-filter: var(--acrylic-modal); background: var(--modal-bg); padding: 28px; border-radius: var(--radius); width: 90%; max-width: 640px; max-height: 80vh; overflow-y: auto; border: 1px solid var(--secondary-color); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .modal-title { font-size: 1.4rem; font-weight: 600; }
 
@@ -245,6 +255,7 @@
         input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
         input[type="range"] { width: 80px; accent-color: rgba(100,180,255,0.7); }
 
+        .acrylic-note { font-size: 0.78rem; opacity: 0.55; line-height: 1.4; margin-bottom: 12px; }
         .radius-controls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-bottom: 20px; }
         .radius-control { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: rgba(255,255,255,0.04); border-radius: var(--radius-sm); overflow: hidden; }
         .radius-label { min-width: 70px; font-size: 0.8rem; opacity: 0.8; flex-shrink: 0; }
@@ -254,9 +265,9 @@
 
         #configText { width: 100%; height: 300px; padding: 15px; border-radius: var(--radius-sm); background: var(--section-bg); color: var(--text-color); border: 1px solid var(--secondary-color); margin-bottom: 20px; resize: none; font-family: 'Fira Code', monospace; font-size: 0.85rem; }
 
-        .search-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; background: rgba(0,0,0,0.25); backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 200ms ease, visibility 0s linear 200ms; }
+        .search-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; background: rgba(0,0,0,0.25); backdrop-filter: var(--acrylic-overlay); -webkit-backdrop-filter: var(--acrylic-overlay); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 200ms ease, visibility 0s linear 200ms; }
         .search-overlay.show { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 200ms ease; }
-        .search-overlay-panel { width: min(900px, 92vw); border-radius: var(--radius); background: var(--section-bg); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); border: 1px solid var(--secondary-color); box-shadow: 0 20px 60px rgba(0,0,0,0.45); padding: 16px; transform: translateY(10px) scale(0.98); opacity: 0; transition: transform 220ms ease, opacity 220ms ease; }
+        .search-overlay-panel { width: min(900px, 92vw); border-radius: var(--radius); background: var(--section-bg); backdrop-filter: var(--acrylic-overlay); -webkit-backdrop-filter: var(--acrylic-overlay); border: 1px solid var(--secondary-color); box-shadow: 0 20px 60px rgba(0,0,0,0.45); padding: 16px; transform: translateY(10px) scale(0.98); opacity: 0; transition: transform 220ms ease, opacity 220ms ease; }
         .search-overlay.show .search-overlay-panel { transform: translateY(0) scale(1); opacity: 1; }
         .search-overlay-box { display: flex; align-items: center; gap: 10px; background: var(--search-bg); border-radius: var(--radius-full); padding: 6px 16px; border: 1px solid var(--secondary-color); }
         .search-overlay-input { width: 100%; border: none; background: transparent; color: var(--search-text); font-size: 1.1rem; padding: 14px 6px; outline: none; }
@@ -299,39 +310,55 @@
             .search-suggestions { background: color-mix(in srgb, var(--card-bg) 70%, transparent); border-color: color-mix(in srgb, var(--secondary-color) 55%, transparent); }
         }
 
-        .weather { display: none; position: fixed; z-index: 60; flex-direction: column; gap: 8px; width: max-content; max-width: min(320px, calc(100vw - 32px)); }
-        .weather.show { display: flex; }
-        .weather.pos-top-left { top: 20px; left: 20px; }
-        .weather.pos-top-right { top: 20px; right: 20px; }
-        .weather.pos-bottom-left { bottom: 20px; left: 20px; flex-direction: column-reverse; }
-        .weather.pos-bottom-right { bottom: 20px; right: 20px; flex-direction: column-reverse; }
+        .corner-stack { position: fixed; z-index: 60; display: flex; flex-direction: column; gap: 10px; max-width: min(340px, calc(100vw - 32px)); pointer-events: none; }
+        .corner-stack > * { pointer-events: auto; max-width: 100%; }
+        .corner-stack.pos-top-left { top: 20px; left: 20px; align-items: flex-start; }
+        .corner-stack.pos-top-right { top: 20px; right: 20px; align-items: flex-end; }
+        .corner-stack.pos-bottom-left { bottom: 20px; left: 20px; align-items: flex-start; flex-direction: column-reverse; }
+        .corner-stack.pos-bottom-right { bottom: 20px; right: 20px; align-items: flex-end; flex-direction: column-reverse; }
 
-        .weather-pill {
+        .cwidget { display: none; flex-direction: column; gap: 8px; width: max-content; max-width: 100%; }
+        .cwidget.show { display: flex; }
+        .cwidget.pos-bottom-left, .cwidget.pos-bottom-right { flex-direction: column-reverse; }
+        .cwidget-pill {
             display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 14px;
             background: var(--card-bg); border: 1px solid var(--secondary-color); border-radius: var(--radius-full);
             color: var(--text-color); font-size: 0.85rem; font-weight: 400; cursor: pointer; text-align: left;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.28); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.28); transition: background 0.2s, transform 0.2s;
         }
-        .weather-pill:hover { background: var(--hover-color); transform: translateY(-1px); }
-        .weather-pill-icon { font-size: 1.05rem; opacity: 0.95; flex-shrink: 0; width: 1.15rem; text-align: center; }
-        .weather-pill-temp { font-family: 'Fira Code', monospace; font-size: 0.95rem; font-weight: 500; flex-shrink: 0; }
-        .weather-pill-city { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.75; min-width: 0; }
-        .weather-chevron { font-size: 0.6rem; opacity: 0.45; margin-left: auto; flex-shrink: 0; transition: transform 0.25s ease; }
-        .weather.expanded .weather-chevron { transform: rotate(180deg); }
-        .weather-pill .spin { animation: weather-spin 1s linear infinite; }
-
-        .weather-panel {
-            display: none; padding: 16px; background: var(--card-bg); border: 1px solid var(--secondary-color);
-            border-radius: var(--radius); box-shadow: 0 12px 34px rgba(0,0,0,0.34);
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        .cwidget-pill:hover { background: var(--hover-color); transform: translateY(-1px); }
+        .cwidget-pill-icon { font-size: 1.05rem; opacity: 0.95; flex-shrink: 0; width: 1.15rem; text-align: center; }
+        .cwidget-pill-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.75; min-width: 0; }
+        .cwidget-chevron { font-size: 0.6rem; opacity: 0.45; margin-left: auto; flex-shrink: 0; transition: transform 0.25s ease; }
+        .cwidget.expanded .cwidget-chevron { transform: rotate(180deg); }
+        .cwidget-pill .spin { animation: weather-spin 1s linear infinite; }
+        .cwidget-panel {
+            display: none; width: 100%; padding: 16px; background: var(--card-bg);
+            border: 1px solid var(--secondary-color); border-radius: var(--radius); box-shadow: 0 12px 34px rgba(0,0,0,0.34);
         }
-        .weather.expanded .weather-panel { display: block; animation: weather-open-down 0.22s ease; }
-        .weather.pos-bottom-left.expanded .weather-panel, .weather.pos-bottom-right.expanded .weather-panel { animation-name: weather-open-up; }
+        .cwidget.expanded .cwidget-panel { display: block; animation: weather-open-down 0.22s ease; }
+        .cwidget.pos-bottom-left.expanded .cwidget-panel, .cwidget.pos-bottom-right.expanded .cwidget-panel { animation-name: weather-open-up; }
         @keyframes weather-open-down { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
         @keyframes weather-open-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         @keyframes weather-spin { to { transform: rotate(360deg); } }
+        .cwidget-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 0.7rem; opacity: 0.55; }
+        .cwidget-footer-actions { display: inline-flex; align-items: center; gap: 4px; }
+        .cwidget-btn {
+            padding: 0; width: 28px; height: 28px; border-radius: var(--radius-xs); background: transparent;
+            color: var(--text-color); opacity: 0.6; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; flex-shrink: 0;
+        }
+        .cwidget-btn:hover { background: rgba(255,255,255,0.1); opacity: 1; transform: none; }
+        .cwidget-btn.spinning i { animation: weather-spin 0.8s linear infinite; }
+        .cwidget-status { display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; }
+        .cwidget-status-msg { display: flex; gap: 10px; align-items: flex-start; line-height: 1.4; opacity: 0.85; }
+        .cwidget-status-msg i { margin-top: 2px; opacity: 0.7; }
+        .cwidget-status-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .cwidget-status-actions button { padding: 7px 12px; font-size: 0.78rem; }
 
+        .weather .cwidget-pill, .weather .cwidget-panel { backdrop-filter: var(--acrylic-weather); -webkit-backdrop-filter: var(--acrylic-weather); }
+        .schedule .cwidget-pill, .schedule .cwidget-panel { backdrop-filter: var(--acrylic-schedule); -webkit-backdrop-filter: var(--acrylic-schedule); }
+        .weather-pill-temp { font-family: 'Fira Code', monospace; font-size: 0.95rem; font-weight: 500; flex-shrink: 0; }
         .weather-panel-head { display: flex; align-items: center; gap: 14px; }
         .weather-icon { font-size: 2rem; width: 2.2rem; text-align: center; flex-shrink: 0; opacity: 0.95; }
         .weather-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -345,10 +372,7 @@
         }
         .weather-details span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
         .weather-details i { opacity: 0.65; font-size: 0.78rem; }
-        .weather-forecast {
-            display: flex; gap: 8px; margin-top: 14px; padding-top: 12px;
-            border-top: 1px solid var(--secondary-color);
-        }
+        .weather-forecast { display: flex; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--secondary-color); }
         .weather-day {
             flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 5px;
             padding: 8px 4px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); font-size: 0.75rem;
@@ -357,35 +381,92 @@
         .weather-day-name { opacity: 0.7; }
         .weather-day-temps { font-family: 'Fira Code', monospace; font-size: 0.7rem; }
         .weather-day-temps em { font-style: normal; opacity: 0.5; }
-        .weather-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 0.7rem; opacity: 0.55; }
-        .weather-footer-actions { display: inline-flex; align-items: center; gap: 4px; }
-        .weather-refresh {
-            padding: 0; width: 28px; height: 28px; border-radius: var(--radius-xs); background: transparent;
-            color: var(--text-color); opacity: 0.6; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; flex-shrink: 0;
+
+        .schedule-panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+        .schedule-panel-day { font-size: 0.95rem; }
+        .schedule-panel-count { font-size: 0.72rem; opacity: 0.55; white-space: nowrap; }
+        .schedule-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+        .schedule-item {
+            display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.05); border-left: 2px solid transparent; font-size: 0.82rem;
         }
-        .weather-refresh:hover { background: rgba(255,255,255,0.1); opacity: 1; transform: none; }
-        .weather-refresh.spinning i { animation: weather-spin 0.8s linear infinite; }
-        .weather-status { display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; }
-        .weather-status-msg { display: flex; gap: 10px; align-items: flex-start; line-height: 1.4; opacity: 0.85; }
-        .weather-status-msg i { margin-top: 2px; opacity: 0.7; }
-        .weather-status-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .weather-status-actions button { padding: 7px 12px; font-size: 0.78rem; }
+        .schedule-item.is-now { border-left-color: var(--hover-color); background: rgba(100,180,255,0.18); }
+        .schedule-item.is-past { opacity: 0.4; }
+        .schedule-item-time { font-family: 'Fira Code', monospace; font-size: 0.72rem; opacity: 0.8; white-space: nowrap; flex-shrink: 0; }
+        .schedule-item-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .schedule-item-dur { font-size: 0.7rem; opacity: 0.5; white-space: nowrap; flex-shrink: 0; }
+        .schedule-empty { font-size: 0.85rem; opacity: 0.6; line-height: 1.4; }
+        .cal { width: 100%; }
+        .cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+        .cal-title { font-size: 0.85rem; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .cal-dow { font-size: 0.62rem; opacity: 0.45; text-align: center; padding: 2px 0; text-transform: uppercase; letter-spacing: 0.04em; }
+        .cal-day {
+            position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+            padding: 0; font-size: 0.75rem; font-weight: 400; color: var(--text-color);
+            background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: var(--radius-xs);
+        }
+        .cal-day:hover { background: var(--hover-color); transform: none; }
+        .cal-day.today { border-color: var(--hover-color); }
+        .cal-day.selected { background: rgba(100,180,255,0.35); border-color: var(--hover-color); }
+        .cal-day.has-events::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--text-color); opacity: 0.55; }
+        .cal-day.selected.has-events::after { opacity: 0.95; }
+        .cal-blank { background: transparent; pointer-events: none; }
+        .cal-lg .cal-day { font-size: 0.9rem; }
+        .cal-lg .cal-title { font-size: 0.95rem; }
+        .cal-lg .cal-dow { font-size: 0.7rem; }
+        .cal-nav-btn { opacity: 0.7; }
+        .schedule-views { display: flex; gap: 6px; margin-bottom: 12px; }
+        .schedule-view-btn {
+            flex: 1; justify-content: center; padding: 7px 4px; font-size: 0.72rem; font-weight: 400;
+            background: rgba(255,255,255,0.05); border: 1px solid transparent; border-radius: var(--radius-sm);
+        }
+        .schedule-view-btn:hover { background: var(--hover-color); transform: none; }
+        .schedule-view-btn.active { background: rgba(100,180,255,0.3); border-color: var(--hover-color); }
+        .schedule-group { margin-top: 12px; }
+        .schedule-group:first-child { margin-top: 0; }
+        .schedule-group-title { font-size: 0.7rem; opacity: 0.55; margin-bottom: 5px; display: flex; justify-content: space-between; gap: 8px; }
+        .schedule-group-title.is-today { opacity: 0.85; color: var(--hover-color); }
+        .schedule-scroll { max-height: 260px; overflow-y: auto; }
+        .schedule-picked { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--secondary-color); }
+        .schedule-selection { margin-top: 10px; font-size: 0.8rem; opacity: 0.7; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .schedule-selection button { padding: 5px 10px; font-size: 0.72rem; font-weight: 400; background: var(--card-bg); }
+        .schedule-selection button:hover { transform: none; }
+        .schedule-time-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 12px; margin-top: 12px; align-items: end; }
+        .form-group input[type="time"], .form-group input[type="number"] {
+            padding: 12px 14px; border: 1px solid var(--secondary-color); background: var(--card-bg);
+            color: var(--text-color); border-radius: var(--radius-sm); outline: none; font-size: 0.95rem;
+            font-family: inherit; width: 100%; transition: border-color 0.2s;
+        }
+        .form-group input[type="time"]:focus, .form-group input[type="number"]:focus { border-color: var(--hover-color); }
+        .schedule-events { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+        .schedule-event {
+            display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--card-bg);
+            border: 1px solid var(--secondary-color); border-radius: var(--radius-sm);
+        }
+        .schedule-event-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+        .schedule-event-title { font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .schedule-event-meta { font-size: 0.75rem; opacity: 0.6; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .schedule-event-days { display: inline-flex; gap: 3px; }
+        .schedule-event-days span { padding: 1px 5px; border-radius: 3px; background: rgba(255,255,255,0.08); font-size: 0.68rem; }
+        .schedule-event-actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .schedule-events-empty { font-size: 0.85rem; opacity: 0.6; padding: 4px 2px; }
 
         .weather-settings-label { font-size: 0.8rem; opacity: 0.6; margin: 16px 0 8px; }
-        .weather-pos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .weather-pos-btn {
+        .pos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .pos-btn {
             justify-content: flex-start; gap: 10px; background: var(--card-bg); font-size: 0.85rem;
             font-weight: 400; padding: 11px 13px; border: 1px solid transparent;
         }
-        .weather-pos-btn:hover { background: var(--hover-color); transform: none; }
-        .weather-pos-btn.selected { background: rgba(100,180,255,0.3); border-color: var(--hover-color); }
+        .pos-btn:hover { background: var(--hover-color); transform: none; }
+        .pos-btn.selected { background: rgba(100,180,255,0.3); border-color: var(--hover-color); }
         .pos-box { width: 22px; height: 15px; border: 1px solid var(--text-color); border-radius: 3px; position: relative; opacity: 0.6; flex-shrink: 0; }
         .pos-box::after { content: ''; position: absolute; width: 7px; height: 4px; background: var(--text-color); border-radius: 1px; }
-        .weather-pos-btn[data-pos="top-left"] .pos-box::after { top: 2px; left: 2px; }
-        .weather-pos-btn[data-pos="top-right"] .pos-box::after { top: 2px; right: 2px; }
-        .weather-pos-btn[data-pos="bottom-left"] .pos-box::after { bottom: 2px; left: 2px; }
-        .weather-pos-btn[data-pos="bottom-right"] .pos-box::after { bottom: 2px; right: 2px; }
+        .pos-btn[data-pos="top-left"] .pos-box::after { top: 2px; left: 2px; }
+        .pos-btn[data-pos="top-right"] .pos-box::after { top: 2px; right: 2px; }
+        .pos-btn[data-pos="bottom-left"] .pos-box::after { bottom: 2px; left: 2px; }
+        .pos-btn[data-pos="bottom-right"] .pos-box::after { bottom: 2px; right: 2px; }
+
         .weather-search-row { display: flex; gap: 8px; }
         .weather-search-row input {
             flex: 1; min-width: 0; padding: 11px 13px; border: 1px solid var(--secondary-color);
@@ -404,12 +485,13 @@
 
         @media (max-width: 768px) {
             .clock { font-size: 100px; }
-            .weather { max-width: calc(100vw - 24px); }
-            .weather.pos-top-left, .weather.pos-top-right { top: 12px; }
-            .weather.pos-bottom-left, .weather.pos-bottom-right { bottom: 12px; }
-            .weather.pos-top-left, .weather.pos-bottom-left { left: 12px; }
-            .weather.pos-top-right, .weather.pos-bottom-right { right: 12px; }
-            .weather-pos-grid { grid-template-columns: 1fr; }
+            .corner-stack { max-width: calc(100vw - 24px); }
+            .corner-stack.pos-top-left, .corner-stack.pos-top-right { top: 12px; }
+            .corner-stack.pos-bottom-left, .corner-stack.pos-bottom-right { bottom: 12px; }
+            .corner-stack.pos-top-left, .corner-stack.pos-bottom-left { left: 12px; }
+            .corner-stack.pos-top-right, .corner-stack.pos-bottom-right { right: 12px; }
+            .pos-grid { grid-template-columns: 1fr; }
+            .schedule-time-row { grid-template-columns: 1fr; }
             .bookmarks-container { grid-template-columns: 1fr; }
             .form-grid, .color-picker, .radius-controls-grid { grid-template-columns: 1fr; }
         }
@@ -427,6 +509,8 @@
                     <div class="menu-dropdown" id="menuDropdown" aria-hidden="true">
                         <button id="settingsBtn" class="menu-item"><i class="fas fa-sliders"></i> Settings</button>
                         <button id="weatherToggleBtn" class="menu-item"><i class="fas fa-cloud-sun"></i> <span id="weatherToggleLabel">Hide weather</span></button>
+                        <button id="scheduleManageBtn" class="menu-item"><i class="fas fa-calendar-day"></i> Schedule</button>
+                        <button id="scheduleToggleBtn" class="menu-item"><i class="fas fa-calendar-check"></i> <span id="scheduleToggleLabel">Hide schedule</span></button>
                         <div class="menu-divider"></div>
                         <button id="customizeBtn" class="menu-item"><i class="fas fa-palette"></i> Customization</button>
                         <button id="configBtn" class="menu-item"><i class="fas fa-code"></i> Configuration</button>
@@ -445,7 +529,31 @@
         <main><div class="bookmarks-container" id="bookmarksContainer"></div></main>
     </div>
 
-    <div class="weather" id="weatherWidget" aria-live="polite"></div>
+    <div class="corner-stack pos-top-left" id="stackTopLeft"></div>
+    <div class="corner-stack pos-top-right" id="stackTopRight"></div>
+    <div class="corner-stack pos-bottom-left" id="stackBottomLeft"></div>
+    <div class="corner-stack pos-bottom-right" id="stackBottomRight"></div>
+    <div class="cwidget weather" id="weatherWidget" aria-live="polite"></div>
+    <div class="cwidget schedule" id="scheduleWidget" aria-live="polite"></div>
+
+    <div class="modal" id="scheduleModal"><div class="modal-content">
+        <div class="modal-header"><h2 class="modal-title">Schedule</h2><button class="icon-btn close-modal" data-tip="Close">&times;</button></div>
+        <div class="form-group"><label for="scheduleTitleInput">Activity</label><input type="text" id="scheduleTitleInput" placeholder="e.g. Morning run"></div>
+        <div class="form-group" style="margin-top:12px;"><label>Dates</label><div class="cal cal-lg" id="scheduleFormCalendar"></div>
+            <div class="schedule-selection"><span id="scheduleSelectionText">No dates picked</span><button type="button" id="scheduleClearDatesBtn"><i class="fas fa-xmark"></i> Clear</button></div>
+        </div>
+        <div class="schedule-time-row">
+            <div class="form-group"><label for="scheduleStartInput">Start time</label><input type="time" id="scheduleStartInput" value="09:00"></div>
+            <div class="form-group"><label for="scheduleDurH">Duration hrs</label><input type="number" id="scheduleDurH" min="0" max="23" step="1" value="0"></div>
+            <div class="form-group"><label for="scheduleDurM">Duration mins</label><input type="number" id="scheduleDurM" min="0" max="59" step="5" value="30"></div>
+        </div>
+        <div class="config-buttons">
+            <button id="scheduleSaveBtn" data-tip="Save this activity"><i class="fas fa-plus"></i> <span id="scheduleSaveLabel">Add activity</span></button>
+            <button id="scheduleCancelEditBtn" style="display:none;" data-tip="Stop editing"><i class="fas fa-xmark"></i> Cancel edit</button>
+        </div>
+        <div class="settings-section-title">Your activities</div>
+        <div class="schedule-events" id="scheduleEventsList"></div>
+    </div></div>
 
     <div class="modal" id="addCategoryModal"><div class="modal-content">
         <div class="modal-header"><h2 class="modal-title">Add New Category</h2><button class="icon-btn close-modal" data-tip="Close">&times;</button></div>
@@ -479,6 +587,18 @@
             <div class="radius-control"><span class="radius-label">Cards</span><input type="range" id="radiusSm" min="0" max="24" value="10"><span class="radius-value" id="radiusSmVal">10px</span><div class="radius-preview" id="radiusSmPreview"></div></div>
             <div class="radius-control"><span class="radius-label">Small elements</span><input type="range" id="radiusXs" min="0" max="16" value="6"><span class="radius-value" id="radiusXsVal">6px</span><div class="radius-preview" id="radiusXsPreview"></div></div>
             <div class="radius-control"><span class="radius-label">Search / Pills</span><input type="range" id="radiusFull" min="0" max="50" value="50"><span class="radius-value" id="radiusFullVal">50px</span><div class="radius-preview" id="radiusFullPreview"></div></div>
+        </div>
+        <div class="settings-section-title">Acrylic</div>
+        <div class="acrylic-note">Frosted-glass blur behind each surface. It only shows through where the surface is see-through, so pair it with a lower colour opacity below. Set a slider to 0 to turn it off.</div>
+        <div class="radius-controls-grid">
+            <div class="radius-control"><span class="radius-label">Sections</span><input type="range" id="acrylicSection" min="0" max="30" value="0"><span class="radius-value" id="acrylicSectionVal">0px</span></div>
+            <div class="radius-control"><span class="radius-label">Cards</span><input type="range" id="acrylicCard" min="0" max="30" value="0"><span class="radius-value" id="acrylicCardVal">0px</span></div>
+            <div class="radius-control"><span class="radius-label">Search bar</span><input type="range" id="acrylicSearch" min="0" max="30" value="0"><span class="radius-value" id="acrylicSearchVal">0px</span></div>
+            <div class="radius-control"><span class="radius-label">Menu</span><input type="range" id="acrylicMenu" min="0" max="30" value="16"><span class="radius-value" id="acrylicMenuVal">16px</span></div>
+            <div class="radius-control"><span class="radius-label">Modals</span><input type="range" id="acrylicModal" min="0" max="30" value="8"><span class="radius-value" id="acrylicModalVal">8px</span></div>
+            <div class="radius-control"><span class="radius-label">Search overlay</span><input type="range" id="acrylicOverlay" min="0" max="30" value="22"><span class="radius-value" id="acrylicOverlayVal">22px</span></div>
+            <div class="radius-control"><span class="radius-label">Weather</span><input type="range" id="acrylicWeather" min="0" max="30" value="12"><span class="radius-value" id="acrylicWeatherVal">12px</span></div>
+            <div class="radius-control"><span class="radius-label">Schedule</span><input type="range" id="acrylicSchedule" min="0" max="30" value="12"><span class="radius-value" id="acrylicScheduleVal">12px</span></div>
         </div>
         <div class="settings-section-title">Colors</div>
         <div class="color-picker">
@@ -542,11 +662,11 @@
                 <label class="radio-option"><input type="radio" name="weatherUnits" value="imperial"><span>°F · mph</span></label>
             </div>
             <div class="weather-settings-label">Corner</div>
-            <div class="weather-pos-grid" id="weatherPosGrid">
-                <button type="button" class="weather-pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
-                <button type="button" class="weather-pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
-                <button type="button" class="weather-pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
-                <button type="button" class="weather-pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
+            <div class="pos-grid" id="weatherPosGrid">
+                <button type="button" class="pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
+                <button type="button" class="pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
+                <button type="button" class="pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
+                <button type="button" class="pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
             </div>
             <div class="weather-settings-label">Location</div>
             <div class="radio-group">
@@ -564,6 +684,19 @@
             <div class="toggle-row" style="margin-top:6px;"><span class="toggle-label">Show details when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowDetails"><span class="toggle-track"></span></label></div>
             <div class="toggle-row"><span class="toggle-label">Show 3-day forecast when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowForecast"><span class="toggle-track"></span></label></div>
         </div>
+        <div class="settings-section-title">Schedule</div>
+        <div class="toggle-row"><span class="toggle-label">Show schedule widget</span><label class="toggle-switch"><input type="checkbox" id="scheduleEnabled"><span class="toggle-track"></span></label></div>
+        <div id="scheduleOptions">
+            <div class="weather-settings-label">Corner</div>
+            <div class="pos-grid" id="schedulePosGrid">
+                <button type="button" class="pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
+                <button type="button" class="pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
+                <button type="button" class="pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
+                <button type="button" class="pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
+            </div>
+            <div class="toggle-row" style="margin-top:14px;"><span class="toggle-label">Keep finished activities visible</span><label class="toggle-switch"><input type="checkbox" id="scheduleShowPast"><span class="toggle-track"></span></label></div>
+            <div class="config-buttons" style="margin-top:14px;"><button id="openScheduleFromSettings" type="button" data-tip="Add or edit activities"><i class="fas fa-calendar-day"></i> Manage activities</button></div>
+        </div>
         <div class="config-buttons"><button id="saveSettingsBtn" data-tip="Save and apply settings"><i class="fas fa-save"></i> Save Settings</button></div>
     </div></div>
 
@@ -572,10 +705,25 @@
     <script>
         const DEFAULT_COLORS = { primary:'#222831',primaryOpacity:1,secondary:'#393e46',secondaryOpacity:1,background:'#222831',backgroundOpacity:0.49,text:'#eeeeee',textOpacity:1,cardBg:'#393e46',cardBgOpacity:0.46,hover:'#ffffff',hoverOpacity:0.3,sectionBg:'#23272e',sectionBgOpacity:0.48,clock:'#ffffff',clockOpacity:1,searchBg:'#393e46',searchBgOpacity:1,searchText:'#eeeeee',searchTextOpacity:1,searchPlaceholder:'#bdbdbd',searchPlaceholderOpacity:1,modalBg:'#23272e',modalBgOpacity:1,buttonBg:'#ffffff',buttonBgOpacity:0.5,buttonHover:'#393e46',buttonHoverOpacity:1,buttonText:'#eeeeee',buttonTextOpacity:1,addCategoryBtn:'#ffffff',addCategoryBtnOpacity:0.46,configBtn:'#ffffff',configBtnOpacity:0.48,colorPickerBtn:'#ffffff',colorPickerBtnOpacity:0.34,overlay:'#000000',overlayOpacity:0.59 };
         const DEFAULT_RADIUS = { main:15, sm:10, xs:6, full:50 };
+        const DEFAULT_ACRYLIC = { section:0, card:0, search:0, menu:16, modal:8, overlay:22, weather:12, schedule:12 };
         const DEFAULT_BG = 'https://images.unsplash.com/photo-1707555692988-f306eb0f7bd8?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-        const THEMES = { night: { colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, backgroundImage:DEFAULT_BG } };
+        const THEMES = { night: { colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, acrylic:{...DEFAULT_ACRYLIC}, backgroundImage:DEFAULT_BG } };
+        const DEFAULT_SCHEDULE = { enabled:true, position:'top-left', showPast:false, view:'today', events:[] };
         const DEFAULT_WEATHER = { enabled:true, mode:'auto', units:'metric', position:'top-right', showDetails:true, showForecast:true, lat:null, lon:null, locationName:'' };
-        const WEATHER_POSITIONS = ['top-left','top-right','bottom-left','bottom-right'];
+        const CORNERS = ['top-left','top-right','bottom-left','bottom-right'];
+        const STACK_IDS = { 'top-left':'stackTopLeft', 'top-right':'stackTopRight', 'bottom-left':'stackBottomLeft', 'bottom-right':'stackBottomRight' };
+        function placeCornerWidget(el,pos){
+            if(!el)return;
+            const corner=CORNERS.includes(pos)?pos:'top-right';
+            CORNERS.forEach(p=>el.classList.remove('pos-'+p));
+            el.classList.add('pos-'+corner);
+            const stack=document.getElementById(STACK_IDS[corner]);
+            if(stack&&el.parentElement!==stack)stack.appendChild(el);
+        }
+        function setupCornerPicker(sel){
+            const btns=$$(sel+' .pos-btn');
+            btns.forEach(b=>b.addEventListener('click',()=>{btns.forEach(o=>o.classList.remove('selected'));b.classList.add('selected');}));
+        }
 
         let config = { timeFormat:'24', sortCategoriesAlpha:false, sortBookmarksAlpha:false, combinedListView:false,
             disableAnimations:true,
@@ -584,13 +732,20 @@
                 social:{name:"Social Media",icon:"fas fa-users",bookmarks:[{name:'Twitter',url:'https://twitter.com',icon:'fab fa-twitter'},{name:'Facebook',url:'https://facebook.com',icon:'fab fa-facebook'}]},
                 coding:{name:"Coding",icon:"fas fa-code",bookmarks:[{name:'GitHub',url:'https://github.com',icon:'fab fa-github'},{name:'Stack Overflow',url:'https://stackoverflow.com',icon:'fab fa-stack-overflow'}]},
                 other:{name:"Other",icon:"fas fa-star",bookmarks:[{name:'Google',url:'https://google.com',icon:'fab fa-google'},{name:'YouTube',url:'https://youtube.com',icon:'fab fa-youtube'}]}
-            }, colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, backgroundImage:DEFAULT_BG, weather:{...DEFAULT_WEATHER} };
+            }, colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, acrylic:{...DEFAULT_ACRYLIC}, backgroundImage:DEFAULT_BG, weather:{...DEFAULT_WEATHER}, schedule:{...DEFAULT_SCHEDULE} };
 
         const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
         let editingCategoryId = null;
         function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
         function generateCategoryId(name){let b=(name||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'category',id=b,i=1;while(config.bookmarks[id])id=b+'-'+i++;return id;}
         function hexToRgba(hex,a){const h=(hex||'#000000').replace('#',''),n=parseInt(h.length===3?h.split('').map(c=>c+c).join(''):h,16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${+a})`;}
+
+        const ACRYLIC_MAP=[['acrylicSection','section','--acrylic-section'],['acrylicCard','card','--acrylic-card'],['acrylicSearch','search','--acrylic-search'],['acrylicMenu','menu','--acrylic-menu'],['acrylicModal','modal','--acrylic-modal'],['acrylicOverlay','overlay','--acrylic-overlay'],['acrylicWeather','weather','--acrylic-weather'],['acrylicSchedule','schedule','--acrylic-schedule']];
+        function blurValue(n){n=Math.max(0,Number(n)||0);return n>0?`blur(${n}px) saturate(140%)`:'none';}
+        function applyAcrylic(){const a={...DEFAULT_ACRYLIC,...(config.acrylic||{})};ACRYLIC_MAP.forEach(([id,key,varName])=>document.documentElement.style.setProperty(varName,blurValue(a[key])));}
+        function syncAcrylicInputs(){const a={...DEFAULT_ACRYLIC,...(config.acrylic||{})};ACRYLIC_MAP.forEach(([id,key])=>{const sl=document.getElementById(id),v=document.getElementById(id+'Val');if(sl)sl.value=a[key];if(v)v.textContent=a[key]+'px';});}
+        function readAcrylicInputs(){config.acrylic=config.acrylic||{};ACRYLIC_MAP.forEach(([id,key])=>{const sl=document.getElementById(id);if(sl)config.acrylic[key]=Number(sl.value);});}
+        function setupAcrylicSliders(){ACRYLIC_MAP.forEach(([id,key,varName])=>{const sl=document.getElementById(id),v=document.getElementById(id+'Val');if(!sl)return;sl.addEventListener('input',()=>{if(v)v.textContent=sl.value+'px';document.documentElement.style.setProperty(varName,blurValue(sl.value));});});}
 
         function applyRadius(){const r=config.radius||DEFAULT_RADIUS,rt=document.documentElement;rt.style.setProperty('--radius',r.main+'px');rt.style.setProperty('--radius-sm',r.sm+'px');rt.style.setProperty('--radius-xs',r.xs+'px');rt.style.setProperty('--radius-full',r.full+'px');}
 
@@ -599,11 +754,12 @@
             pairs.forEach(([p,h,o])=>document.documentElement.style.setProperty(p,hexToRgba(h,o??1)));
             if(config.backgroundImage)document.body.style.backgroundImage=`url('${config.backgroundImage}')`;
             applyRadius();
+            applyAcrylic();
         }
 
         function saveConfig(){localStorage.setItem('homepageConfig',JSON.stringify(config));}
-        function loadConfig(){const s=localStorage.getItem('homepageConfig');if(!s)return;try{config=JSON.parse(s);config.timeFormat=config.timeFormat||'24';config.sortCategoriesAlpha=config.sortCategoriesAlpha||false;config.sortBookmarksAlpha=config.sortBookmarksAlpha||false;config.combinedListView=config.combinedListView||false;if(config.combinedListView)config.listView=false;config.colors={...DEFAULT_COLORS,...(config.colors||{})};config.radius={...DEFAULT_RADIUS,...(config.radius||{})};config.weather={...DEFAULT_WEATHER,...(config.weather||{})};applyColors();}catch(e){console.error(e);}}
-        function updateClock(){$('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:config.timeFormat==='12'});}
+        function loadConfig(){const s=localStorage.getItem('homepageConfig');if(!s)return;try{config=JSON.parse(s);config.timeFormat=config.timeFormat||'24';config.sortCategoriesAlpha=config.sortCategoriesAlpha||false;config.sortBookmarksAlpha=config.sortBookmarksAlpha||false;config.combinedListView=config.combinedListView||false;if(config.combinedListView)config.listView=false;config.colors={...DEFAULT_COLORS,...(config.colors||{})};config.radius={...DEFAULT_RADIUS,...(config.radius||{})};config.acrylic={...DEFAULT_ACRYLIC,...(config.acrylic||{})};config.weather={...DEFAULT_WEATHER,...(config.weather||{})};config.schedule={...DEFAULT_SCHEDULE,...(config.schedule||{})};if(!Array.isArray(config.schedule.events))config.schedule.events=[];migrateScheduleEvents();applyColors();}catch(e){console.error(e);}}
+        function updateClock(){$('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:config.timeFormat==='12'});scheduleTick();}
 
         function getSortedCategoryIds(){const ids=Object.keys(config.bookmarks||{});if(!config.sortCategoriesAlpha)return ids;return ids.sort((a,b)=>String(config.bookmarks[a]?.name||'').localeCompare(String(config.bookmarks[b]?.name||''),undefined,{sensitivity:'base'})||a.localeCompare(b));}
         function getSortedBookmarks(bm){const items=(Array.isArray(bm)?bm:[]).map((b,i)=>({bookmark:b,originalIndex:i}));if(!config.sortBookmarksAlpha)return items;return items.sort((a,b)=>String(a.bookmark?.name||'').localeCompare(String(b.bookmark?.name||''),undefined,{sensitivity:'base'})||a.originalIndex-b.originalIndex);}
@@ -758,7 +914,7 @@
 
         function weatherShell(pillHtml,panelHtml){
             const el=$('#weatherWidget');if(!el)return;
-            el.innerHTML=`<button type="button" class="weather-pill" id="weatherPill" aria-expanded="${weatherExpanded}">${pillHtml}</button><div class="weather-panel">${panelHtml}</div>`;
+            el.innerHTML=`<button type="button" class="cwidget-pill" id="weatherPill" aria-expanded="${weatherExpanded}">${pillHtml}</button><div class="cwidget-panel">${panelHtml}</div>`;
             el.classList.toggle('expanded',weatherExpanded);
             $('#weatherPill').addEventListener('click',e=>{e.stopPropagation();setWeatherExpanded(!weatherExpanded);});
             $('#weatherFixBtn')?.addEventListener('click',e=>{e.stopPropagation();setWeatherExpanded(false);openSettingsModal();});
@@ -785,18 +941,17 @@
         }
         function applyWeatherPosition(){
             const el=$('#weatherWidget');if(!el)return;
-            WEATHER_POSITIONS.forEach(p=>el.classList.remove('pos-'+p));
-            const pos=weatherCfg().position;
-            el.classList.add('pos-'+(WEATHER_POSITIONS.includes(pos)?pos:'top-right'));
+            const pos=CORNERS.includes(weatherCfg().position)?config.weather.position:'top-right';
+            placeCornerWidget(el,pos);
         }
         function renderWeatherLoading(){
-            weatherShell('<i class="fas fa-rotate weather-pill-icon spin"></i><span class="weather-pill-city">Loading weather\u2026</span>',
-                '<div class="weather-status"><div class="weather-status-msg"><i class="fas fa-rotate spin"></i><span>Fetching the latest conditions\u2026</span></div></div>');
+            weatherShell('<i class="fas fa-rotate cwidget-pill-icon spin"></i><span class="cwidget-pill-label">Loading weather\u2026</span>',
+                '<div class="cwidget-status"><div class="cwidget-status-msg"><i class="fas fa-rotate spin"></i><span>Fetching the latest conditions\u2026</span></div></div>');
         }
         function renderWeatherError(msg){
-            weatherShell('<i class="fas fa-triangle-exclamation weather-pill-icon"></i><span class="weather-pill-city">Weather unavailable</span><i class="fas fa-chevron-down weather-chevron"></i>',
-                `<div class="weather-status"><div class="weather-status-msg"><i class="fas fa-triangle-exclamation"></i><span>${escapeHtml(msg)}</span></div>
-                <div class="weather-status-actions">
+            weatherShell('<i class="fas fa-triangle-exclamation cwidget-pill-icon"></i><span class="cwidget-pill-label">Weather unavailable</span><i class="fas fa-chevron-down cwidget-chevron"></i>',
+                `<div class="cwidget-status"><div class="cwidget-status-msg"><i class="fas fa-triangle-exclamation"></i><span>${escapeHtml(msg)}</span></div>
+                <div class="cwidget-status-actions">
                     <button type="button" id="weatherFixBtn"><i class="fas fa-sliders"></i> Weather settings</button>
                     <button type="button" id="weatherRetryBtn"><i class="fas fa-rotate"></i> Retry</button>
                 </div></div>`);
@@ -805,10 +960,10 @@
         function renderWeather(data,loc){
             const w=weatherCfg(),u=weatherUnits(),c=data.current,info=wmo(c.weather_code,c.is_day);
             const city=String(loc.name||'').split(',')[0].trim()||'Current location';
-            const pill=`<i class="fas ${info.icon} weather-pill-icon"></i>
+            const pill=`<i class="fas ${info.icon} cwidget-pill-icon"></i>
                 <span class="weather-pill-temp">${Math.round(c.temperature_2m)}${u.t}</span>
-                <span class="weather-pill-city">${escapeHtml(city)}</span>
-                <i class="fas fa-chevron-down weather-chevron"></i>`;
+                <span class="cwidget-pill-label">${escapeHtml(city)}</span>
+                <i class="fas fa-chevron-down cwidget-chevron"></i>`;
             const details=w.showDetails?`<div class="weather-details">
                     <span><i class="fas fa-temperature-half"></i> Feels ${Math.round(c.apparent_temperature)}${u.t}</span>
                     <span><i class="fas fa-droplet"></i> ${Math.round(c.relative_humidity_2m)}%</span>
@@ -837,10 +992,10 @@
                         <div class="weather-loc"><i class="fas fa-location-dot"></i>${escapeHtml(loc.name||'')}</div>
                     </div>
                 </div>${details}${forecast}
-                <div class="weather-footer"><span>Updated ${stamp}</span>
-                <span class="weather-footer-actions">
-                    <button type="button" class="weather-refresh" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button>
-                    <button type="button" class="weather-refresh" id="weatherHideBtn" data-tip="Hide the weather widget"><i class="fas fa-eye-slash"></i></button>
+                <div class="cwidget-footer"><span>Updated ${stamp}</span>
+                <span class="cwidget-footer-actions">
+                    <button type="button" class="cwidget-btn" id="weatherRefreshBtn" data-tip="Refresh weather"><i class="fas fa-rotate"></i></button>
+                    <button type="button" class="cwidget-btn" id="weatherHideBtn" data-tip="Hide the weather widget"><i class="fas fa-eye-slash"></i></button>
                 </span></div>`;
             weatherShell(pill,panel);
         }
@@ -855,7 +1010,7 @@
             weatherBusy=true;
             const spin=$('#weatherRefreshBtn');
             if(spin)spin.classList.add('spinning');
-            else if(!el.querySelector('.weather-pill'))renderWeatherLoading();
+            else if(!el.querySelector('.cwidget-pill'))renderWeatherLoading();
             try{
                 const loc=await resolveWeatherLocation();
                 const data=await fetchWeather(loc.lat,loc.lon,force);
@@ -889,7 +1044,7 @@
             $$('input[name="weatherMode"]').forEach(r=>r.checked=r.value===w.mode);
             $('#weatherShowDetails').checked=!!w.showDetails;
             $('#weatherShowForecast').checked=!!w.showForecast;
-            $$('.weather-pos-btn').forEach(b=>b.classList.toggle('selected',b.dataset.pos===(WEATHER_POSITIONS.includes(w.position)?w.position:'top-right')));
+            $$('#weatherPosGrid .pos-btn').forEach(b=>b.classList.toggle('selected',b.dataset.pos===(CORNERS.includes(w.position)?w.position:'top-right')));
             weatherDraftLoc=null;
             $('#weatherCityInput').value='';
             const box=$('#weatherCityResults');box.innerHTML='';box.classList.remove('show');
@@ -902,8 +1057,8 @@
             w.mode=document.querySelector('input[name="weatherMode"]:checked')?.value||'auto';
             w.showDetails=$('#weatherShowDetails').checked;
             w.showForecast=$('#weatherShowForecast').checked;
-            const pos=document.querySelector('.weather-pos-btn.selected')?.dataset.pos;
-            if(WEATHER_POSITIONS.includes(pos))w.position=pos;
+            const pos=document.querySelector('#weatherPosGrid .pos-btn.selected')?.dataset.pos;
+            if(CORNERS.includes(pos))w.position=pos;
             if(weatherDraftLoc){w.lat=weatherDraftLoc.lat;w.lon=weatherDraftLoc.lon;w.locationName=weatherDraftLoc.name;}
             weatherDraftLoc=null;
         }
@@ -930,13 +1085,365 @@
         function setupWeatherSettings(){
             $('#weatherEnabled').addEventListener('change',updateWeatherSettingsUI);
             $$('input[name="weatherMode"]').forEach(r=>r.addEventListener('change',updateWeatherSettingsUI));
-            $$('.weather-pos-btn').forEach(b=>b.addEventListener('click',()=>{$$('.weather-pos-btn').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');}));
+            setupCornerPicker('#weatherPosGrid');
             $('#weatherToggleBtn').addEventListener('click',e=>{e.stopPropagation();$('#menuDropdown').classList.remove('show');setWeatherEnabled(!weatherCfg().enabled);});
             $('#weatherSearchBtn').addEventListener('click',searchWeatherCity);
             $('#weatherCityInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchWeatherCity();}});
             document.addEventListener('click',e=>{if(weatherExpanded&&!e.target.closest('#weatherWidget'))setWeatherExpanded(false);});
             document.addEventListener('keydown',e=>{if(e.key==='Escape'&&weatherExpanded)setWeatherExpanded(false);});
             document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshWeather(false);});
+        }
+
+        const SCHEDULE_VIEWS=['today','week','calendar'];
+        let scheduleExpanded=false, scheduleEditingId=null, scheduleTickKey='';
+        let scheduleFormCal=null, schedulePanelCal=null;
+        const schedulePanelState={ month:null, year:null, selected:null };
+
+        function dateKey(d){const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;}
+        function parseDateKey(k){const p=String(k||'').split('-').map(Number);return new Date(p[0]||1970,(p[1]||1)-1,p[2]||1);}
+        function todayKey(){return dateKey(new Date());}
+        function startOfWeek(d){const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x;}
+        function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
+
+        function scheduleCfg(){
+            config.schedule={...DEFAULT_SCHEDULE,...(config.schedule||{})};
+            if(!Array.isArray(config.schedule.events))config.schedule.events=[];
+            if(!SCHEDULE_VIEWS.includes(config.schedule.view))config.schedule.view='today';
+            return config.schedule;
+        }
+        function migrateScheduleEvents(){
+            const cfg=config.schedule;
+            if(!cfg||!Array.isArray(cfg.events))return;
+            cfg.events.forEach(e=>{
+                if(!e)return;
+                if(!Array.isArray(e.dates)){
+                    const days=Array.isArray(e.days)?e.days.map(Number):[];
+                    const dates=[];
+                    if(days.length){
+                        const start=new Date();start.setHours(0,0,0,0);
+                        for(let i=0;i<28;i++){const d=addDays(start,i);if(days.includes(d.getDay()))dates.push(dateKey(d));}
+                    }
+                    e.dates=dates;
+                }
+                e.dates=[...new Set(e.dates.filter(Boolean))].sort();
+                delete e.days;
+            });
+        }
+        function scheduleEvents(){return scheduleCfg().events.filter(e=>e&&Array.isArray(e.dates)&&e.dates.length);}
+        function eventStart(e){return (Number(e.hour)||0)*60+(Number(e.minute)||0);}
+        function eventDuration(e){return Math.max(1,Number(e.duration)||0);}
+        function eventsForDate(key){return scheduleEvents().filter(e=>e.dates.includes(key)).sort((a,b)=>eventStart(a)-eventStart(b));}
+        function fmtClock(mins){const d=new Date();d.setHours(Math.floor(mins/60)%24,mins%60,0,0);return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:config.timeFormat==='12'});}
+        function fmtDuration(mins){const h=Math.floor(mins/60),m=mins%60;if(h&&m)return h+'h '+m+'m';if(h)return h+'h';return m+'m';}
+        function fmtDateLabel(key,opts){return parseDateKey(key).toLocaleDateString([],opts||{weekday:'short',day:'numeric',month:'short'});}
+        function datesLabel(e){
+            const ds=[...(e.dates||[])].sort();
+            if(!ds.length)return 'No dates';
+            if(ds.length===1)return fmtDateLabel(ds[0]);
+            const next=ds.find(k=>k>=todayKey())||ds[ds.length-1];
+            return `${ds.length} dates \u00b7 next ${fmtDateLabel(next,{day:'numeric',month:'short'})}`;
+        }
+
+        function createCalendar(container,opts){
+            if(!container)return null;
+            const o=opts||{};
+            const st={container,multi:!!o.multi,size:o.size||'',selected:new Set(o.selected||[]),onSelect:o.onSelect,onChange:o.onChange};
+            const focus=o.focus?parseDateKey(o.focus):new Date();
+            st.month=Number.isInteger(o.month)?o.month:focus.getMonth();
+            st.year=Number.isInteger(o.year)?o.year:focus.getFullYear();
+            st.render=()=>renderCalendar(st);
+            st.render();
+            return st;
+        }
+        function renderCalendar(st){
+            const el=st.container;if(!el)return;
+            const first=new Date(st.year,st.month,1);
+            const pad=(first.getDay()+6)%7, total=new Date(st.year,st.month+1,0).getDate(), tk=todayKey();
+            let cells='';
+            for(let i=0;i<pad;i++)cells+='<span class="cal-day cal-blank"></span>';
+            for(let d=1;d<=total;d++){
+                const key=dateKey(new Date(st.year,st.month,d)),cls=['cal-day'];
+                if(key===tk)cls.push('today');
+                if(st.selected.has(key))cls.push('selected');
+                if(eventsForDate(key).length)cls.push('has-events');
+                cells+=`<button type="button" class="${cls.join(' ')}" data-key="${key}">${d}</button>`;
+            }
+            el.className='cal'+(st.size==='lg'?' cal-lg':'');
+            el.innerHTML=`<div class="cal-head">
+                    <button type="button" class="cwidget-btn cal-nav-btn" data-nav="-1" data-tip="Previous month"><i class="fas fa-chevron-left"></i></button>
+                    <span class="cal-title">${first.toLocaleDateString([],{month:'long',year:'numeric'})}</span>
+                    <button type="button" class="cwidget-btn cal-nav-btn" data-nav="1" data-tip="Next month"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="cal-grid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<span class="cal-dow">${d}</span>`).join('')}${cells}</div>`;
+            el.querySelectorAll('.cal-nav-btn').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();shiftCalendar(st,Number(b.dataset.nav));}));
+            el.querySelectorAll('.cal-day[data-key]').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();pickCalendarDay(st,b.dataset.key);}));
+        }
+        function shiftCalendar(st,delta){
+            const d=new Date(st.year,st.month+delta,1);
+            st.year=d.getFullYear();st.month=d.getMonth();
+            st.render();
+            st.onChange?.(st);
+        }
+        function pickCalendarDay(st,key){
+            if(st.multi){st.selected.has(key)?st.selected.delete(key):st.selected.add(key);}
+            else st.selected=new Set([key]);
+            st.render();
+            st.onChange?.(st);
+            st.onSelect?.(key,st);
+        }
+        function calendarSelection(st){return st?[...st.selected].sort():[];}
+        function setCalendarSelection(st,keys,focus){
+            if(!st)return;
+            st.selected=new Set(keys||[]);
+            const f=focus||(keys||[])[0];
+            if(f){const d=parseDateKey(f);st.year=d.getFullYear();st.month=d.getMonth();}
+            st.render();
+        }
+
+        function scheduleItemHtml(e,nowMin){
+            const st=eventStart(e),en=st+eventDuration(e);
+            const cls=nowMin==null?'':(nowMin>=st&&nowMin<en?'is-now':(nowMin>=en?'is-past':''));
+            return `<div class="schedule-item ${cls}">
+                <span class="schedule-item-time">${fmtClock(st)}\u2013${fmtClock(en)}</span>
+                <span class="schedule-item-title">${escapeHtml(e.title)}</span>
+                <span class="schedule-item-dur">${fmtDuration(eventDuration(e))}</span>
+            </div>`;
+        }
+        function dayListHtml(key,emptyText){
+            const isToday=key===todayKey(),nowMin=new Date().getHours()*60+new Date().getMinutes();
+            let items=eventsForDate(key);
+            if(isToday&&!scheduleCfg().showPast)items=items.filter(e=>nowMin<eventStart(e)+eventDuration(e));
+            if(!items.length)return `<div class="schedule-empty">${escapeHtml(emptyText)}</div>`;
+            return '<div class="schedule-list">'+items.map(e=>scheduleItemHtml(e,isToday?nowMin:null)).join('')+'</div>';
+        }
+
+        function scheduleShell(pillHtml,panelHtml){
+            const el=$('#scheduleWidget');if(!el)return;
+            el.innerHTML=`<button type="button" class="cwidget-pill" id="schedulePill" aria-expanded="${scheduleExpanded}">${pillHtml}</button><div class="cwidget-panel">${panelHtml}</div>`;
+            el.classList.toggle('expanded',scheduleExpanded);
+            $('#schedulePill').addEventListener('click',e=>{e.stopPropagation();setScheduleExpanded(!scheduleExpanded);});
+            $('#scheduleManageFromWidget')?.addEventListener('click',e=>{e.stopPropagation();setScheduleExpanded(false);openScheduleModal();});
+            $('#scheduleHideBtn')?.addEventListener('click',e=>{e.stopPropagation();setScheduleEnabled(false);});
+            $$('#scheduleWidget .schedule-view-btn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();setScheduleView(b.dataset.view);}));
+        }
+        function setScheduleExpanded(open){
+            scheduleExpanded=!!open;
+            const el=$('#scheduleWidget');if(!el)return;
+            el.classList.toggle('expanded',scheduleExpanded);
+            $('#schedulePill')?.setAttribute('aria-expanded',String(scheduleExpanded));
+        }
+        function setScheduleView(view){
+            if(!SCHEDULE_VIEWS.includes(view))return;
+            scheduleCfg().view=view;
+            saveConfig();
+            renderSchedule();
+        }
+        function applySchedulePosition(){placeCornerWidget($('#scheduleWidget'),scheduleCfg().position);}
+        function setScheduleEnabled(on){
+            scheduleCfg().enabled=!!on;
+            if(!on)scheduleExpanded=false;
+            saveConfig();
+            updateScheduleMenuLabel();
+            renderSchedule();
+        }
+        function updateScheduleMenuLabel(){
+            const l=$('#scheduleToggleLabel');
+            if(l)l.textContent=scheduleCfg().enabled?'Hide schedule':'Show schedule';
+        }
+
+        function schedulePanelBody(view,nowMin){
+            if(view==='week'){
+                const start=startOfWeek(new Date());
+                let out='',any=false;
+                for(let i=0;i<7;i++){
+                    const key=dateKey(addDays(start,i)),items=eventsForDate(key);
+                    if(!items.length)continue;
+                    any=true;
+                    out+=`<div class="schedule-group">
+                        <div class="schedule-group-title${key===todayKey()?' is-today':''}"><span>${fmtDateLabel(key,{weekday:'long',day:'numeric',month:'short'})}</span><span>${items.length}</span></div>
+                        ${'<div class="schedule-list">'+items.map(e=>scheduleItemHtml(e,key===todayKey()?nowMin:null)).join('')+'</div>'}
+                    </div>`;
+                }
+                return any?`<div class="schedule-scroll">${out}</div>`:'<div class="schedule-empty">Nothing scheduled this week.</div>';
+            }
+            if(view==='calendar'){
+                const key=schedulePanelState.selected||todayKey();
+                return `<div class="cal" id="schedulePanelCalendar"></div>
+                    <div class="schedule-picked">
+                        <div class="schedule-panel-head">
+                            <span class="schedule-panel-day">${fmtDateLabel(key,{weekday:'long',day:'numeric',month:'long'})}</span>
+                            <span class="schedule-panel-count">${eventsForDate(key).length||'No'} ${eventsForDate(key).length===1?'activity':'activities'}</span>
+                        </div>
+                        ${key===todayKey()?dayListHtml(key,'Nothing left today.'):dayListHtml(key,'Nothing scheduled on this day.')}
+                    </div>`;
+            }
+            const today=eventsForDate(todayKey());
+            return `<div class="schedule-panel-head">
+                    <span class="schedule-panel-day">${new Date().toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'})}</span>
+                    <span class="schedule-panel-count">${today.length?today.length+(today.length===1?' activity':' activities'):'Free day'}</span>
+                </div>${dayListHtml(todayKey(),today.length?'Everything for today is done.':'No activities set for today.')}`;
+        }
+
+        function renderSchedule(){
+            const el=$('#scheduleWidget'),cfg=scheduleCfg();
+            if(!el)return;
+            if(!cfg.enabled){el.classList.remove('show','expanded');el.innerHTML='';scheduleExpanded=false;schedulePanelCal=null;return;}
+            el.classList.add('show');
+            applySchedulePosition();
+            const now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
+            const today=eventsForDate(todayKey());
+            const current=today.find(e=>nowMin>=eventStart(e)&&nowMin<eventStart(e)+eventDuration(e));
+            const next=today.find(e=>eventStart(e)>nowMin);
+            let icon='fa-calendar-day',text='Nothing scheduled';
+            if(current){icon='fa-circle-play';text=`Now: ${current.title} \u00b7 ${fmtDuration(eventStart(current)+eventDuration(current)-nowMin)} left`;}
+            else if(next){icon='fa-clock';text=`${fmtClock(eventStart(next))} \u00b7 ${next.title}`;}
+            else if(today.length){icon='fa-calendar-check';text='Day complete';}
+            const pill=`<i class="fas ${icon} cwidget-pill-icon"></i><span class="cwidget-pill-label">${escapeHtml(text)}</span><i class="fas fa-chevron-down cwidget-chevron"></i>`;
+            const views=SCHEDULE_VIEWS.map(v=>`<button type="button" class="schedule-view-btn${cfg.view===v?' active':''}" data-view="${v}">${v==='today'?'Today':v==='week'?'This Week':'Calendar'}</button>`).join('');
+            const panel=`<div class="schedule-views">${views}</div>${schedulePanelBody(cfg.view,nowMin)}
+                <div class="cwidget-footer"><span>${scheduleEvents().length} saved</span>
+                <span class="cwidget-footer-actions">
+                    <button type="button" class="cwidget-btn" id="scheduleManageFromWidget" data-tip="Manage activities"><i class="fas fa-pen"></i></button>
+                    <button type="button" class="cwidget-btn" id="scheduleHideBtn" data-tip="Hide the schedule widget"><i class="fas fa-eye-slash"></i></button>
+                </span></div>`;
+            scheduleShell(pill,panel);
+            schedulePanelCal=null;
+            if(cfg.view==='calendar'){
+                const key=schedulePanelState.selected||todayKey();
+                schedulePanelCal=createCalendar($('#schedulePanelCalendar'),{
+                    selected:[key],
+                    focus:key,
+                    month:schedulePanelState.month,
+                    year:schedulePanelState.year,
+                    onChange:st=>{schedulePanelState.month=st.month;schedulePanelState.year=st.year;},
+                    onSelect:k=>{schedulePanelState.selected=k;renderSchedule();}
+                });
+                if(schedulePanelCal){schedulePanelState.month=schedulePanelCal.month;schedulePanelState.year=schedulePanelCal.year;}
+            }
+        }
+        function scheduleTick(){
+            const n=new Date(),key=n.getDay()+':'+n.getHours()+':'+n.getMinutes();
+            if(key===scheduleTickKey)return;
+            scheduleTickKey=key;
+            if(scheduleCfg().enabled)renderSchedule();
+        }
+
+        function updateScheduleSelectionText(){
+            const el=$('#scheduleSelectionText');if(!el)return;
+            const ds=calendarSelection(scheduleFormCal);
+            el.textContent=!ds.length?'No dates picked':ds.length===1?fmtDateLabel(ds[0]):`${ds.length} dates picked \u00b7 from ${fmtDateLabel(ds[0],{day:'numeric',month:'short'})}`;
+        }
+        function resetScheduleForm(){
+            scheduleEditingId=null;
+            $('#scheduleTitleInput').value='';
+            $('#scheduleStartInput').value='09:00';
+            $('#scheduleDurH').value='0';
+            $('#scheduleDurM').value='30';
+            setCalendarSelection(scheduleFormCal,[],todayKey());
+            updateScheduleSelectionText();
+            $('#scheduleSaveLabel').textContent='Add activity';
+            $('#scheduleCancelEditBtn').style.display='none';
+        }
+        function renderScheduleEvents(){
+            const box=$('#scheduleEventsList');if(!box)return;
+            const tk=todayKey();
+            const events=[...scheduleCfg().events].sort((a,b)=>{
+                const ka=[...(a.dates||[])].sort().find(k=>k>=tk)||(a.dates||[]).slice(-1)[0]||'9999';
+                const kb=[...(b.dates||[])].sort().find(k=>k>=tk)||(b.dates||[]).slice(-1)[0]||'9999';
+                return ka.localeCompare(kb)||eventStart(a)-eventStart(b);
+            });
+            if(!events.length){box.innerHTML='<div class="schedule-events-empty">No activities yet. Add one above.</div>';return;}
+            box.innerHTML=events.map(e=>{
+                const st=eventStart(e);
+                return `<div class="schedule-event">
+                    <div class="schedule-event-main">
+                        <span class="schedule-event-title">${escapeHtml(e.title)}</span>
+                        <span class="schedule-event-meta"><span>${escapeHtml(datesLabel(e))}</span><span>${fmtClock(st)}\u2013${fmtClock(st+eventDuration(e))}</span><span>${fmtDuration(eventDuration(e))}</span></span>
+                    </div>
+                    <div class="schedule-event-actions">
+                        <button type="button" class="icon-btn schedule-edit" data-id="${e.id}" data-tip="Edit"><i class="fas fa-pen"></i></button>
+                        <button type="button" class="icon-btn schedule-delete" data-id="${e.id}" data-tip="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+            $$('#scheduleEventsList .schedule-edit').forEach(b=>b.addEventListener('click',()=>startEditScheduleEvent(b.dataset.id)));
+            $$('#scheduleEventsList .schedule-delete').forEach(b=>b.addEventListener('click',()=>deleteScheduleEvent(b.dataset.id)));
+        }
+        function startEditScheduleEvent(id){
+            const e=scheduleCfg().events.find(x=>x.id===id);if(!e)return;
+            scheduleEditingId=id;
+            $('#scheduleTitleInput').value=e.title||'';
+            $('#scheduleStartInput').value=String(e.hour).padStart(2,'0')+':'+String(e.minute).padStart(2,'0');
+            $('#scheduleDurH').value=Math.floor(eventDuration(e)/60);
+            $('#scheduleDurM').value=eventDuration(e)%60;
+            const ds=[...(e.dates||[])].sort();
+            setCalendarSelection(scheduleFormCal,ds,ds.find(k=>k>=todayKey())||ds[0]||todayKey());
+            updateScheduleSelectionText();
+            $('#scheduleSaveLabel').textContent='Update activity';
+            $('#scheduleCancelEditBtn').style.display='';
+        }
+        function deleteScheduleEvent(id){
+            const cfg=scheduleCfg(),e=cfg.events.find(x=>x.id===id);
+            if(!e||!confirm(`Delete "${e.title}"?`))return;
+            cfg.events=cfg.events.filter(x=>x.id!==id);
+            if(scheduleEditingId===id)resetScheduleForm();
+            saveConfig();renderScheduleEvents();renderSchedule();
+            scheduleFormCal?.render();
+        }
+        function saveScheduleEvent(){
+            const title=$('#scheduleTitleInput').value.trim();
+            if(!title)return alert('Give the activity a name.');
+            const dates=calendarSelection(scheduleFormCal);
+            if(!dates.length)return alert('Pick at least one date on the calendar.');
+            const parts=String($('#scheduleStartInput').value||'').split(':');
+            const hour=Math.min(23,Math.max(0,Number(parts[0])||0)),minute=Math.min(59,Math.max(0,Number(parts[1])||0));
+            const duration=Math.min(23,Math.max(0,Number($('#scheduleDurH').value)||0))*60+Math.min(59,Math.max(0,Number($('#scheduleDurM').value)||0));
+            if(duration<1)return alert('Set a duration of at least one minute.');
+            const cfg=scheduleCfg();
+            if(scheduleEditingId){
+                const e=cfg.events.find(x=>x.id===scheduleEditingId);
+                if(e)Object.assign(e,{title,dates,hour,minute,duration});
+            }else{
+                cfg.events.push({id:'ev'+Date.now()+Math.floor(Math.random()*1000),title,dates,hour,minute,duration});
+            }
+            resetScheduleForm();saveConfig();renderScheduleEvents();renderSchedule();
+            scheduleFormCal?.render();
+        }
+        function openScheduleModal(){
+            if(!scheduleFormCal)scheduleFormCal=createCalendar($('#scheduleFormCalendar'),{multi:true,size:'lg',onSelect:updateScheduleSelectionText});
+            resetScheduleForm();
+            renderScheduleEvents();
+            openModal('scheduleModal');
+        }
+        function syncScheduleSettings(){
+            const cfg=scheduleCfg();
+            $('#scheduleEnabled').checked=!!cfg.enabled;
+            $('#scheduleShowPast').checked=!!cfg.showPast;
+            $$('#schedulePosGrid .pos-btn').forEach(b=>b.classList.toggle('selected',b.dataset.pos===(CORNERS.includes(cfg.position)?cfg.position:'top-left')));
+            updateScheduleSettingsUI();
+        }
+        function updateScheduleSettingsUI(){
+            $('#scheduleOptions').style.display=$('#scheduleEnabled').checked?'block':'none';
+        }
+        function readScheduleSettings(){
+            const cfg=scheduleCfg();
+            cfg.enabled=$('#scheduleEnabled').checked;
+            cfg.showPast=$('#scheduleShowPast').checked;
+            const pos=document.querySelector('#schedulePosGrid .pos-btn.selected')?.dataset.pos;
+            if(CORNERS.includes(pos))cfg.position=pos;
+        }
+        function setupSchedule(){
+            $('#scheduleEnabled').addEventListener('change',updateScheduleSettingsUI);
+            setupCornerPicker('#schedulePosGrid');
+            $('#scheduleSaveBtn').addEventListener('click',saveScheduleEvent);
+            $('#scheduleCancelEditBtn').addEventListener('click',resetScheduleForm);
+            $('#scheduleClearDatesBtn').addEventListener('click',()=>{setCalendarSelection(scheduleFormCal,[],todayKey());updateScheduleSelectionText();});
+            $('#scheduleTitleInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveScheduleEvent();}});
+            $('#scheduleManageBtn').addEventListener('click',e=>{e.stopPropagation();$('#menuDropdown').classList.remove('show');openScheduleModal();});
+            $('#openScheduleFromSettings').addEventListener('click',()=>{$('#settingsModal').style.display='none';openScheduleModal();});
+            $('#scheduleToggleBtn').addEventListener('click',e=>{e.stopPropagation();$('#menuDropdown').classList.remove('show');setScheduleEnabled(!scheduleCfg().enabled);});
+            document.addEventListener('click',e=>{if(scheduleExpanded&&!e.target.closest('#scheduleWidget'))setScheduleExpanded(false);});
+            document.addEventListener('keydown',e=>{if(e.key==='Escape'&&scheduleExpanded)setScheduleExpanded(false);});
         }
 
         function openModal(id){document.getElementById(id).style.display='flex';}
@@ -1006,6 +1513,7 @@
             $('#sortBookmarksAlphaToggle').checked=!!config.sortBookmarksAlpha;
             $('#listViewToggle').disabled=!!config.combinedListView;
             syncWeatherSettings();
+            syncScheduleSettings();
             openModal('settingsModal');
         }
 
@@ -1018,26 +1526,26 @@
             $('#settingsBtn').addEventListener('click',e=>{e.stopPropagation();md.classList.remove('show');openSettingsModal();});
             $('#combinedListViewToggle').addEventListener('change',function(){const l=$('#listViewToggle');if(this.checked){l.checked=false;l.disabled=true;}else l.disabled=false;});
             $('#listViewToggle').addEventListener('change',function(){if(this.checked)$('#combinedListViewToggle').checked=false;});
-            $('#saveSettingsBtn').addEventListener('click',()=>{const sel=document.querySelector('input[name="timeFormat"]:checked');if(sel)config.timeFormat=sel.value;config.disableAnimations=$('#disableAnimations').checked;config.combinedListView=$('#combinedListViewToggle').checked;config.listView=config.combinedListView?false:$('#listViewToggle').checked;config.sortCategoriesAlpha=$('#sortCategoriesAlphaToggle').checked;config.sortBookmarksAlpha=$('#sortBookmarksAlphaToggle').checked;readWeatherSettings();updateWeatherMenuLabel();applyInteractionMode();applyViewModes();renderBookmarks();saveConfig();updateClock();refreshWeather(true);$('#settingsModal').style.display='none';});
+            $('#saveSettingsBtn').addEventListener('click',()=>{const sel=document.querySelector('input[name="timeFormat"]:checked');if(sel)config.timeFormat=sel.value;config.disableAnimations=$('#disableAnimations').checked;config.combinedListView=$('#combinedListViewToggle').checked;config.listView=config.combinedListView?false:$('#listViewToggle').checked;config.sortCategoriesAlpha=$('#sortCategoriesAlphaToggle').checked;config.sortBookmarksAlpha=$('#sortBookmarksAlphaToggle').checked;readWeatherSettings();readScheduleSettings();updateWeatherMenuLabel();updateScheduleMenuLabel();applyInteractionMode();applyViewModes();renderBookmarks();saveConfig();updateClock();refreshWeather(true);renderSchedule();$('#settingsModal').style.display='none';});
 
             $('#configBtn').addEventListener('click',e=>{e.stopPropagation();$('#configText').value=JSON.stringify(config,null,2);md.classList.remove('show');openModal('configModal');});
-            $('#saveConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();updateWeatherMenuLabel();refreshWeather(true);alert('Configuration saved.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
-            $('#applyConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();updateWeatherMenuLabel();refreshWeather(true);alert('Configuration applied.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
+            $('#saveConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();updateWeatherMenuLabel();updateScheduleMenuLabel();refreshWeather(true);renderSchedule();alert('Configuration saved.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
+            $('#applyConfigBtn').addEventListener('click',()=>{try{config=JSON.parse($('#configText').value);applyColors();renderBookmarks();saveConfig();updateWeatherMenuLabel();updateScheduleMenuLabel();refreshWeather(true);renderSchedule();alert('Configuration applied.');closeAllModals();}catch(e){alert('Invalid JSON: '+e.message);}});
             $('#exportConfigBtn').addEventListener('click',()=>{const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(config,null,2));a.download='homepage-config.json';a.click();});
             const imp=$('#importConfigFile');$('#importConfigBtn').addEventListener('click',()=>imp.click());
-            imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();updateWeatherMenuLabel();refreshWeather(true);alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
+            imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();updateWeatherMenuLabel();updateScheduleMenuLabel();refreshWeather(true);renderSchedule();alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
 
-            $('#customizeBtn').addEventListener('click',e=>{e.stopPropagation();syncColorInputsFromConfig();syncRadiusInputs();md.classList.remove('show');openModal('customizeModal');});
-            $('#applyColorsBtn').addEventListener('click',()=>{readColorInputsToConfig();readRadiusInputs();applyColors();saveConfig();alert('Customization applied.');});
-            $('#resetColorsBtn').addEventListener('click',()=>{config.colors={...DEFAULT_COLORS};config.radius={...DEFAULT_RADIUS};config.backgroundImage=DEFAULT_BG;applyColors();syncColorInputsFromConfig();syncRadiusInputs();saveConfig();alert('Reset to defaults.');});
+            $('#customizeBtn').addEventListener('click',e=>{e.stopPropagation();syncColorInputsFromConfig();syncRadiusInputs();syncAcrylicInputs();md.classList.remove('show');openModal('customizeModal');});
+            $('#applyColorsBtn').addEventListener('click',()=>{readColorInputsToConfig();readRadiusInputs();readAcrylicInputs();applyColors();saveConfig();alert('Customization applied.');});
+            $('#resetColorsBtn').addEventListener('click',()=>{config.colors={...DEFAULT_COLORS};config.radius={...DEFAULT_RADIUS};config.acrylic={...DEFAULT_ACRYLIC};config.backgroundImage=DEFAULT_BG;applyColors();syncColorInputsFromConfig();syncRadiusInputs();syncAcrylicInputs();saveConfig();alert('Reset to defaults.');});
 
             $('#saveCategoryBtn').addEventListener('click',e=>{e.preventDefault();handleSaveCategory();});
             document.addEventListener('click',e=>{if(suppressClick)return;if(e.target.closest('button, .icon-btn, a[href]'))return;const card=e.target.closest('.bookmark');if(!card)return;const link=card.querySelector('a[href]');if(link)window.open(link.href,link.getAttribute('target')||'_self');});
 
-            setupSearchOverlay();setupTooltip();setupRadiusSliders();setupWeatherSettings();
+            setupSearchOverlay();setupTooltip();setupRadiusSliders();setupAcrylicSliders();setupWeatherSettings();setupSchedule();
         }
 
-        function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');updateWeatherMenuLabel();refreshWeather(false);}
+        function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');updateWeatherMenuLabel();updateScheduleMenuLabel();refreshWeather(false);renderSchedule();}
         init();
     </script>
 </body>
