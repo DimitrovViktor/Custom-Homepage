@@ -63,7 +63,4 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 ### Additional Features:
 - Configuration import/export
 - Bookmark drag and drop (section change and order change)
-
-
-### TO-DO:
-- notes/reminders
+- Calendar with reminders
