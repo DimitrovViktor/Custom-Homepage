@@ -58,9 +58,9 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 - Adjustable category and bookmark view
 - Adjustable category and bookmark sorting (A-Z)
 - Custom wallpaper
-- Weather Widget (can be moved between corners)
 
 ### Additional Features:
 - Configuration import/export
 - Bookmark drag and drop (section change and order change)
 - Calendar with reminders
+- Weather Widget
