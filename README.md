@@ -17,15 +17,6 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 
 ![Basic Interface](https://github.com/user-attachments/assets/0a826aa4-7972-43c5-8570-a9c59290c36f)
 
-### Minimalist Homepage (list view)
-
-![List view](https://github.com/user-attachments/assets/40eff55b-ac5b-4dbd-af38-22ccf0ffbc3d)
-
-### Minimalist Search Bar (with bookmark autocomplete)
-
-![Search Bar](https://github.com/user-attachments/assets/6bf90f23-5678-48c3-a30e-1dd40e9c4e0f)
-
-
 ---
 
 ## Getting Started
