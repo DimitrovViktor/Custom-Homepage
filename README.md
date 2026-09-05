@@ -30,7 +30,6 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 - Bookmark sections
 - Clock
 - Google search bar
-- Settings
 
 ---
 
