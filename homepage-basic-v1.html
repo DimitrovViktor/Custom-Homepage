@@ -237,6 +237,30 @@
         .radio-option span { display: block; padding: 10px 16px; cursor: pointer; font-size: 0.9rem; color: var(--text-color); background: var(--card-bg); transition: background 0.2s; }
         .radio-option input:checked + span { background: rgba(100,180,255,0.3); }
 
+        .groups-toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+        .groups-toolbar button { padding: 6px 12px; font-size: 0.75rem; font-weight: 400; background: var(--card-bg); }
+        .groups-toolbar button:hover { transform: none; }
+        .settings-group {
+            border: 1px solid var(--secondary-color); border-radius: var(--radius-sm);
+            margin-bottom: 10px; overflow: hidden; background: rgba(255,255,255,0.03);
+        }
+        .settings-group-header {
+            width: 100%; display: flex; align-items: center; gap: 10px; padding: 13px 14px; text-align: left;
+            background: transparent; border-radius: 0; font-size: 0.95rem; font-weight: 400; color: var(--text-color);
+        }
+        .settings-group-header:hover { background: var(--hover-color); transform: none; }
+        .group-icon { opacity: 0.7; width: 1.1rem; text-align: center; font-size: 0.9rem; flex-shrink: 0; }
+        .group-title { flex-shrink: 0; }
+        .group-meta {
+            margin-left: auto; font-size: 0.75rem; opacity: 0.55; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; text-align: right; display: flex; align-items: center; gap: 6px; justify-content: flex-end;
+        }
+        .group-swatch { width: 11px; height: 11px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.25); flex-shrink: 0; }
+        .group-chevron { font-size: 0.7rem; opacity: 0.45; flex-shrink: 0; transition: transform 0.25s ease; }
+        .settings-group.open .group-chevron { transform: rotate(180deg); }
+        .settings-group-body { display: none; padding: 2px 14px 16px; }
+        .settings-group.open .settings-group-body { display: block; animation: group-open 0.2s ease; }
+        @keyframes group-open { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
         .settings-section-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-color); opacity: 0.5; margin: 20px 0 8px; font-weight: 600; }
         .settings-section-title:first-child { margin-top: 0; }
 
@@ -575,52 +599,69 @@
 
     <div class="modal" id="customizeModal"><div class="modal-content">
         <div class="modal-header"><h2 class="modal-title">Customization</h2><button class="icon-btn close-modal" data-tip="Close">&times;</button></div>
-        <div class="settings-section-title">Theme</div>
-        <div class="theme-controls">
-            <select id="themePicker"><option value="">-- Select Theme --</option><option value="night">Night</option></select>
-            <button id="applyThemeBtn" data-tip="Apply selected theme"><i class="fas fa-check"></i> Apply</button>
-            <button id="resetThemeBtn" data-tip="Reset all to defaults"><i class="fas fa-undo"></i> Reset</button>
+        <div class="groups-toolbar"><button type="button" id="customizeGroupsToggle" data-tip="Expand or collapse every section"><i class="fas fa-chevron-down"></i> <span>Expand all</span></button></div>
+        <div class="settings-group" data-group="theme">
+            <button type="button" class="settings-group-header"><i class="fas fa-palette group-icon"></i><span class="group-title">Theme</span><span class="group-meta" id="metaTheme"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="theme-controls">
+                    <select id="themePicker"><option value="">-- Select Theme --</option><option value="night">Night</option></select>
+                    <button id="applyThemeBtn" data-tip="Apply selected theme"><i class="fas fa-check"></i> Apply</button>
+                    <button id="resetThemeBtn" data-tip="Reset all to defaults"><i class="fas fa-undo"></i> Reset</button>
+                </div>
+            </div>
         </div>
-        <div class="settings-section-title">Roundness</div>
-        <div class="radius-controls-grid">
-            <div class="radius-control"><span class="radius-label">Sections</span><input type="range" id="radiusMain" min="0" max="30" value="15"><span class="radius-value" id="radiusMainVal">15px</span><div class="radius-preview" id="radiusMainPreview"></div></div>
-            <div class="radius-control"><span class="radius-label">Cards</span><input type="range" id="radiusSm" min="0" max="24" value="10"><span class="radius-value" id="radiusSmVal">10px</span><div class="radius-preview" id="radiusSmPreview"></div></div>
-            <div class="radius-control"><span class="radius-label">Small elements</span><input type="range" id="radiusXs" min="0" max="16" value="6"><span class="radius-value" id="radiusXsVal">6px</span><div class="radius-preview" id="radiusXsPreview"></div></div>
-            <div class="radius-control"><span class="radius-label">Search / Pills</span><input type="range" id="radiusFull" min="0" max="50" value="50"><span class="radius-value" id="radiusFullVal">50px</span><div class="radius-preview" id="radiusFullPreview"></div></div>
+        <div class="settings-group" data-group="roundness">
+            <button type="button" class="settings-group-header"><i class="fas fa-square group-icon"></i><span class="group-title">Roundness</span><span class="group-meta" id="metaRoundness"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="radius-controls-grid">
+                    <div class="radius-control"><span class="radius-label">Sections</span><input type="range" id="radiusMain" min="0" max="30" value="15"><span class="radius-value" id="radiusMainVal">15px</span><div class="radius-preview" id="radiusMainPreview"></div></div>
+                    <div class="radius-control"><span class="radius-label">Cards</span><input type="range" id="radiusSm" min="0" max="24" value="10"><span class="radius-value" id="radiusSmVal">10px</span><div class="radius-preview" id="radiusSmPreview"></div></div>
+                    <div class="radius-control"><span class="radius-label">Small elements</span><input type="range" id="radiusXs" min="0" max="16" value="6"><span class="radius-value" id="radiusXsVal">6px</span><div class="radius-preview" id="radiusXsPreview"></div></div>
+                    <div class="radius-control"><span class="radius-label">Search / Pills</span><input type="range" id="radiusFull" min="0" max="50" value="50"><span class="radius-value" id="radiusFullVal">50px</span><div class="radius-preview" id="radiusFullPreview"></div></div>
+                </div>
+            </div>
         </div>
-        <div class="settings-section-title">Acrylic</div>
-        <div class="acrylic-note">Frosted-glass blur behind each surface. It only shows through where the surface is see-through, so pair it with a lower colour opacity below. Set a slider to 0 to turn it off.</div>
-        <div class="radius-controls-grid">
-            <div class="radius-control"><span class="radius-label">Sections</span><input type="range" id="acrylicSection" min="0" max="30" value="0"><span class="radius-value" id="acrylicSectionVal">0px</span></div>
-            <div class="radius-control"><span class="radius-label">Cards</span><input type="range" id="acrylicCard" min="0" max="30" value="0"><span class="radius-value" id="acrylicCardVal">0px</span></div>
-            <div class="radius-control"><span class="radius-label">Search bar</span><input type="range" id="acrylicSearch" min="0" max="30" value="0"><span class="radius-value" id="acrylicSearchVal">0px</span></div>
-            <div class="radius-control"><span class="radius-label">Menu</span><input type="range" id="acrylicMenu" min="0" max="30" value="16"><span class="radius-value" id="acrylicMenuVal">16px</span></div>
-            <div class="radius-control"><span class="radius-label">Modals</span><input type="range" id="acrylicModal" min="0" max="30" value="8"><span class="radius-value" id="acrylicModalVal">8px</span></div>
-            <div class="radius-control"><span class="radius-label">Search overlay</span><input type="range" id="acrylicOverlay" min="0" max="30" value="22"><span class="radius-value" id="acrylicOverlayVal">22px</span></div>
-            <div class="radius-control"><span class="radius-label">Weather</span><input type="range" id="acrylicWeather" min="0" max="30" value="12"><span class="radius-value" id="acrylicWeatherVal">12px</span></div>
-            <div class="radius-control"><span class="radius-label">Schedule</span><input type="range" id="acrylicSchedule" min="0" max="30" value="12"><span class="radius-value" id="acrylicScheduleVal">12px</span></div>
+        <div class="settings-group" data-group="acrylic">
+            <button type="button" class="settings-group-header"><i class="fas fa-layer-group group-icon"></i><span class="group-title">Acrylic</span><span class="group-meta" id="metaAcrylic"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="acrylic-note">Frosted-glass blur behind each surface. It only shows through where the surface is see-through, so pair it with a lower colour opacity below. Set a slider to 0 to turn it off.</div>
+                <div class="radius-controls-grid">
+                    <div class="radius-control"><span class="radius-label">Sections</span><input type="range" id="acrylicSection" min="0" max="30" value="0"><span class="radius-value" id="acrylicSectionVal">0px</span></div>
+                    <div class="radius-control"><span class="radius-label">Cards</span><input type="range" id="acrylicCard" min="0" max="30" value="0"><span class="radius-value" id="acrylicCardVal">0px</span></div>
+                    <div class="radius-control"><span class="radius-label">Search bar</span><input type="range" id="acrylicSearch" min="0" max="30" value="0"><span class="radius-value" id="acrylicSearchVal">0px</span></div>
+                    <div class="radius-control"><span class="radius-label">Menu</span><input type="range" id="acrylicMenu" min="0" max="30" value="16"><span class="radius-value" id="acrylicMenuVal">16px</span></div>
+                    <div class="radius-control"><span class="radius-label">Modals</span><input type="range" id="acrylicModal" min="0" max="30" value="8"><span class="radius-value" id="acrylicModalVal">8px</span></div>
+                    <div class="radius-control"><span class="radius-label">Search overlay</span><input type="range" id="acrylicOverlay" min="0" max="30" value="22"><span class="radius-value" id="acrylicOverlayVal">22px</span></div>
+                    <div class="radius-control"><span class="radius-label">Weather</span><input type="range" id="acrylicWeather" min="0" max="30" value="12"><span class="radius-value" id="acrylicWeatherVal">12px</span></div>
+                    <div class="radius-control"><span class="radius-label">Schedule</span><input type="range" id="acrylicSchedule" min="0" max="30" value="12"><span class="radius-value" id="acrylicScheduleVal">12px</span></div>
+                </div>
+            </div>
         </div>
-        <div class="settings-section-title">Colors</div>
-        <div class="color-picker">
-            <div class="color-option"><span class="color-label">Primary</span><input type="color" id="primaryColor" value="#222831"><input type="range" id="primaryOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Secondary</span><input type="color" id="secondaryColor" value="#393e46"><input type="range" id="secondaryOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Background</span><input type="color" id="backgroundColor" value="#222831"><input type="range" id="backgroundOpacity" min="0" max="100" value="49"></div>
-            <div class="color-option"><span class="color-label">Text</span><input type="color" id="textColor" value="#eeeeee"><input type="range" id="textOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Card BG</span><input type="color" id="cardBgColor" value="#393e46"><input type="range" id="cardBgOpacity" min="0" max="100" value="46"></div>
-            <div class="color-option"><span class="color-label">Hover</span><input type="color" id="hoverColor" value="#ffffff"><input type="range" id="hoverOpacity" min="0" max="100" value="30"></div>
-            <div class="color-option"><span class="color-label">Section BG</span><input type="color" id="sectionBgColor" value="#23272e"><input type="range" id="sectionBgOpacity" min="0" max="100" value="48"></div>
-            <div class="color-option"><span class="color-label">Clock</span><input type="color" id="clockColor" value="#ffffff"><input type="range" id="clockOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Search BG</span><input type="color" id="searchBgColor" value="#393e46"><input type="range" id="searchBgOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Search Text</span><input type="color" id="searchTextColor" value="#eeeeee"><input type="range" id="searchTextOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Placeholder</span><input type="color" id="searchPlaceholderColor" value="#bdbdbd"><input type="range" id="searchPlaceholderOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Modal BG</span><input type="color" id="modalBgColor" value="#23272e"><input type="range" id="modalBgOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Button BG</span><input type="color" id="buttonBgColor" value="#ffffff"><input type="range" id="buttonBgOpacity" min="0" max="100" value="50"></div>
-            <div class="color-option"><span class="color-label">Button Hover</span><input type="color" id="buttonHoverColor" value="#393e46"><input type="range" id="buttonHoverOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Button Text</span><input type="color" id="buttonTextColor" value="#eeeeee"><input type="range" id="buttonTextOpacity" min="0" max="100" value="100"></div>
-            <div class="color-option"><span class="color-label">Add Cat Btn</span><input type="color" id="addCategoryBtnColor" value="#ffffff"><input type="range" id="addCategoryBtnOpacity" min="0" max="100" value="46"></div>
-            <div class="color-option"><span class="color-label">Config Btn</span><input type="color" id="configBtnColor" value="#ffffff"><input type="range" id="configBtnOpacity" min="0" max="100" value="48"></div>
-            <div class="color-option"><span class="color-label">Picker Btn</span><input type="color" id="colorPickerBtnColor" value="#ffffff"><input type="range" id="colorPickerBtnOpacity" min="0" max="100" value="34"></div>
-            <div class="color-option"><span class="color-label">Overlay</span><input type="color" id="overlayColor" value="#000000"><input type="range" id="overlayOpacity" min="0" max="100" value="59"></div>
+        <div class="settings-group" data-group="colors">
+            <button type="button" class="settings-group-header"><i class="fas fa-fill-drip group-icon"></i><span class="group-title">Colors</span><span class="group-meta" id="metaColors"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="color-picker">
+                    <div class="color-option"><span class="color-label">Primary</span><input type="color" id="primaryColor" value="#222831"><input type="range" id="primaryOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Secondary</span><input type="color" id="secondaryColor" value="#393e46"><input type="range" id="secondaryOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Background</span><input type="color" id="backgroundColor" value="#222831"><input type="range" id="backgroundOpacity" min="0" max="100" value="49"></div>
+                    <div class="color-option"><span class="color-label">Text</span><input type="color" id="textColor" value="#eeeeee"><input type="range" id="textOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Card BG</span><input type="color" id="cardBgColor" value="#393e46"><input type="range" id="cardBgOpacity" min="0" max="100" value="46"></div>
+                    <div class="color-option"><span class="color-label">Hover</span><input type="color" id="hoverColor" value="#ffffff"><input type="range" id="hoverOpacity" min="0" max="100" value="30"></div>
+                    <div class="color-option"><span class="color-label">Section BG</span><input type="color" id="sectionBgColor" value="#23272e"><input type="range" id="sectionBgOpacity" min="0" max="100" value="48"></div>
+                    <div class="color-option"><span class="color-label">Clock</span><input type="color" id="clockColor" value="#ffffff"><input type="range" id="clockOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Search BG</span><input type="color" id="searchBgColor" value="#393e46"><input type="range" id="searchBgOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Search Text</span><input type="color" id="searchTextColor" value="#eeeeee"><input type="range" id="searchTextOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Placeholder</span><input type="color" id="searchPlaceholderColor" value="#bdbdbd"><input type="range" id="searchPlaceholderOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Modal BG</span><input type="color" id="modalBgColor" value="#23272e"><input type="range" id="modalBgOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Button BG</span><input type="color" id="buttonBgColor" value="#ffffff"><input type="range" id="buttonBgOpacity" min="0" max="100" value="50"></div>
+                    <div class="color-option"><span class="color-label">Button Hover</span><input type="color" id="buttonHoverColor" value="#393e46"><input type="range" id="buttonHoverOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Button Text</span><input type="color" id="buttonTextColor" value="#eeeeee"><input type="range" id="buttonTextOpacity" min="0" max="100" value="100"></div>
+                    <div class="color-option"><span class="color-label">Add Cat Btn</span><input type="color" id="addCategoryBtnColor" value="#ffffff"><input type="range" id="addCategoryBtnOpacity" min="0" max="100" value="46"></div>
+                    <div class="color-option"><span class="color-label">Config Btn</span><input type="color" id="configBtnColor" value="#ffffff"><input type="range" id="configBtnOpacity" min="0" max="100" value="48"></div>
+                    <div class="color-option"><span class="color-label">Picker Btn</span><input type="color" id="colorPickerBtnColor" value="#ffffff"><input type="range" id="colorPickerBtnOpacity" min="0" max="100" value="34"></div>
+                    <div class="color-option"><span class="color-label">Overlay</span><input type="color" id="overlayColor" value="#000000"><input type="range" id="overlayOpacity" min="0" max="100" value="59"></div>
+                </div>
+            </div>
         </div>
         <div class="config-buttons">
             <button id="applyColorsBtn" data-tip="Apply all customization changes"><i class="fas fa-paint-roller"></i> Apply</button>
@@ -641,61 +682,82 @@
 
     <div class="modal" id="settingsModal"><div class="modal-content">
         <div class="modal-header"><h2 class="modal-title">Settings</h2><button class="icon-btn close-modal" data-tip="Close">&times;</button></div>
-        <div class="settings-section-title">Time Format</div>
-        <div class="radio-group">
-            <label class="radio-option"><input type="radio" name="timeFormat" value="24"><span>24 Hour</span></label>
-            <label class="radio-option"><input type="radio" name="timeFormat" value="12"><span>AM / PM</span></label>
-        </div>
-        <div class="settings-section-title">Display</div>
-        <div class="toggle-row"><span class="toggle-label">Disable hover + animations</span><label class="toggle-switch"><input type="checkbox" id="disableAnimations"><span class="toggle-track"></span></label></div>
-        <div class="toggle-row"><span class="toggle-label">List view (boxes)</span><label class="toggle-switch"><input type="checkbox" id="listViewToggle"><span class="toggle-track"></span></label></div>
-        <div class="toggle-row"><span class="toggle-label">Combined list view (text only)</span><label class="toggle-switch"><input type="checkbox" id="combinedListViewToggle"><span class="toggle-track"></span></label></div>
-        <div class="settings-section-title">Sorting</div>
-        <div class="toggle-row"><span class="toggle-label">Sort categories A–Z</span><label class="toggle-switch"><input type="checkbox" id="sortCategoriesAlphaToggle"><span class="toggle-track"></span></label></div>
-        <div class="toggle-row"><span class="toggle-label">Sort bookmarks A–Z</span><label class="toggle-switch"><input type="checkbox" id="sortBookmarksAlphaToggle"><span class="toggle-track"></span></label></div>
-        <div class="settings-section-title">Weather</div>
-        <div class="toggle-row"><span class="toggle-label">Show weather widget</span><label class="toggle-switch"><input type="checkbox" id="weatherEnabled"><span class="toggle-track"></span></label></div>
-        <div id="weatherOptions">
-            <div class="weather-settings-label">Units</div>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="weatherUnits" value="metric"><span>°C · km/h</span></label>
-                <label class="radio-option"><input type="radio" name="weatherUnits" value="imperial"><span>°F · mph</span></label>
-            </div>
-            <div class="weather-settings-label">Corner</div>
-            <div class="pos-grid" id="weatherPosGrid">
-                <button type="button" class="pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
-                <button type="button" class="pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
-                <button type="button" class="pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
-                <button type="button" class="pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
-            </div>
-            <div class="weather-settings-label">Location</div>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="weatherMode" value="auto"><span>Auto (device)</span></label>
-                <label class="radio-option"><input type="radio" name="weatherMode" value="manual"><span>Search city</span></label>
-            </div>
-            <div id="weatherSearchWrap" style="margin-top:10px;">
-                <div class="weather-search-row">
-                    <input type="text" id="weatherCityInput" placeholder="Search a city, e.g. London" autocomplete="off" spellcheck="false">
-                    <button id="weatherSearchBtn" type="button" data-tip="Search for a city"><i class="fas fa-magnifying-glass"></i> Search</button>
+        <div class="groups-toolbar"><button type="button" id="settingsGroupsToggle" data-tip="Expand or collapse every section"><i class="fas fa-chevron-down"></i> <span>Expand all</span></button></div>
+        <div class="settings-group" data-group="clock">
+            <button type="button" class="settings-group-header"><i class="fas fa-clock group-icon"></i><span class="group-title">Time format</span><span class="group-meta" id="metaClock"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="radio-group">
+                    <label class="radio-option"><input type="radio" name="timeFormat" value="24"><span>24 Hour</span></label>
+                    <label class="radio-option"><input type="radio" name="timeFormat" value="12"><span>AM / PM</span></label>
                 </div>
-                <div class="weather-results" id="weatherCityResults"></div>
             </div>
-            <div class="weather-current-loc" id="weatherCurrentLoc"></div>
-            <div class="toggle-row" style="margin-top:6px;"><span class="toggle-label">Show details when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowDetails"><span class="toggle-track"></span></label></div>
-            <div class="toggle-row"><span class="toggle-label">Show 3-day forecast when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowForecast"><span class="toggle-track"></span></label></div>
         </div>
-        <div class="settings-section-title">Schedule</div>
-        <div class="toggle-row"><span class="toggle-label">Show schedule widget</span><label class="toggle-switch"><input type="checkbox" id="scheduleEnabled"><span class="toggle-track"></span></label></div>
-        <div id="scheduleOptions">
-            <div class="weather-settings-label">Corner</div>
-            <div class="pos-grid" id="schedulePosGrid">
-                <button type="button" class="pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
-                <button type="button" class="pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
-                <button type="button" class="pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
-                <button type="button" class="pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
+        <div class="settings-group" data-group="display">
+            <button type="button" class="settings-group-header"><i class="fas fa-desktop group-icon"></i><span class="group-title">Display</span><span class="group-meta" id="metaDisplay"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="toggle-row"><span class="toggle-label">Disable hover + animations</span><label class="toggle-switch"><input type="checkbox" id="disableAnimations"><span class="toggle-track"></span></label></div>
+                <div class="toggle-row"><span class="toggle-label">List view (boxes)</span><label class="toggle-switch"><input type="checkbox" id="listViewToggle"><span class="toggle-track"></span></label></div>
+                <div class="toggle-row"><span class="toggle-label">Combined list view (text only)</span><label class="toggle-switch"><input type="checkbox" id="combinedListViewToggle"><span class="toggle-track"></span></label></div>
             </div>
-            <div class="toggle-row" style="margin-top:14px;"><span class="toggle-label">Keep finished activities visible</span><label class="toggle-switch"><input type="checkbox" id="scheduleShowPast"><span class="toggle-track"></span></label></div>
-            <div class="config-buttons" style="margin-top:14px;"><button id="openScheduleFromSettings" type="button" data-tip="Add or edit activities"><i class="fas fa-calendar-day"></i> Manage activities</button></div>
+        </div>
+        <div class="settings-group" data-group="sorting">
+            <button type="button" class="settings-group-header"><i class="fas fa-arrow-down-a-z group-icon"></i><span class="group-title">Sorting</span><span class="group-meta" id="metaSorting"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="toggle-row"><span class="toggle-label">Sort categories A–Z</span><label class="toggle-switch"><input type="checkbox" id="sortCategoriesAlphaToggle"><span class="toggle-track"></span></label></div>
+                <div class="toggle-row"><span class="toggle-label">Sort bookmarks A–Z</span><label class="toggle-switch"><input type="checkbox" id="sortBookmarksAlphaToggle"><span class="toggle-track"></span></label></div>
+            </div>
+        </div>
+        <div class="settings-group" data-group="weather">
+            <button type="button" class="settings-group-header"><i class="fas fa-cloud-sun group-icon"></i><span class="group-title">Weather</span><span class="group-meta" id="metaWeather"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="toggle-row"><span class="toggle-label">Show weather widget</span><label class="toggle-switch"><input type="checkbox" id="weatherEnabled"><span class="toggle-track"></span></label></div>
+                <div id="weatherOptions">
+                    <div class="weather-settings-label">Units</div>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="weatherUnits" value="metric"><span>°C · km/h</span></label>
+                        <label class="radio-option"><input type="radio" name="weatherUnits" value="imperial"><span>°F · mph</span></label>
+                    </div>
+                    <div class="weather-settings-label">Corner</div>
+                    <div class="pos-grid" id="weatherPosGrid">
+                        <button type="button" class="pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
+                        <button type="button" class="pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
+                        <button type="button" class="pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
+                        <button type="button" class="pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
+                    </div>
+                    <div class="weather-settings-label">Location</div>
+                    <div class="radio-group">
+                        <label class="radio-option"><input type="radio" name="weatherMode" value="auto"><span>Auto (device)</span></label>
+                        <label class="radio-option"><input type="radio" name="weatherMode" value="manual"><span>Search city</span></label>
+                    </div>
+                    <div id="weatherSearchWrap" style="margin-top:10px;">
+                        <div class="weather-search-row">
+                            <input type="text" id="weatherCityInput" placeholder="Search a city, e.g. London" autocomplete="off" spellcheck="false">
+                            <button id="weatherSearchBtn" type="button" data-tip="Search for a city"><i class="fas fa-magnifying-glass"></i> Search</button>
+                        </div>
+                        <div class="weather-results" id="weatherCityResults"></div>
+                    </div>
+                    <div class="weather-current-loc" id="weatherCurrentLoc"></div>
+                    <div class="toggle-row" style="margin-top:6px;"><span class="toggle-label">Show details when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowDetails"><span class="toggle-track"></span></label></div>
+                    <div class="toggle-row"><span class="toggle-label">Show 3-day forecast when expanded</span><label class="toggle-switch"><input type="checkbox" id="weatherShowForecast"><span class="toggle-track"></span></label></div>
+                </div>
+            </div>
+        </div>
+        <div class="settings-group" data-group="schedule">
+            <button type="button" class="settings-group-header"><i class="fas fa-calendar-day group-icon"></i><span class="group-title">Schedule</span><span class="group-meta" id="metaSchedule"></span><i class="fas fa-chevron-down group-chevron"></i></button>
+            <div class="settings-group-body">
+                <div class="toggle-row"><span class="toggle-label">Show schedule widget</span><label class="toggle-switch"><input type="checkbox" id="scheduleEnabled"><span class="toggle-track"></span></label></div>
+                <div id="scheduleOptions">
+                    <div class="weather-settings-label">Corner</div>
+                    <div class="pos-grid" id="schedulePosGrid">
+                        <button type="button" class="pos-btn" data-pos="top-left"><span class="pos-box"></span> Top left</button>
+                        <button type="button" class="pos-btn" data-pos="top-right"><span class="pos-box"></span> Top right</button>
+                        <button type="button" class="pos-btn" data-pos="bottom-left"><span class="pos-box"></span> Bottom left</button>
+                        <button type="button" class="pos-btn" data-pos="bottom-right"><span class="pos-box"></span> Bottom right</button>
+                    </div>
+                    <div class="toggle-row" style="margin-top:14px;"><span class="toggle-label">Keep finished activities visible</span><label class="toggle-switch"><input type="checkbox" id="scheduleShowPast"><span class="toggle-track"></span></label></div>
+                    <div class="config-buttons" style="margin-top:14px;"><button id="openScheduleFromSettings" type="button" data-tip="Add or edit activities"><i class="fas fa-calendar-day"></i> Manage activities</button></div>
+                </div>
+            </div>
         </div>
         <div class="config-buttons"><button id="saveSettingsBtn" data-tip="Save and apply settings"><i class="fas fa-save"></i> Save Settings</button></div>
     </div></div>
@@ -732,9 +794,9 @@
                 social:{name:"Social Media",icon:"fas fa-users",bookmarks:[{name:'Twitter',url:'https://twitter.com',icon:'fab fa-twitter'},{name:'Facebook',url:'https://facebook.com',icon:'fab fa-facebook'}]},
                 coding:{name:"Coding",icon:"fas fa-code",bookmarks:[{name:'GitHub',url:'https://github.com',icon:'fab fa-github'},{name:'Stack Overflow',url:'https://stackoverflow.com',icon:'fab fa-stack-overflow'}]},
                 other:{name:"Other",icon:"fas fa-star",bookmarks:[{name:'Google',url:'https://google.com',icon:'fab fa-google'},{name:'YouTube',url:'https://youtube.com',icon:'fab fa-youtube'}]}
-            }, colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, acrylic:{...DEFAULT_ACRYLIC}, backgroundImage:DEFAULT_BG, weather:{...DEFAULT_WEATHER}, schedule:{...DEFAULT_SCHEDULE} };
+            }, colors:{...DEFAULT_COLORS}, radius:{...DEFAULT_RADIUS}, acrylic:{...DEFAULT_ACRYLIC}, backgroundImage:DEFAULT_BG, ui:{groups:{}}, weather:{...DEFAULT_WEATHER}, schedule:{...DEFAULT_SCHEDULE} };
 
-        const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+        const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
         let editingCategoryId = null;
         function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
         function generateCategoryId(name){let b=(name||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'category',id=b,i=1;while(config.bookmarks[id])id=b+'-'+i++;return id;}
@@ -758,7 +820,7 @@
         }
 
         function saveConfig(){localStorage.setItem('homepageConfig',JSON.stringify(config));}
-        function loadConfig(){const s=localStorage.getItem('homepageConfig');if(!s)return;try{config=JSON.parse(s);config.timeFormat=config.timeFormat||'24';config.sortCategoriesAlpha=config.sortCategoriesAlpha||false;config.sortBookmarksAlpha=config.sortBookmarksAlpha||false;config.combinedListView=config.combinedListView||false;if(config.combinedListView)config.listView=false;config.colors={...DEFAULT_COLORS,...(config.colors||{})};config.radius={...DEFAULT_RADIUS,...(config.radius||{})};config.acrylic={...DEFAULT_ACRYLIC,...(config.acrylic||{})};config.weather={...DEFAULT_WEATHER,...(config.weather||{})};config.schedule={...DEFAULT_SCHEDULE,...(config.schedule||{})};if(!Array.isArray(config.schedule.events))config.schedule.events=[];migrateScheduleEvents();applyColors();}catch(e){console.error(e);}}
+        function loadConfig(){const s=localStorage.getItem('homepageConfig');if(!s)return;try{config=JSON.parse(s);config.timeFormat=config.timeFormat||'24';config.sortCategoriesAlpha=config.sortCategoriesAlpha||false;config.sortBookmarksAlpha=config.sortBookmarksAlpha||false;config.combinedListView=config.combinedListView||false;if(config.combinedListView)config.listView=false;config.colors={...DEFAULT_COLORS,...(config.colors||{})};config.radius={...DEFAULT_RADIUS,...(config.radius||{})};config.acrylic={...DEFAULT_ACRYLIC,...(config.acrylic||{})};config.weather={...DEFAULT_WEATHER,...(config.weather||{})};config.ui={groups:{},...(config.ui||{})};config.schedule={...DEFAULT_SCHEDULE,...(config.schedule||{})};if(!Array.isArray(config.schedule.events))config.schedule.events=[];migrateScheduleEvents();applyColors();}catch(e){console.error(e);}}
         function updateClock(){$('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:config.timeFormat==='12'});scheduleTick();}
 
         function getSortedCategoryIds(){const ids=Object.keys(config.bookmarks||{});if(!config.sortCategoriesAlpha)return ids;return ids.sort((a,b)=>String(config.bookmarks[a]?.name||'').localeCompare(String(config.bookmarks[b]?.name||''),undefined,{sensitivity:'base'})||a.localeCompare(b));}
@@ -1106,7 +1168,7 @@
         function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
 
         function scheduleCfg(){
-            config.schedule={...DEFAULT_SCHEDULE,...(config.schedule||{})};
+            config.ui={groups:{},...(config.ui||{})};config.schedule={...DEFAULT_SCHEDULE,...(config.schedule||{})};
             if(!Array.isArray(config.schedule.events))config.schedule.events=[];
             if(!SCHEDULE_VIEWS.includes(config.schedule.view))config.schedule.view='today';
             return config.schedule;
@@ -1446,6 +1508,80 @@
             document.addEventListener('keydown',e=>{if(e.key==='Escape'&&scheduleExpanded)setScheduleExpanded(false);});
         }
 
+        const DEFAULT_OPEN_GROUPS=['clock','theme'];
+        function uiCfg(){config.ui={groups:{},...(config.ui||{})};if(!config.ui.groups||typeof config.ui.groups!=='object')config.ui.groups={};return config.ui;}
+        function isGroupOpen(name){const g=uiCfg().groups;return typeof g[name]==='boolean'?g[name]:DEFAULT_OPEN_GROUPS.includes(name);}
+        function setGroupOpen(name,open){
+            uiCfg().groups[name]=!!open;
+            const el=document.querySelector(`.settings-group[data-group="${name}"]`);
+            if(el)el.classList.toggle('open',!!open);
+            saveConfig();
+        }
+        function modalGroups(modalId){return $$('#'+modalId+' .settings-group');}
+        function applyGroupStates(modalId){
+            modalGroups(modalId).forEach(g=>g.classList.toggle('open',isGroupOpen(g.dataset.group)));
+            updateGroupsToggle(modalId);
+        }
+        function updateGroupsToggle(modalId){
+            const btn=document.querySelector('#'+(modalId==='settingsModal'?'settingsGroupsToggle':'customizeGroupsToggle'));
+            if(!btn)return;
+            const groups=modalGroups(modalId),allOpen=groups.length>0&&groups.every(g=>g.classList.contains('open'));
+            const label=btn.querySelector('span'),icon=btn.querySelector('i');
+            if(label)label.textContent=allOpen?'Collapse all':'Expand all';
+            if(icon)icon.className='fas '+(allOpen?'fa-chevron-up':'fa-chevron-down');
+        }
+        function toggleAllGroups(modalId){
+            const groups=modalGroups(modalId),open=!groups.every(g=>g.classList.contains('open'));
+            groups.forEach(g=>{uiCfg().groups[g.dataset.group]=open;g.classList.toggle('open',open);});
+            saveConfig();
+            updateGroupsToggle(modalId);
+        }
+        function setupSettingsGroups(){
+            $$('.settings-group').forEach(g=>{
+                const head=g.querySelector('.settings-group-header');
+                head?.addEventListener('click',()=>{
+                    const open=!g.classList.contains('open');
+                    setGroupOpen(g.dataset.group,open);
+                    updateGroupsToggle(g.closest('.modal')?.id||'settingsModal');
+                });
+            });
+            $('#settingsGroupsToggle').addEventListener('click',()=>toggleAllGroups('settingsModal'));
+            $('#customizeGroupsToggle').addEventListener('click',()=>toggleAllGroups('customizeModal'));
+            $('#settingsModal').addEventListener('input',updateSettingsSummaries);
+            $('#settingsModal').addEventListener('click',e=>{if(e.target.closest('.pos-btn'))updateSettingsSummaries();});
+            $('#customizeModal').addEventListener('input',updateCustomizeSummaries);
+        }
+        function setMeta(id,html){const el=document.getElementById(id);if(el)el.innerHTML=html;}
+        function updateSettingsSummaries(){
+            const fmt=document.querySelector('input[name="timeFormat"]:checked')?.value||config.timeFormat||'24';
+            setMeta('metaClock',fmt==='12'?'AM / PM':'24 hour');
+            const combined=$('#combinedListViewToggle').checked,list=$('#listViewToggle').checked;
+            setMeta('metaDisplay',escapeHtml((combined?'Combined list':list?'List view':'Grid view')+($('#disableAnimations').checked?' \u00b7 No animations':'')));
+            const cats=$('#sortCategoriesAlphaToggle').checked,bms=$('#sortBookmarksAlphaToggle').checked;
+            setMeta('metaSorting',cats&&bms?'Everything A\u2013Z':cats?'Categories A\u2013Z':bms?'Bookmarks A\u2013Z':'Manual order');
+            if($('#weatherEnabled').checked){
+                const unit=document.querySelector('input[name="weatherUnits"]:checked')?.value==='imperial'?'\u00b0F':'\u00b0C';
+                const mode=document.querySelector('input[name="weatherMode"]:checked')?.value||'auto';
+                const place=mode==='auto'?'Auto location':(weatherDraftLoc?.name||weatherCfg().locationName||'No city');
+                setMeta('metaWeather',escapeHtml(`${unit} \u00b7 ${String(place).split(',')[0]}`));
+            }else setMeta('metaWeather','Hidden');
+            if($('#scheduleEnabled').checked){
+                const n=scheduleEvents().length;
+                setMeta('metaSchedule',escapeHtml(n?`${n} ${n===1?'activity':'activities'}`:'No activities yet'));
+            }else setMeta('metaSchedule','Hidden');
+        }
+        function updateCustomizeSummaries(){
+            setMeta('metaTheme',config.backgroundImage&&config.backgroundImage!==DEFAULT_BG?'Custom background':'Default background');
+            setMeta('metaRoundness',escapeHtml(`Sections ${$('#radiusMain').value}px \u00b7 cards ${$('#radiusSm').value}px`));
+            const on=ACRYLIC_MAP.filter(([id])=>Number(document.getElementById(id)?.value)>0).length;
+            setMeta('metaAcrylic',on?escapeHtml(`${on} of ${ACRYLIC_MAP.length} surfaces`):'Off');
+            const swatches=['background','sectionBg','cardBg','text','hover'].map(k=>{
+                const v=document.getElementById(k+'Color')?.value||'#000000';
+                return `<span class="group-swatch" style="background:${escapeHtml(v)}"></span>`;
+            }).join('');
+            setMeta('metaColors',swatches);
+        }
+
         function openModal(id){document.getElementById(id).style.display='flex';}
         function closeAllModals(){$$('.modal').forEach(m=>m.style.display='none');editingCategoryId=null;}
 
@@ -1514,6 +1650,8 @@
             $('#listViewToggle').disabled=!!config.combinedListView;
             syncWeatherSettings();
             syncScheduleSettings();
+            applyGroupStates('settingsModal');
+            updateSettingsSummaries();
             openModal('settingsModal');
         }
 
@@ -1535,14 +1673,14 @@
             const imp=$('#importConfigFile');$('#importConfigBtn').addEventListener('click',()=>imp.click());
             imp.addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{config=JSON.parse(ev.target.result);loadConfig();renderBookmarks();saveConfig();updateWeatherMenuLabel();updateScheduleMenuLabel();refreshWeather(true);renderSchedule();alert('Imported.');closeAllModals();}catch(err){alert('Failed: '+err.message);}};r.readAsText(f);imp.value='';});
 
-            $('#customizeBtn').addEventListener('click',e=>{e.stopPropagation();syncColorInputsFromConfig();syncRadiusInputs();syncAcrylicInputs();md.classList.remove('show');openModal('customizeModal');});
+            $('#customizeBtn').addEventListener('click',e=>{e.stopPropagation();syncColorInputsFromConfig();syncRadiusInputs();syncAcrylicInputs();applyGroupStates('customizeModal');updateCustomizeSummaries();md.classList.remove('show');openModal('customizeModal');});
             $('#applyColorsBtn').addEventListener('click',()=>{readColorInputsToConfig();readRadiusInputs();readAcrylicInputs();applyColors();saveConfig();alert('Customization applied.');});
-            $('#resetColorsBtn').addEventListener('click',()=>{config.colors={...DEFAULT_COLORS};config.radius={...DEFAULT_RADIUS};config.acrylic={...DEFAULT_ACRYLIC};config.backgroundImage=DEFAULT_BG;applyColors();syncColorInputsFromConfig();syncRadiusInputs();syncAcrylicInputs();saveConfig();alert('Reset to defaults.');});
+            $('#resetColorsBtn').addEventListener('click',()=>{config.colors={...DEFAULT_COLORS};config.radius={...DEFAULT_RADIUS};config.acrylic={...DEFAULT_ACRYLIC};config.backgroundImage=DEFAULT_BG;applyColors();syncColorInputsFromConfig();syncRadiusInputs();syncAcrylicInputs();updateCustomizeSummaries();saveConfig();alert('Reset to defaults.');});
 
             $('#saveCategoryBtn').addEventListener('click',e=>{e.preventDefault();handleSaveCategory();});
             document.addEventListener('click',e=>{if(suppressClick)return;if(e.target.closest('button, .icon-btn, a[href]'))return;const card=e.target.closest('.bookmark');if(!card)return;const link=card.querySelector('a[href]');if(link)window.open(link.href,link.getAttribute('target')||'_self');});
 
-            setupSearchOverlay();setupTooltip();setupRadiusSliders();setupAcrylicSliders();setupWeatherSettings();setupSchedule();
+            setupSearchOverlay();setupTooltip();setupRadiusSliders();setupAcrylicSliders();setupWeatherSettings();setupSchedule();setupSettingsGroups();
         }
 
         function init(){updateClock();setInterval(updateClock,1000);loadConfig();applyInteractionMode();applyViewModes();renderBookmarks();setupEventListeners();document.body.style.backgroundImage=`url('${config.backgroundImage}')`;if(!config.disableAnimations)document.body.classList.add('hover-expand-enabled');updateWeatherMenuLabel();updateScheduleMenuLabel();refreshWeather(false);renderSchedule();}
