@@ -48,6 +48,8 @@ HTML + JS + CSS homepage with a bookmark manager, google search bar, a clock, an
 - Adjustable clock
 - Adjustable category and bookmark view
 - Adjustable category and bookmark sorting (A-Z)
+- Adjustable weather widget position
+- Adjustable notes position
 - Custom wallpaper
 
 ### Additional Features:
